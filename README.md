@@ -2,7 +2,7 @@
 
 Spring Graphql Reactive Samples With Jwt Authentication
 
-<img src="https://github.com/susimsek/spring-graphql-samples/blob/master/images/introduction.png" alt="Spring Boot Graphql Samples" width="100%" height="100%"/> 
+<img src="https://github.com/susimsek/spring-graphql-samples/blob/main/images/introduction.png" alt="Spring Boot Graphql Samples" width="100%" height="100%"/> 
 
 # Graphql
 
