@@ -54,3 +54,11 @@ You can run detekt by typing the following command
 ```sh
 mvn antrun:run@detekt
 ```
+
+## Rsocket
+
+ example requests vis rsockets
+
+java -jar rsc-0.9.1.jar --stream --route=graphql --dataMimeType="application/graphql+json" --data='{"query":"subscription { postAdded { id, title, content } }" }' --debug tcp://localhost:8079
+
+java -jar rsc-0.9.1.jar --request --route=graphql --dataMimeType="application/graphql+json" --data='{"query":"{ post(id: \"632c8028feb9e053546a88f2\") { id, title } }" }' --debug tcp://localhost:8079
