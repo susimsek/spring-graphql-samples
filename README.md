@@ -59,9 +59,9 @@ mvn antrun:run@detekt
 
 
 ```sh
-java -jar rsc-0.9.1.jar --stream --route=graphql --dataMimeType="application/graphql+json" --data='{"query":"subscription { postAdded { id, title, content } }" }' --debug tcp://localhost:8079
+rsc --stream --route=graphql --dataMimeType="application/graphql+json" --data='{"query":"subscription { postAdded { id, title, content } }" }' --debug tcp://localhost:8079 --authBearer ${TOKEN} 
 ```
 
 ```sh
-java -jar rsc-0.9.1.jar --request --route=graphql --dataMimeType="application/graphql+json" --data='{"query":"{ post(id: \"632c8028feb9e053546a88f2\") { id, title } }" }' --debug tcp://localhost:8079
+rsc --request --route=graphql --dataMimeType="application/graphql+json" --data='{"query":"{ post(id: \"632c8028feb9e053546a88f2\") { id, title } }" }' --debug tcp://localhost:8079  --authBearer ${TOKEN} 
 ```

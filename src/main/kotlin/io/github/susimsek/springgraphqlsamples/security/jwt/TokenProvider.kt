@@ -1,15 +1,15 @@
 package io.github.susimsek.springgraphqlsamples.security.jwt
 
-import io.jsonwebtoken.ExpiredJwtException
-import io.jsonwebtoken.JwtParser
-import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.MalformedJwtException
-import io.jsonwebtoken.SignatureAlgorithm
-import io.jsonwebtoken.UnsupportedJwtException
-import io.jsonwebtoken.io.Decoders
-import io.jsonwebtoken.jackson.io.JacksonSerializer
-import io.jsonwebtoken.security.Keys
-import io.jsonwebtoken.security.SignatureException
+import com.nimbusds.jose.JOSEException
+import com.nimbusds.jose.JOSEObjectType
+import com.nimbusds.jose.JWSAlgorithm
+import com.nimbusds.jose.JWSHeader
+import com.nimbusds.jose.crypto.MACSigner
+import com.nimbusds.jose.crypto.MACVerifier
+import com.nimbusds.jose.shaded.json.parser.ParseException
+import com.nimbusds.jose.util.Base64
+import com.nimbusds.jwt.JWTClaimsSet
+import com.nimbusds.jwt.SignedJWT
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -17,8 +17,8 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Component
-import java.security.Key
 import java.util.Date
+
 
 private const val AUTHORITIES_KEY = "auth"
 
@@ -32,18 +32,13 @@ class TokenProvider(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
-    private var key: Key? = null
-
-    private var jwtParser: JwtParser? = null
+    private lateinit var keyBytes: ByteArray
 
     private var tokenValidityInMilliseconds: Long = 0
 
     init {
-        val keyBytes: ByteArray
         val secret = tokenProperties.base64Secret
-        keyBytes = Decoders.BASE64.decode(secret)
-        this.key = Keys.hmacShaKeyFor(keyBytes)
-        this.jwtParser = Jwts.parserBuilder().setSigningKey(key).build()
+        this.keyBytes = Base64(secret).decode()
         this.tokenValidityInMilliseconds = 1000 * tokenProperties.tokenValidityInSeconds
     }
 
@@ -55,19 +50,25 @@ class TokenProvider(
         val now = Date().time
         val validity = Date(now + this.tokenValidityInMilliseconds)
 
-        return Jwts.builder()
-            .setSubject(authentication.name)
+        val header = JWSHeader.Builder(JWSAlgorithm.HS512)
+            .type(JOSEObjectType.JWT)
+            .build()
+
+        val payload = JWTClaimsSet.Builder()
+            .subject(authentication.name)
             .claim(AUTHORITIES_KEY, authorities)
-            .signWith(key, SignatureAlgorithm.HS512)
-            .setExpiration(validity)
-            .serializeToJsonWith(JacksonSerializer())
-            .compact()
+            .expirationTime(validity)
+            .build()
+
+        val signedJWT = SignedJWT(header, payload)
+        signedJWT.sign(MACSigner(keyBytes))
+        return signedJWT.serialize()
     }
 
     fun getAuthentication(token: String): Authentication {
-        val claims = jwtParser?.parseClaimsJws(token)?.body
+        val claims = SignedJWT.parse(token).jwtClaimsSet
 
-        val authorities = claims?.get(AUTHORITIES_KEY)?.toString()?.splitToSequence(",")
+        val authorities = claims.getClaim(AUTHORITIES_KEY)?.toString()?.splitToSequence(",")
             ?.filter { it.trim().isNotEmpty() }?.mapTo(mutableListOf()) { SimpleGrantedAuthority(it) }
 
         val principal = User(claims?.subject, "", authorities)
@@ -77,24 +78,16 @@ class TokenProvider(
 
     fun validateToken(authToken: String): Boolean {
         try {
-            jwtParser?.parseClaimsJws(authToken)
+            SignedJWT.parse(authToken)
+                .verify(MACVerifier(keyBytes))
             return true
-        } catch (e: ExpiredJwtException) {
-
+        } catch (e: ParseException) {
             log.trace(INVALID_JWT_TOKEN, e)
-        } catch (e: UnsupportedJwtException) {
-
-            log.trace(INVALID_JWT_TOKEN, e)
-        } catch (e: MalformedJwtException) {
-
-            log.trace(INVALID_JWT_TOKEN, e)
-        } catch (e: SignatureException) {
-
-            log.trace(INVALID_JWT_TOKEN, e)
-        } catch (e: IllegalArgumentException) {
+        } catch (e: JOSEException) {
             log.error("Token validation error {}", e.message)
         }
 
         return false
     }
+
 }

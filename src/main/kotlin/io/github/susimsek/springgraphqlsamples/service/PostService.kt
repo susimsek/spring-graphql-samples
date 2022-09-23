@@ -114,7 +114,6 @@ class PostService(
             }
     }
 
-    @PreAuthorize("permitAll()")
     fun postAdded(): Publisher<PostPayload> {
         return sink.asFlux()
     }

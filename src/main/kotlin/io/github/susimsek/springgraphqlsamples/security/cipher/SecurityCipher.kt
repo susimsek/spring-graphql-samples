@@ -1,7 +1,6 @@
 package io.github.susimsek.springgraphqlsamples.security.cipher
 
 import io.github.susimsek.springgraphqlsamples.security.cipher.CryptoUtils.getAESKeyFromPassword
-import io.jsonwebtoken.io.Decoders
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Component
@@ -31,7 +30,7 @@ class SecurityCipher(
         try {
             val salt = CryptoUtils.getRandomNonce(SALT_LENGTH_BYTE)
             val iv = CryptoUtils.getRandomNonce(IV_LENGTH_BYTE)
-            val keyBytes = Decoders.BASE64.decode(cipherProperties.base64Secret)
+            val keyBytes =  com.nimbusds.jose.util.Base64(cipherProperties.base64Secret).decode()
             val secretKey = getAESKeyFromPassword(String(keyBytes).toCharArray(), salt)
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, GCMParameterSpec(TAG_LENGTH_BIT, iv))
             val cipherText = cipher.doFinal(strToEncrypt.toByteArray(UTF_8))
@@ -61,7 +60,7 @@ class SecurityCipher(
             val cipherText = ByteArray(bb.remaining())
             bb.get(cipherText)
 
-            val keyBytes = Decoders.BASE64.decode(cipherProperties.base64Secret)
+            val keyBytes =  com.nimbusds.jose.util.Base64(cipherProperties.base64Secret).decode()
             val secretKey = getAESKeyFromPassword(String(keyBytes).toCharArray(), salt)
 
             cipher.init(Cipher.DECRYPT_MODE, secretKey, GCMParameterSpec(TAG_LENGTH_BIT, iv))
