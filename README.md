@@ -57,7 +57,6 @@ mvn antrun:run@detekt
 
 ## Rsocket
 
- example requests vis rsockets
 
 ```sh
 java -jar rsc-0.9.1.jar --stream --route=graphql --dataMimeType="application/graphql+json" --data='{"query":"subscription { postAdded { id, title, content } }" }' --debug tcp://localhost:8079
