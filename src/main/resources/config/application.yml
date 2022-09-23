@@ -1,0 +1,59 @@
+spring:
+  application:
+    name: spring native-graphql-app
+  profiles:
+    active: dev
+    jackson:
+      deserialization:
+        adjust-dates-to-context-time-zone: false
+      serialization:
+        write-dates-as-timestamps: false
+  rsocket:
+    server:
+      transport: tcp
+  graphql:
+    rsocket:
+      mapping: graphql
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: always
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+
+graphql:
+  datetime:
+    scalars:
+      offset-date-time:
+        scalar-name: OffsetDateTime
+        format: yyyy-MM-dd'T'HH:mm:ssXXX
+      local-date-time:
+        scalar-name: LocalDateTime
+        format: yyyy-MM-dd'T'HH:MM:ss
+      local-date:
+        scalar-name: LocalDate
+        format: yyyy-MM-dd
+
+security-matcher:
+  ignore-patterns:
+    - /graphiql
+    - /favicon.ico
+  permit-all-patterns:
+    - /actuator/health/**
+    - /graphql
+    - /
+    - /subscriptions
+
+cors:
+  allowed-origins: http://localhost:3000, http://localhost:8080
+  allowed-methods: GET, PUT, POST, PATCH, DELETE, OPTIONS
+  allowed-headers: Origin, Accept, X-Requested-With, Authorization, Cache-Control, Content-Type
+  exposed-headers: Location
+  allow-credentials: true
+  max-age: 3600

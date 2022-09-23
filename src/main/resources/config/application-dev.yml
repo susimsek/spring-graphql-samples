@@ -1,0 +1,24 @@
+server:
+  port: ${PORT:9091}
+
+spring:
+  rsocket:
+    server:
+      port: 8079
+  data:
+    mongodb:
+      uri: mongodb+srv://test_user123456:4hRsOKoJxkHswunQ@cluster0.nbzfi.mongodb.net/demo
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: false
+
+
+security:
+  authentication:
+    token:
+      base64-secret: NjhkOGZmNmY4NGQ1ODFiMjI5M2JjZTJmYTRlMWVjNmM2Nzk2YjFiZTc2Nzc3MjMxMTE4Njg2ZjlhNTRhNmE0YmZhMzI5MDczZjQyZTZlZDFlYzdhZGZkYTUzZGUyMTMyM2VkZWRmNTEwZGQzNzc1YzIwMGRmYTFiNzAwNmI4Njc=
+      token-validity-in-seconds: 86400
+  cipher:
+    base64-secret: c2VjdXJlQ0RDS2V5
