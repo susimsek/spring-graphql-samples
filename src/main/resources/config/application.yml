@@ -14,7 +14,8 @@ spring:
   graphql:
     rsocket:
       mapping: graphql
-
+  main:
+    allow-bean-definition-overriding: true
 management:
   endpoint:
     health:

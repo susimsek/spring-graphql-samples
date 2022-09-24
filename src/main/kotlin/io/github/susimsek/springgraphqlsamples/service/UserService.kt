@@ -1,13 +1,16 @@
 package io.github.susimsek.springgraphqlsamples.service
 
+import io.github.susimsek.springgraphqlsamples.exception.ResourceAlreadyExistsException
+import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundException
 import io.github.susimsek.springgraphqlsamples.graphql.input.AddUserInput
 import io.github.susimsek.springgraphqlsamples.graphql.input.UserFilter
 import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
 import io.github.susimsek.springgraphqlsamples.repository.UserRepository
 import io.github.susimsek.springgraphqlsamples.security.getCurrentUserLogin
 import io.github.susimsek.springgraphqlsamples.service.mapper.UserMapper
-import io.github.susimsek.springgraphqlsamples.exception.ResourceAlreadyExistsException
-import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundException
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.reactive.asFlow
+import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.data.domain.Pageable
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -24,7 +27,7 @@ class UserService(
     private val userMapper: UserMapper
 ) {
 
-    fun createUser(input: AddUserInput): Mono<UserPayload> {
+    suspend fun createUser(input: AddUserInput): UserPayload {
         return userRepository.findOneByUsername(input.username!!)
             .flatMap { existingUser ->
                 if (existingUser.activated == false) {
@@ -40,7 +43,8 @@ class UserService(
                 } else {
                     Mono.error(ResourceAlreadyExistsException("Email is already in use!"))
                 }
-            }.then(Mono.fromCallable {
+            }.then(
+                Mono.fromCallable {
                 val encryptedPassword = passwordEncoder.encode(input.password)
                 input.username = input.username?.lowercase(Locale.getDefault())
                 input.email = input.email?.lowercase(Locale.getDefault())
@@ -48,26 +52,30 @@ class UserService(
                 val user = userMapper.toEntity(input)
                 user.activated = true
                 user
-            }).flatMap(userRepository::save)
+            }
+            ).flatMap(userRepository::save)
             .map(userMapper::toType)
+            .awaitSingle()
     }
 
     @PreAuthorize("isAuthenticated()")
-    fun getUsers(pageRequest: Pageable, filter: UserFilter?): Flux<UserPayload> {
+    fun getUsers(pageRequest: Pageable, filter: UserFilter?): Flow<UserPayload> {
         return userRepository.findAllByFilter(filter, pageRequest)
             .map(userMapper::toType)
+            .asFlow()
     }
 
     @PreAuthorize("isAuthenticated()")
-    fun getCurrentUser(): Mono<UserPayload> {
+    suspend fun getCurrentUser(): UserPayload {
         return getCurrentUserLogin().flatMap(userRepository::findById)
             .map(userMapper::toType)
             .switchIfEmpty(Mono.error(UsernameNotFoundException("User was not found")))
+            .awaitSingle()
     }
 
-
-    fun getName(user: UserPayload): Mono<String> {
+    suspend fun getName(user: UserPayload): String {
         return Mono.just(user.firstName + " " + user.lastName)
+            .awaitSingle()
     }
 
     @PreAuthorize("isAuthenticated()")

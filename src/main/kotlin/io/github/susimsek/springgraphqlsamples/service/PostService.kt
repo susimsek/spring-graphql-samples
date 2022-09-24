@@ -9,7 +9,9 @@ import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
 import io.github.susimsek.springgraphqlsamples.repository.PostRepository
 import io.github.susimsek.springgraphqlsamples.security.getCurrentUserLogin
 import io.github.susimsek.springgraphqlsamples.service.mapper.PostMapper
-import org.reactivestreams.Publisher
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.reactive.asFlow
+import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.data.domain.Pageable
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.access.prepost.PreAuthorize
@@ -27,17 +29,24 @@ class PostService(
 ) {
 
     private val sink = Sinks.many().replay().latest<PostPayload>()
+    // private val flow = MutableSharedFlow<PostPayload>(replay = 1)
 
-    fun createPost(input: AddPostInput): Mono<PostPayload> {
+    suspend fun createPost(input: AddPostInput): PostPayload {
         val entity = postMapper.toEntity(input)
         entity.status = PostStatus.DRAFT
 
-        return postRepository.save(entity)
+        //  .doOnNext{ flow.emitNext(it, Sinks.EmitFailureHandler.FAIL_FAST)}
+
+        val payload = postRepository.save(entity)
             .map(postMapper::toType)
-            .doOnNext{ sink.emitNext(it, Sinks.EmitFailureHandler.FAIL_FAST)}
+            .awaitSingle()
+
+        // flow.emit(payload)
+        sink.emitNext(payload, Sinks.EmitFailureHandler.FAIL_FAST)
+        return payload
     }
 
-    fun updatePost(input: UpdatePostInput): Mono<PostPayload> {
+    suspend fun updatePost(input: UpdatePostInput): PostPayload {
         return getCurrentUserLogin()
             .flatMap { authUser ->
                 postRepository.findById(input.id!!)
@@ -54,9 +63,10 @@ class PostService(
                         }
                     }.switchIfEmpty(Mono.error((ResourceNotFoundException("Post with id ${input.id} was not found"))))
             }.map(postMapper::toType)
+            .awaitSingle()
     }
 
-    fun deletePost(id: String): Mono<String> {
+    suspend fun deletePost(id: String): String {
         return getCurrentUserLogin()
             .flatMap { authUser ->
                 postRepository.findById(id)
@@ -74,27 +84,30 @@ class PostService(
                     }
                     .switchIfEmpty(Mono.error((ResourceNotFoundException("Post with id $id was not found"))))
             }.map { it.id!! }
+            .awaitSingle()
     }
 
-    fun getPosts(pageRequest: Pageable): Flux<PostPayload> {
+    fun getPosts(pageRequest: Pageable): Flow<PostPayload> {
         return postRepository.findByIdNotNull(pageRequest)
             .map(postMapper::toType)
+            .asFlow()
     }
 
     @PreAuthorize("permitAll()")
-    fun getPost(id: String): Mono<PostPayload> {
+    suspend fun getPost(id: String): PostPayload {
         return postRepository.findById(id)
             .map(postMapper::toType)
             .switchIfEmpty(Mono.error((ResourceNotFoundException("Post with id $id was not found"))))
+            .awaitSingle()
     }
 
-    fun getPostsWithAuthors(posts: MutableList<PostPayload>): Flux<UserPayload> {
+    fun getPostsWithAuthors(posts: MutableList<PostPayload>): Flow<UserPayload> {
         val authorIds = posts.map { post -> post.createdBy!! }.toMutableSet()
         val authors = userService.getUserByIdIn(authorIds)
         return Flux.fromIterable(posts)
             .flatMap { post ->
                 authors.filter { post.createdBy.equals(it.id) }
-            }
+            }.asFlow()
     }
 
     fun getPostsByCreatedByIn(userIds: MutableSet<String>?): Flux<PostPayload> {
@@ -102,7 +115,7 @@ class PostService(
             .map(postMapper::toType)
     }
 
-    fun getUsersWithPosts(users: MutableList<UserPayload>): Mono<Map<UserPayload, MutableList<PostPayload>>> {
+    suspend fun getUsersWithPosts(users: MutableList<UserPayload>): Map<UserPayload, MutableList<PostPayload>> {
         val userIds = users.map { user -> user.id!! }.toMutableSet()
         return getPostsByCreatedByIn(userIds)
             .collectMultimap { it.createdBy!! }
@@ -111,10 +124,11 @@ class PostService(
                     users.find { it.id.equals(entry.key) }!! to
                             entry.value.toMutableList()
                 }
-            }
+            }.awaitSingle()
     }
 
-    fun postAdded(): Publisher<PostPayload> {
+    fun postAdded(): Flux<PostPayload> {
         return sink.asFlux()
+        // return flow.asSharedFlow()
     }
 }
