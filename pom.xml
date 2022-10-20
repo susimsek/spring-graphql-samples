@@ -30,6 +30,9 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <querydsl.version>5.0.0</querydsl.version>
         <mapstruct.version>1.5.2.Final</mapstruct.version>
+        <jib-maven-plugin.version>3.2.1</jib-maven-plugin.version>
+        <jib-maven-plugin.architecture>amd64</jib-maven-plugin.architecture>
+        <jib.from.image>eclipse-temurin:17-jre-focal</jib.from.image>
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-deploy-plugin.version>3.0.0</maven-deploy-plugin.version>
@@ -313,54 +316,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <classifier>${repackage.classifier}</classifier>
-                    <image>
-                        <builder>paketobuildpacks/builder:tiny</builder>
-                        <name>${docker.image.name}</name>
-                        <publish>true</publish>
-                        <pullPolicy>IF_NOT_PRESENT</pullPolicy>
-                        <env>
-                            <BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
-                            <BP_BINARY_COMPRESSION_METHOD>upx</BP_BINARY_COMPRESSION_METHOD>
-                            <BP_NATIVE_IMAGE_BUILD_ARGUMENTS>
-                                -H:+ReportExceptionStackTraces --enable-https
-                                --enable-http
-                                --initialize-at-build-time=sun.instrument.InstrumentationImpl
-                                --initialize-at-run-time=io.netty.handler.ssl.BouncyCastleAlpnSslUtils
-                            </BP_NATIVE_IMAGE_BUILD_ARGUMENTS>
-                        </env>
-                    </image>
-                    <docker>
-                        <publishRegistry>
-                            <username>${DOCKER_REGISTRY_USER}</username>
-                            <password>${DOCKER_REGISTRY_PWD}</password>
-                        </publishRegistry>
-                    </docker>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.springframework.experimental</groupId>
-                <artifactId>spring-aot-maven-plugin</artifactId>
-                <version>${spring-native.version}</version>
-                <executions>
-                    <execution>
-                        <id>test-generate</id>
-                        <goals>
-                            <goal>test-generate</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>generate</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
         <pluginManagement>
             <plugins>
@@ -641,6 +596,97 @@
             </properties>
         </profile>
         <profile>
+            <id>native-image</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <configuration>
+                            <classifier>${repackage.classifier}</classifier>
+                            <image>
+                                <builder>paketobuildpacks/builder:tiny</builder>
+                                <name>${docker.image.name}</name>
+                                <publish>true</publish>
+                                <pullPolicy>IF_NOT_PRESENT</pullPolicy>
+                                <env>
+                                    <BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
+                                    <BP_BINARY_COMPRESSION_METHOD>upx</BP_BINARY_COMPRESSION_METHOD>
+                                    <BP_NATIVE_IMAGE_BUILD_ARGUMENTS>
+                                        -H:+ReportExceptionStackTraces --enable-https
+                                        --enable-http
+                                        --initialize-at-build-time=sun.instrument.InstrumentationImpl
+                                        --initialize-at-run-time=io.netty.handler.ssl.BouncyCastleAlpnSslUtils
+                                    </BP_NATIVE_IMAGE_BUILD_ARGUMENTS>
+                                </env>
+                            </image>
+                            <docker>
+                                <publishRegistry>
+                                    <username>${DOCKER_REGISTRY_USER}</username>
+                                    <password>${DOCKER_REGISTRY_PWD}</password>
+                                </publishRegistry>
+                            </docker>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.springframework.experimental</groupId>
+                        <artifactId>spring-aot-maven-plugin</artifactId>
+                        <version>${spring-native.version}</version>
+                        <executions>
+                            <execution>
+                                <id>test-generate</id>
+                                <goals>
+                                    <goal>test-generate</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>generate</id>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <properties>
+                <spring.profiles.active>prod</spring.profiles.active>
+            </properties>
+        </profile>
+        <profile>
+            <id>jib</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.google.cloud.tools</groupId>
+                        <artifactId>jib-maven-plugin</artifactId>
+                        <version>${jib-maven-plugin.version}</version>
+                        <configuration>
+                            <from>
+                                <image>${jib.from.image}</image>
+                                <platforms>
+                                    <platform>
+                                        <architecture>${jib-maven-plugin.architecture}</architecture>
+                                        <os>linux</os>
+                                    </platform>
+                                </platforms>
+                            </from>
+                            <to>
+                                <image>${docker.image.name}</image>
+                            </to>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <properties>
+                <spring.profiles.active>prod</spring.profiles.active>
+            </properties>
+    </profile>
+        <profile>
             <id>native</id>
             <properties>
                 <repackage.classifier>exec</repackage.classifier>
@@ -655,6 +701,25 @@
             </dependencies>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.springframework.experimental</groupId>
+                        <artifactId>spring-aot-maven-plugin</artifactId>
+                        <version>${spring-native.version}</version>
+                        <executions>
+                            <execution>
+                                <id>test-generate</id>
+                                <goals>
+                                    <goal>test-generate</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>generate</id>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>org.graalvm.buildtools</groupId>
                         <artifactId>native-maven-plugin</artifactId>
