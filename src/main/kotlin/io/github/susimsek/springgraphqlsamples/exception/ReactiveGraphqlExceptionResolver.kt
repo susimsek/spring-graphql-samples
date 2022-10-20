@@ -3,6 +3,7 @@ package io.github.susimsek.springgraphqlsamples.exception
 import graphql.GraphQLError
 import graphql.GraphqlErrorBuilder
 import graphql.schema.DataFetchingEnvironment
+import org.springframework.graphql.client.FieldAccessException
 import org.springframework.graphql.execution.DataFetcherExceptionResolver
 import org.springframework.graphql.execution.ErrorType
 import org.springframework.stereotype.Component
@@ -16,6 +17,19 @@ class ReactiveGraphqlExceptionResolver : DataFetcherExceptionResolver {
         env: DataFetchingEnvironment
     ): Mono<List<GraphQLError>> {
         return when (ex) {
+            is FieldAccessException -> {
+                val response = ex.response
+                val errors = response.errors.map {
+                        error ->
+                    val extensions = error.extensions
+                    val classification = extensions["classification"]
+                    val errorType = ErrorType.values()
+                        .firstOrNull { it.name == classification } ?: ErrorType.INTERNAL_ERROR
+                    GraphqlErrorBuilder.newError(env)
+                        .message(error.message).errorType(errorType).build()
+                }
+                Mono.just(errors)
+            }
 
             is ResourceNotFoundException -> {
                 val error = GraphqlErrorBuilder.newError(env)

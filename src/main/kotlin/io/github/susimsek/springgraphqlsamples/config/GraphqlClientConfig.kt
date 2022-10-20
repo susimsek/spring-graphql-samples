@@ -1,5 +1,6 @@
 package io.github.susimsek.springgraphqlsamples.config
 
+import org.springframework.cloud.client.loadbalancer.LoadBalanced
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.graphql.client.HttpGraphQlClient
@@ -9,15 +10,16 @@ import org.springframework.web.reactive.function.client.WebClient
 class GraphqlClientConfig {
 
     @Bean
-    fun webClientBuilder(): WebClient.Builder {
+    @LoadBalanced
+    fun loadBalancedWebClientBuilder(): WebClient.Builder {
         return WebClient.builder()
     }
 
     @Bean
     fun httpGraphQlClientBuilder(
-        webClientBuilder: WebClient.Builder
+        loadBalancedWebClientBuilder: WebClient.Builder
     ): HttpGraphQlClient.Builder<*> {
-        val webClient = webClientBuilder.build()
+        val webClient = loadBalancedWebClientBuilder.build()
         return HttpGraphQlClient.builder(webClient)
     }
 }

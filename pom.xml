@@ -22,6 +22,7 @@
         <repackage.classifier/>
         <kotlin.version>1.7.20</kotlin.version>
         <maven.version>3.2</maven.version>
+        <spring-cloud.version>2021.0.4</spring-cloud.version>
         <spring-native.version>0.12.1</spring-native.version>
         <docker.image.name>docker.io/suayb/spring-graphql-samples</docker.image.name>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -66,6 +67,14 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-kubernetes-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-kubernetes-client-loadbalancer</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -181,6 +190,18 @@
             </exclusions>
         </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
@@ -565,7 +586,7 @@
 
     <profiles>
         <profile>
-            <id>dev</id>
+            <id>local</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
@@ -577,7 +598,7 @@
                 </dependency>
             </dependencies>
             <properties>
-                <spring.profiles.active>dev</spring.profiles.active>
+                <spring.profiles.active>local</spring.profiles.active>
             </properties>
         </profile>
         <profile>

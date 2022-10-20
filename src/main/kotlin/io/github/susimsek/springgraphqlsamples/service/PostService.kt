@@ -93,7 +93,7 @@ class PostService(
             .asFlow()
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("isAnonymous()")
     suspend fun getPost(id: String): PostPayload {
         return postRepository.findById(id)
             .map(postMapper::toType)

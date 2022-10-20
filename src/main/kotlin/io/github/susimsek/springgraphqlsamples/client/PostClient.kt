@@ -8,16 +8,16 @@ import org.springframework.stereotype.Component
 @Component
 class PostClient(builder: HttpGraphQlClient.Builder<*>) {
 
-    private lateinit var graphQlClient: HttpGraphQlClient
+    private lateinit var httpGraphQlClient: HttpGraphQlClient
 
     init {
-        this.graphQlClient = builder
-            .url("http://localhost:9091/graphql")
+        this.httpGraphQlClient = builder
+            .url("http://spring-gql-service/graphql")
             .build()
     }
 
     suspend fun getPost(postId: String): PostPayload {
-        return graphQlClient
+        return httpGraphQlClient
             .documentName("postQuery")
             .variable("id", postId)
             .retrieve("post")

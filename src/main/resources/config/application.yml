@@ -1,8 +1,8 @@
 spring:
   application:
-    name: spring-graphql-service
+    name: spring-gql-service
   profiles:
-    active: dev
+    active: local
     jackson:
       deserialization:
         adjust-dates-to-context-time-zone: false
