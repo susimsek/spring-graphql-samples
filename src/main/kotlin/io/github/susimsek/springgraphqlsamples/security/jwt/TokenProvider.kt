@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component
 import java.util.Date
 
 
-private const val AUTHORITIES_KEY = "auth"
+const val AUTHORITIES_KEY = "auth"
 
 private const val INVALID_JWT_TOKEN = "Invalid JWT token."
 
@@ -43,9 +43,8 @@ class TokenProvider(
     }
 
     fun createToken(authentication: Authentication): String {
-        val authorities = authentication.authorities.asSequence()
+        val authorities = authentication.authorities
             .map { it.authority }
-            .joinToString(separator = ",")
 
         val now = Date().time
         val validity = Date(now + this.tokenValidityInMilliseconds)
@@ -68,10 +67,9 @@ class TokenProvider(
     fun getAuthentication(token: String): Authentication {
         val claims = SignedJWT.parse(token).jwtClaimsSet
 
-        val authorities = claims.getClaim(AUTHORITIES_KEY)?.toString()?.splitToSequence(",")
-            ?.filter { it.trim().isNotEmpty() }?.mapTo(mutableListOf()) { SimpleGrantedAuthority(it) }
+        val authorities = (claims.getClaim(AUTHORITIES_KEY) as List<String>).map { SimpleGrantedAuthority(it) }
 
-        val principal = User(claims?.subject, "", authorities)
+        val principal = User(claims.subject, "", authorities)
 
         return UsernamePasswordAuthenticationToken(principal, token, authorities)
     }

@@ -11,7 +11,8 @@ import javax.crypto.spec.SecretKeySpec
 
 class JwtDecoder(
     base64Secret: String,
-    private val securityCipher: SecurityCipher): ReactiveJwtDecoder {
+    private val securityCipher: SecurityCipher
+) : ReactiveJwtDecoder {
 
     private var nimbusReactiveJwtDecoder: NimbusReactiveJwtDecoder
 
@@ -22,7 +23,6 @@ class JwtDecoder(
             .macAlgorithm(MacAlgorithm.HS512)
             .build()
     }
-
 
     override fun decode(token: String): Mono<Jwt> {
         val jwt = resolveToken(token)
