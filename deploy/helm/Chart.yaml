@@ -1,0 +1,13 @@
+apiVersion: v2
+name: spring-graphql-sample
+description: Spring Graphql Samples
+icon: https://github.com/susimsek/spring-graphql-samples/blob/main/images/introduction.png
+keywords:
+  - spring
+  - graphql
+  - microservice
+  - spring-boot
+
+type: application
+version: 1.0.0
+appVersion: "1.0.0"

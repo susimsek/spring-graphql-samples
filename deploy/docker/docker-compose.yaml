@@ -1,0 +1,45 @@
+version: '3.8'
+
+volumes:
+  mongodb:
+
+networks:
+  backend:
+    name: backend
+
+services:
+  mongodb:
+    image: mongo:5.0
+    restart: unless-stopped
+    container_name: mongodb
+    networks:
+      - backend
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD
+      - MONGODB_DATABASE
+      - MONGODB_USERNAME
+      - MONGODB_PASSWORD
+    volumes:
+      - ./mongodb/mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh
+      - mongodb:/data/db
+    ports:
+      - "27018:27017"
+
+  spring-graphql-service:
+    image: suayb/spring-graphql-samples:latest
+    restart: unless-stopped
+    container_name: spring-graphql-service
+    depends_on:
+      - mongodb
+    networks:
+      - backend
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - PORT
+      - SPRING_DATA_MONGODB_URI
+      - SECURITY_AUTHENTICATION_TOKEN_BASE64_SECRET
+      - SECURITY_AUTHENTICATION_TOKEN_TOKEN_VALIDITY_IN_SECONDS
+      - SECURITY_CIPHER_BASE64_SECRET
+    ports:
+      - "9091:9091"

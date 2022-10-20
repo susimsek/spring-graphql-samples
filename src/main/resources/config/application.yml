@@ -1,6 +1,6 @@
 spring:
   application:
-    name: spring native-graphql-app
+    name: spring-graphql-service
   profiles:
     active: dev
     jackson:

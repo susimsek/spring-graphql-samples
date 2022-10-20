@@ -1,0 +1,19 @@
+replicaCount: 1
+architecture: standalone
+auth:
+  rootUser: root
+  rootPassword: g44bsljDAi5nbWjf
+  usernames:
+    - user
+  passwords:
+    - iXCjXb7e2yjJbjRu
+  databases:
+    - demo
+
+persistence:
+  size: 75M
+
+livenessProbe:
+  enabled: false
+readinessProbe:
+  enabled: false

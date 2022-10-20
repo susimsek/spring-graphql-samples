@@ -43,7 +43,7 @@ if [ $# -eq 0 ]
 fi
 
 suffix=helm
-name=native-app
+name=graphql-sample-app
 namespace=demo
 args=""
 helmVersion=$(helm version --client | grep -E "v3\\.[0-9]{1,3}\\.[0-9]{1,3}" | wc -l)
@@ -52,7 +52,9 @@ if [ -n "$remove" ]; then
    if [ -n "$docker" ]; then
          docker-compose -f ./deploy/docker/docker-compose.yaml down -v
    elif [ -n "$k8s" ]; then
-        helm remove ${name} -n ${namespace}
+        helm uninstall mongodb -n ${namespace}
+        helm uninstall ${name} -n ${namespace}
+        kubectl delete pvc --selector="app.kubernetes.io/name=mongodb" -n ${namespace}
           if [ -n "$istio" ]; then
              kubectl remove -f ./deploy/istio-k8s
              kubectl label namespace ${namespace} istio-injection-
@@ -72,6 +74,10 @@ else
        helm remove --purge ${name} 2>/dev/null
      fi
       kubectl create namespace ${namespace}
+      helm repo add bitnami https://charts.bitnami.com/bitnami
+      helm repo update
+      helm install mongodb bitnami/mongodb --values ./deploy/${suffix}/helm-mongodb-values.yml -n ${namespace}
+      kubectl rollout status deployment mongodb -n ${namespace}
       helm dep up ./deploy/${suffix}
        if [ -n "$istio" ]; then
            kubectl label namespace ${namespace} istio-injection=enabled --overwrite=true

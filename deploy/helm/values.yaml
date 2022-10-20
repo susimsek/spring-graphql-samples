@@ -1,0 +1,73 @@
+global:
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 1
+  imagePullSecrets: []
+
+serviceAccount:
+  name: default
+
+token:
+  tokenValidityInSeconds: 86400
+
+spring:
+  profiles:
+    active: prod
+
+springGraphqlService:
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 4
+    targetCPU: 80
+    targetMemory: 80
+  replicaCount: 1
+  containerPorts:
+    http: 9091
+  image:
+    repository: suayb/spring-graphql-samples
+    tag: latest
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 9091
+    clusterIP:
+    loadBalancerIP:
+  environment:
+  resources:
+    requests:
+      cpu: 800m
+      memory: 512Mi
+    limits:
+      cpu: 1
+      memory: 1Gi
+  readinessProbe:
+    enabled: true
+    httpGet:
+      path: /actuator/health/readiness
+      port: http
+      scheme: HTTP
+      httpHeaders: [ ]
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 2
+    failureThreshold: 6
+    successThreshold: 1
+  livenessProbe:
+    enabled: true
+    httpGet:
+      path: /actuator/health/liveness
+      port: http
+      scheme: HTTP
+      httpHeaders: [ ]
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 2
+    failureThreshold: 3
+    successThreshold: 1
+  customLivenessProbe: { }
+  customReadinessProbe: { }
+  extraVolumeMounts: [ ]
+  extraVolumes: [ ]

@@ -1,0 +1,28 @@
+{{- if .Values.springGraphqlService.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: spring-gql-service
+  labels:
+  {{- include "spring-gql-service.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: spring-gql-service
+  minReplicas: {{ .Values.springGraphqlService.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.springGraphqlService.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.springGraphqlService.autoscaling.targetCPU }}
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.springGraphqlService.autoscaling.targetCPU }}
+    {{- end }}
+    {{- if .Values.springGraphqlService.autoscaling.targetMemory }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ .Values.springGraphqlService.autoscaling.targetMemory  }}
+  {{- end }}
+  {{- end }}

@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-gql-service
+  labels:
+    {{- include "spring-gql-service.labels" . | nindent 4 }}
+    version: v1
+spec:
+  selector:
+    matchLabels:
+      {{- include "spring-gql-service.selectorLabels" . | nindent 6 }}
+      version: v1
+  {{- if .Values.global.updateStrategy }}
+  {{- if not .Values.springGraphqlService.autoscaling.enabled }}
+  replicas: {{ .Values.springGraphqlService.replicaCount }}
+  {{- end }}
+  strategy: {{- toYaml .Values.global.updateStrategy | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/gql-service/config-gql-service.yaml") . | sha256sum }}
+      labels:
+        {{- include "spring-gql-service.selectorLabels" . | nindent 8 }}
+        version: v1
+    spec:
+      serviceAccountName: {{ template "app.serviceAccountName" . }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - spring-gql-service
+                topologyKey: kubernetes.io/hostname
+              weight: 100
+      {{- if .Values.global.imagePullSecrets }}
+      imagePullSecrets: {{- toYaml .Values.global.imagePullSecrets | nindent 4 }}
+      {{- end }}
+      containers:
+        {{- if .Values.springGraphqlService.extraSideContainers }}
+        {{ tpl .Values.springGraphqlService.extraSideContainers . | indent 8 }}
+        {{- end }}
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.springGraphqlService.image.repository }}:{{ .Values.springGraphqlService.image.tag }}"
+          imagePullPolicy: {{ .Values.springGraphqlService.image.pullPolicy }}
+          {{- if .Values.springGraphqlService.command }}
+          command:
+          {{ tpl .Values.springGraphqlService.command . | indent 12 }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.springGraphqlService.containerPorts.http }}
+          {{- if .Values.springGraphqlService.livenessProbe.enabled }}
+          livenessProbe: {{- omit .Values.springGraphqlService.livenessProbe "enabled" | toYaml | nindent 12 }}
+          {{- else if .Values.springGraphqlService.customLivenessProbe }}
+          livenessProbe: {{- toYaml .Values.springGraphqlService.customLivenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.springGraphqlService.readinessProbe.enabled }}
+          readinessProbe: {{- omit .Values.springGraphqlService.readinessProbe "enabled" | toYaml | nindent 12 }}
+          {{- else if .Values.springGraphqlService.customReadinessProbe }}
+          readinessProbe: {{- toYaml .Values.springGraphqlService.customReadinessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.springGraphqlService.resources }}
+          resources: {{- toYaml .Values.springGraphqlService.resources | nindent 12 }}
+          {{- end }}
+          envFrom:
+            - secretRef:
+                name: db-secret
+            - secretRef:
+                name: token-secret
+            - secretRef:
+                name: cipher-secret
+            - configMapRef:
+                name: spring-gql-service-configmap
+          volumeMounts:
+          {{- if .Values.springGraphqlService.extraVolumeMounts }}
+          {{- toYaml .Values.springGraphqlService.extraVolumeMounts | nindent 12 }}
+      {{- end }}
+      {{- if .Values.springGraphqlService.extraInitContainers }}
+      initContainers:
+      {{ tpl .Values.springGraphqlService.extraInitContainers . | indent 8 }}
+      {{- end }}
+      volumes:
+      {{- if .Values.springGraphqlService.extraVolumes }}
+      {{- toYaml .Values.springGraphqlService.extraVolumes | nindent 8 }}
+  {{- end }}

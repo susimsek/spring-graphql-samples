@@ -55,6 +55,16 @@ You can run detekt by typing the following command
 mvn antrun:run@detekt
 ```
 
+## Docker
+
+You can also fully dockerize  the sample applications. To achieve this, first build a docker image of your app.
+The docker image of sample app can be built as follows:
+
+
+```sh
+mvn -Pjib verify jib:dockerBuild
+```
+
 ## Rsocket
 
 
