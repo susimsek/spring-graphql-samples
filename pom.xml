@@ -29,6 +29,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <graphql-java-extended-scalars.version>18.1</graphql-java-extended-scalars.version>
         <querydsl.version>5.0.0</querydsl.version>
         <mapstruct.version>1.5.2.Final</mapstruct.version>
         <jib-maven-plugin.version>3.2.1</jib-maven-plugin.version>
@@ -36,6 +37,7 @@
         <jib.from.image>eclipse-temurin:17-jre-focal</jib.from.image>
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
         <maven-deploy-plugin.version>3.0.0</maven-deploy-plugin.version>
         <maven-enforcer-plugin.version>3.1.0</maven-enforcer-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version>
@@ -70,7 +72,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-kubernetes-client</artifactId>
+            <artifactId>spring-cloud-starter-kubernetes-client-all</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -108,6 +110,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.graphql-java</groupId>
+            <artifactId>graphql-java-extended-scalars</artifactId>
+            <version>${graphql-java-extended-scalars.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.experimental</groupId>
@@ -210,6 +217,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -546,6 +557,43 @@
                         </dependency>
                         <!-- additional 3rd party ruleset(s) can be specified here -->
                     </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${maven-resources-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>default-resources</id>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                                <useDefaultDelimiters>false</useDefaultDelimiters>
+                                <delimiters>
+                                    <delimiter>#</delimiter>
+                                </delimiters>
+                                <resources>
+                                    <resource>
+                                        <directory>src/main/resources/</directory>
+                                        <filtering>true</filtering>
+                                        <includes>
+                                            <include>config/*.yml</include>
+                                        </includes>
+                                    </resource>
+                                    <resource>
+                                        <directory>src/main/resources/</directory>
+                                        <filtering>false</filtering>
+                                        <excludes>
+                                            <exclude>config/*.yml</exclude>
+                                        </excludes>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>

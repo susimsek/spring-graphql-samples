@@ -4,10 +4,6 @@ server:
   port: ${PORT:8080}
 
 spring:
-  cloud:
-    kubernetes:
-      loadbalancer:
-        mode: service
   rsocket:
     server:
       port: 8079

@@ -18,8 +18,6 @@ spec:
   {{- end }}
   template:
     metadata:
-      annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/gql-service/config-gql-service.yaml") . | sha256sum }}
       labels:
         {{- include "spring-gql-service.selectorLabels" . | nindent 8 }}
         version: v1

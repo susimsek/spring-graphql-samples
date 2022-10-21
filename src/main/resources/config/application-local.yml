@@ -1,10 +1,6 @@
 server:
   port: ${PORT:9091}
-
 spring:
-  cloud:
-    kubernetes:
-      enabled: false
   rsocket:
     server:
       port: 8079
