@@ -1,19 +1,27 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: spring-gql-service-configmap
+  name: spring-gql-service-config
   labels:
   {{- include "spring-gql-service.labels" . | nindent 4 }}
 data:
-  {{- if .Values.springGraphqlService.environment }}
-  {{- range $key, $val := .Values.springGraphqlService.environment }}
-  {{ $key }}: {{ $val | quote }}
-  {{- end }}
-  {{- end }}
   SPRING_PROFILES_ACTIVE: {{ .Values.spring.profiles.active }}
-  PORT: {{ .Values.springGraphqlService.containerPorts.http | quote}}
-  SECURITY_AUTHENTICATION_TOKEN_BASE64_SECRET: ${TOKEN_SECRET}
-  SECURITY_CIPHER_BASE64_SECRET: ${CIPHER_SECRET}
-  SECURITY_AUTHENTICATION_TOKEN_TOKEN_VALIDITY_IN_SECONDS: {{ .Values.token.tokenValidityInSeconds| quote }}
-  SPRING_DATA_MONGODB_URI: mongodb://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@mongodb:27017/demo
-  DUMMY_MESSAGE: this is new dummy message
+  application.yml: |-
+    spring:
+      config:
+        activate:
+          on-profile: {{ .Values.spring.profiles.active }}
+      data:
+        mongodb:
+          uri: mongodb://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@mongodb:27017/demo
+    security:
+      authentication:
+        token:
+          base64-secret: ${TOKEN_SECRET}
+          token-validity-in-seconds: {{ .Values.token.tokenValidityInSeconds| quote }}
+      cipher:
+        base64-secret: ${CIPHER_SECRET}
+    server:
+      port: {{ .Values.springGraphqlService.containerPorts.http | quote}}
+    dummy:
+      message: this is new dummy message

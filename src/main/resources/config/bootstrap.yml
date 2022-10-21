@@ -7,11 +7,11 @@ spring:
     kubernetes:
       reload:
         enabled: true
-        mode: polling
-        period: 5000
+        mode: event
+        strategy: refresh
       config:
         sources:
-          - name: ${spring.application.name}-configmap
+          - name: ${spring.application.name}-config
 ---
 spring:
   config:

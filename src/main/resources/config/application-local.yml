@@ -21,3 +21,6 @@ security:
       token-validity-in-seconds: 86400
   cipher:
     base64-secret: c2VjdXJlQ0RDS2V5
+
+dummy:
+  message: hello

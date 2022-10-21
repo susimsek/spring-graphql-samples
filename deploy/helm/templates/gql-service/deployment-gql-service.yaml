@@ -73,7 +73,7 @@ spec:
             - secretRef:
                 name: cipher-secret
             - configMapRef:
-                name: spring-gql-service-configmap
+                name: spring-gql-service-config
           volumeMounts:
           {{- if .Values.springGraphqlService.extraVolumeMounts }}
           {{- toYaml .Values.springGraphqlService.extraVolumeMounts | nindent 12 }}
