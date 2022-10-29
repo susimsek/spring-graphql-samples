@@ -1,11 +1,16 @@
 package io.github.susimsek.springgraphqlsamples.config
 
+import com.nimbusds.jose.jwk.JWK
+import com.nimbusds.jose.jwk.JWKSet
+import com.nimbusds.jose.jwk.RSAKey
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet
+import com.nimbusds.jose.jwk.source.JWKSource
+import com.nimbusds.jose.proc.SecurityContext
+import io.github.susimsek.springgraphqlsamples.security.cipher.RSAKeyUtils
 import io.github.susimsek.springgraphqlsamples.security.cipher.SecurityCipher
 import io.github.susimsek.springgraphqlsamples.security.jwt.AUTHORITIES_KEY
-import io.github.susimsek.springgraphqlsamples.security.jwt.JWTFilter
 import io.github.susimsek.springgraphqlsamples.security.jwt.JwtDecoder
 import io.github.susimsek.springgraphqlsamples.security.jwt.TokenProperties
-import io.github.susimsek.springgraphqlsamples.security.jwt.TokenProvider
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.http.HttpMethod
@@ -16,11 +21,12 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.rsocket.EnableRSocketSecurity
 import org.springframework.security.config.annotation.rsocket.RSocketSecurity
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
-import org.springframework.security.config.web.server.SecurityWebFiltersOrder
 import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.messaging.handler.invocation.reactive.AuthenticationPrincipalArgumentResolver
+import org.springframework.security.oauth2.jwt.JwtEncoder
+import org.springframework.security.oauth2.jwt.NimbusJwtEncoder
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter
@@ -32,6 +38,9 @@ import org.springframework.security.web.server.header.ReferrerPolicyServerHttpHe
 import org.springframework.security.web.server.util.matcher.NegatedServerWebExchangeMatcher
 import org.springframework.security.web.server.util.matcher.OrServerWebExchangeMatcher
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers.pathMatchers
+import java.security.KeyPair
+import java.security.interfaces.RSAPublicKey
+
 
 @EnableWebFluxSecurity
 @EnableRSocketSecurity
@@ -39,8 +48,6 @@ import org.springframework.security.web.server.util.matcher.ServerWebExchangeMat
 @EnableConfigurationProperties(SecurityMatcherProperties::class)
 class SecurityConfig(
     private val userDetailsService: ReactiveUserDetailsService,
-    private val tokenProvider: TokenProvider,
-    private val securityCipher: SecurityCipher,
     private val securityMatcherProperties: SecurityMatcherProperties
 ) {
     @Bean
@@ -67,12 +74,29 @@ class SecurityConfig(
         return security.build()
     }
 
+
+    @Bean
+    fun keyPair(tokenProperties: TokenProperties): KeyPair {
+        return KeyPair(
+            RSAKeyUtils.generatePublicKey(tokenProperties.publicKey),
+            RSAKeyUtils.generatePrivateKey(tokenProperties.privateKey))
+    }
+
     @Bean
     fun jwtDecoder(
-        tokenProperties: TokenProperties,
+        keyPair: KeyPair,
         securityCipher: SecurityCipher
     ): ReactiveJwtDecoder {
-        return JwtDecoder(tokenProperties.base64Secret, securityCipher)
+        return JwtDecoder(keyPair.public as RSAPublicKey, securityCipher)
+    }
+
+    @Bean
+    fun jwtEncoder(keyPair: KeyPair): JwtEncoder {
+        val jwk = RSAKey.Builder(keyPair.public as RSAPublicKey)
+            .privateKey(keyPair.private)
+            .build()
+        val jwks: JWKSource<SecurityContext> = ImmutableJWKSet(JWKSet(jwk))
+        return NimbusJwtEncoder(jwks)
     }
 
     fun jwtReactiveAuthenticationManager(decoder: ReactiveJwtDecoder): JwtReactiveAuthenticationManager {
@@ -108,11 +132,10 @@ class SecurityConfig(
                     )
                 )
             )
+            .cors().and()
             .csrf(ServerHttpSecurity.CsrfSpec::disable)
             .httpBasic().disable()
             .logout().disable()
-            .addFilterAt(JWTFilter(tokenProvider, securityCipher), SecurityWebFiltersOrder.HTTP_BASIC)
-            .authenticationManager(reactiveAuthenticationManager())
             .headers()
             .referrerPolicy(ReferrerPolicyServerHttpHeadersWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)
             .and()
@@ -120,7 +143,9 @@ class SecurityConfig(
             .and()
             .authorizeExchange()
             .pathMatchers(*securityMatcherProperties.permitAllPatterns.toTypedArray()).permitAll()
-            .anyExchange().authenticated()
+            .and()
+            .oauth2ResourceServer()
+            .jwt()
         // @formatter:on
         return http.build()
     }

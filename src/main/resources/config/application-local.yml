@@ -12,7 +12,13 @@ spring:
       enabled: true
     livereload:
       enabled: false
-
+  graphql:
+    graphiql:
+      enabled: true
+      props:
+        variables:
+          headerEditorEnabled: true
+          shouldPersistHeaders: true
 
 security:
   authentication:
