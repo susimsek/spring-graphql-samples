@@ -1,10 +1,8 @@
 package io.github.susimsek.springgraphqlsamples.security.jwt
 
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.boot.context.properties.ConstructorBinding
 
 @ConfigurationProperties("security.authentication.token")
-@ConstructorBinding
 data class TokenProperties(
     var tokenValidityInSeconds: Long = 1800L,
     var publicKey: String =

@@ -8,8 +8,10 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @GraphQlRepository
-interface UserRepository : ReactiveCrudRepository<User, String>,
-    ReactiveQuerydslPredicateExecutor<User>, UserRepositoryOverride {
+interface UserRepository :
+    ReactiveCrudRepository<User, String>,
+    ReactiveQuerydslPredicateExecutor<User>,
+    UserRepositoryOverride {
     fun findOneByEmailIgnoreCase(email: String?): Mono<User>
 
     fun findOneByUsername(login: String): Mono<User>

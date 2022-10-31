@@ -7,16 +7,30 @@ import graphql.scalars.ExtendedScalars
 import graphql.schema.GraphQLScalarType
 import io.github.susimsek.springgraphqlsamples.graphql.scalar.GraphQlDateTimeProperties
 import io.github.susimsek.springgraphqlsamples.graphql.scalar.ScalarUtil
+import org.springframework.boot.autoconfigure.graphql.GraphQlSourceBuilderCustomizer
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.ImportRuntimeHints
+import org.springframework.core.io.ClassPathResource
+import org.springframework.graphql.execution.GraphQlSource.SchemaResourceBuilder
 import org.springframework.graphql.execution.RuntimeWiringConfigurer
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
 
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(GraphQlDateTimeProperties::class)
 class GraphqlDateTimeConfig {
+
+    @Bean
+    @ImportRuntimeHints(GraphqlRuntimeHintsRegistrar::class)
+    fun graphQlSourceBuilderCustomizer(): GraphQlSourceBuilderCustomizer {
+        return GraphQlSourceBuilderCustomizer { builder: SchemaResourceBuilder ->
+            builder.schemaResources(
+                SCHEMA_RESOURCE
+            )
+        }
+    }
 
     @Bean
     fun jsonCustomizer(): Jackson2ObjectMapperBuilderCustomizer {
@@ -92,5 +106,9 @@ class GraphqlDateTimeConfig {
             builder.scalar(graphQLUuidScalar)
             builder.scalar(graphQLObjectScalar)
         }
+    }
+
+    companion object {
+        val SCHEMA_RESOURCE = ClassPathResource("/graphql/schema.graphqls")
     }
 }

@@ -3,12 +3,12 @@ package io.github.susimsek.springgraphqlsamples.exception
 import graphql.GraphQLError
 import graphql.GraphqlErrorBuilder
 import graphql.schema.DataFetchingEnvironment
+import jakarta.validation.ConstraintViolationException
 import org.springframework.graphql.client.FieldAccessException
 import org.springframework.graphql.execution.DataFetcherExceptionResolver
 import org.springframework.graphql.execution.ErrorType
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
-import javax.validation.ConstraintViolationException
 
 @Component
 class ReactiveGraphqlExceptionResolver : DataFetcherExceptionResolver {

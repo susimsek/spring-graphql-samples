@@ -1,6 +1,5 @@
 package io.github.susimsek.springgraphqlsamples.config
 
-import com.nimbusds.jose.jwk.JWK
 import com.nimbusds.jose.jwk.JWKSet
 import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet
@@ -13,6 +12,7 @@ import io.github.susimsek.springgraphqlsamples.security.jwt.JwtDecoder
 import io.github.susimsek.springgraphqlsamples.security.jwt.TokenProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
 import org.springframework.messaging.rsocket.RSocketStrategies
 import org.springframework.messaging.rsocket.annotation.support.RSocketMessageHandler
@@ -41,7 +41,7 @@ import org.springframework.security.web.server.util.matcher.ServerWebExchangeMat
 import java.security.KeyPair
 import java.security.interfaces.RSAPublicKey
 
-
+@Configuration(proxyBeanMethods = false)
 @EnableWebFluxSecurity
 @EnableRSocketSecurity
 @EnableReactiveMethodSecurity
@@ -74,12 +74,12 @@ class SecurityConfig(
         return security.build()
     }
 
-
     @Bean
     fun keyPair(tokenProperties: TokenProperties): KeyPair {
         return KeyPair(
             RSAKeyUtils.generatePublicKey(tokenProperties.publicKey),
-            RSAKeyUtils.generatePrivateKey(tokenProperties.privateKey))
+            RSAKeyUtils.generatePrivateKey(tokenProperties.privateKey)
+        )
     }
 
     @Bean

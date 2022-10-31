@@ -1,5 +1,7 @@
 package io.github.susimsek.springgraphqlsamples.config
 
+import jakarta.validation.ClockProvider
+import jakarta.validation.ParameterNameProvider
 import org.hibernate.validator.internal.engine.DefaultClockProvider
 import org.springframework.beans.factory.config.BeanDefinition
 import org.springframework.boot.validation.MessageInterpolatorFactory
@@ -15,8 +17,6 @@ import org.springframework.core.StandardReflectionParameterNameDiscoverer
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean
 import java.lang.reflect.Constructor
 import java.lang.reflect.Method
-import javax.validation.ClockProvider
-import javax.validation.ParameterNameProvider
 import kotlin.reflect.jvm.kotlinFunction
 
 @Configuration(proxyBeanMethods = false)
@@ -34,7 +34,7 @@ class ValidationAutoConfiguration {
 class KotlinCoroutinesLocalValidatorFactoryBean : LocalValidatorFactoryBean() {
     override fun getClockProvider(): ClockProvider = DefaultClockProvider.INSTANCE
 
-    override fun postProcessConfiguration(configuration: javax.validation.Configuration<*>) {
+    override fun postProcessConfiguration(configuration: jakarta.validation.Configuration<*>) {
         super.postProcessConfiguration(configuration)
 
         val discoverer = PrioritizedParameterNameDiscoverer()

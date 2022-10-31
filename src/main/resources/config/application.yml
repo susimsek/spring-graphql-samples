@@ -1,4 +1,8 @@
 spring:
+  application:
+    name: spring-gql-service
+  profiles:
+    active: local
   rsocket:
     server:
       transport: tcp

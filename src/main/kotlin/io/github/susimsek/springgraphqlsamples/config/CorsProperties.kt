@@ -1,10 +1,8 @@
 package io.github.susimsek.springgraphqlsamples.config
 
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.boot.context.properties.ConstructorBinding
 
 @ConfigurationProperties("cors")
-@ConstructorBinding
 data class CorsProperties(
     var allowedOrigins: MutableList<String> = mutableListOf(),
     var allowedMethods: MutableList<String> = mutableListOf(),

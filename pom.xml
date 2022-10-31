@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.4</version>
+        <version>3.0.0-SNAPSHOT</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     
@@ -19,11 +19,9 @@
 
     <properties>
         <java.version>17</java.version>
-        <repackage.classifier/>
         <kotlin.version>1.7.20</kotlin.version>
         <maven.version>3.2</maven.version>
-        <spring-cloud.version>2021.0.4</spring-cloud.version>
-        <spring-native.version>0.12.1</spring-native.version>
+        <spring-cloud.version>2022.0.0-M5</spring-cloud.version>
         <docker.image.name>docker.io/suayb/spring-graphql-samples</docker.image.name>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
@@ -71,14 +69,6 @@
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-kubernetes-client-all</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-kubernetes-client-loadbalancer</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
         </dependency>
@@ -117,11 +107,6 @@
             <version>${graphql-java-extended-scalars.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.experimental</groupId>
-            <artifactId>spring-aot</artifactId>
-            <version>${spring-native.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>${mapstruct.version}</version>
@@ -151,11 +136,6 @@
             <artifactId>kotlinx-coroutines-test</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.experimental</groupId>
-            <artifactId>spring-native</artifactId>
-            <version>${spring-native.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
@@ -178,11 +158,6 @@
             <groupId>org.mockito.kotlin</groupId>
             <artifactId>mockito-kotlin</artifactId>
             <version>${mockito-kotlin.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>de.flapdoodle.embed</groupId>
-            <artifactId>de.flapdoodle.embed.mongo</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -623,12 +598,20 @@
     </repositories>
     <pluginRepositories>
         <pluginRepository>
-            <id>spring-releases</id>
-            <name>Spring Releases</name>
-            <url>https://repo.spring.io/release</url>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/milestone</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>spring-snapshots</id>
+            <name>Spring Snapshots</name>
+            <url>https://repo.spring.io/snapshot</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
         </pluginRepository>
     </pluginRepositories>
 
@@ -657,68 +640,22 @@
                         <artifactId>maven-clean-plugin</artifactId>
                         <version>${maven-clean-plugin.version}</version>
                     </plugin>
-                </plugins>
-            </build>
-            <properties>
-                <!-- default Spring profiles -->
-                <spring.profiles.active>prod</spring.profiles.active>
-            </properties>
-        </profile>
-        <profile>
-            <id>native-image</id>
-            <build>
-                <plugins>
                     <plugin>
                         <groupId>org.springframework.boot</groupId>
                         <artifactId>spring-boot-maven-plugin</artifactId>
                         <configuration>
-                            <classifier>${repackage.classifier}</classifier>
                             <image>
-                                <builder>paketobuildpacks/builder:tiny</builder>
-                                <name>${docker.image.name}</name>
-                                <publish>true</publish>
-                                <pullPolicy>IF_NOT_PRESENT</pullPolicy>
-                                <env>
-                                    <BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
-                                    <BP_BINARY_COMPRESSION_METHOD>upx</BP_BINARY_COMPRESSION_METHOD>
-                                    <BP_NATIVE_IMAGE_BUILD_ARGUMENTS>
-                                        -H:+ReportExceptionStackTraces --enable-https
-                                        --enable-http
-                                        --initialize-at-build-time=sun.instrument.InstrumentationImpl
-                                        --initialize-at-run-time=io.netty.handler.ssl.BouncyCastleAlpnSslUtils
-                                    </BP_NATIVE_IMAGE_BUILD_ARGUMENTS>
-                                </env>
+                                <buildpacks>
+                                    <buildpack>gcr.io/paketo-buildpacks/bellsoft-liberica:9.9.0-ea</buildpack>
+                                    <buildpack>gcr.io/paketo-buildpacks/java-native-image</buildpack>
+                                </buildpacks>
                             </image>
-                            <docker>
-                                <publishRegistry>
-                                    <username>${DOCKER_REGISTRY_USER}</username>
-                                    <password>${DOCKER_REGISTRY_PWD}</password>
-                                </publishRegistry>
-                            </docker>
                         </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.springframework.experimental</groupId>
-                        <artifactId>spring-aot-maven-plugin</artifactId>
-                        <version>${spring-native.version}</version>
-                        <executions>
-                            <execution>
-                                <id>test-generate</id>
-                                <goals>
-                                    <goal>test-generate</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>generate</id>
-                                <goals>
-                                    <goal>generate</goal>
-                                </goals>
-                            </execution>
-                        </executions>
                     </plugin>
                 </plugins>
             </build>
             <properties>
+                <!-- default Spring profiles -->
                 <spring.profiles.active>prod</spring.profiles.active>
             </properties>
         </profile>
@@ -755,77 +692,6 @@
                 <spring.profiles.active>prod</spring.profiles.active>
             </properties>
     </profile>
-        <profile>
-            <id>native</id>
-            <properties>
-                <repackage.classifier>exec</repackage.classifier>
-                <native-buildtools.version>0.9.11</native-buildtools.version>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.junit.platform</groupId>
-                    <artifactId>junit-platform-launcher</artifactId>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.springframework.experimental</groupId>
-                        <artifactId>spring-aot-maven-plugin</artifactId>
-                        <version>${spring-native.version}</version>
-                        <executions>
-                            <execution>
-                                <id>test-generate</id>
-                                <goals>
-                                    <goal>test-generate</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>generate</id>
-                                <goals>
-                                    <goal>generate</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.graalvm.buildtools</groupId>
-                        <artifactId>native-maven-plugin</artifactId>
-                        <version>${native-buildtools.version}</version>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <buildArgs>
-                                <buildArg>--enable-https</buildArg>
-                                <buildArg>--enable-http</buildArg>
-                                <buildArg>
-                                    --initialize-at-build-time=sun.instrument.InstrumentationImpl
-                                </buildArg>
-                                <buildArg>
-                                    --initialize-at-run-time=io.netty.handler.ssl.BouncyCastleAlpnSslUtils
-                                </buildArg>
-                            </buildArgs>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>test-native</id>
-                                <phase>test</phase>
-                                <goals>
-                                    <goal>test</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>build-native</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>build</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
         <profile>
             <id>deploy-github</id>
             <activation>

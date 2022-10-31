@@ -1,6 +1,5 @@
 package io.github.susimsek.springgraphqlsamples.graphql.controller
 
-import io.github.susimsek.springgraphqlsamples.client.PostClient
 import io.github.susimsek.springgraphqlsamples.graphql.DEFAULT_PAGE_NO
 import io.github.susimsek.springgraphqlsamples.graphql.DEFAULT_SIZE
 import io.github.susimsek.springgraphqlsamples.graphql.MAX_SIZE
@@ -10,6 +9,7 @@ import io.github.susimsek.springgraphqlsamples.graphql.input.UpdatePostInput
 import io.github.susimsek.springgraphqlsamples.graphql.type.PostPayload
 import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
 import io.github.susimsek.springgraphqlsamples.service.PostService
+import jakarta.validation.Valid
 import kotlinx.coroutines.flow.toList
 import org.reactivestreams.Publisher
 import org.springframework.data.domain.PageRequest
@@ -20,12 +20,10 @@ import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.graphql.data.method.annotation.SubscriptionMapping
 import org.springframework.stereotype.Controller
-import javax.validation.Valid
 
 @Controller
 class PostController(
-    private val postService: PostService,
-    private val postClient: PostClient
+    private val postService: PostService
 ) {
 
     @MutationMapping
@@ -69,11 +67,6 @@ class PostController(
     @QueryMapping
     suspend fun post(@Argument id: String): PostPayload {
         return postService.getPost(id)
-    }
-
-    @QueryMapping
-    suspend fun externalPost(@Argument id: String): PostPayload {
-        return postClient.getPost(id)
     }
 
     @SubscriptionMapping

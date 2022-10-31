@@ -1,7 +1,7 @@
 package io.github.susimsek.springgraphqlsamples.graphql.input
 
-import javax.validation.constraints.NotBlank
-import javax.validation.constraints.Size
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.Size
 
 data class LoginInput(
     @field:NotBlank

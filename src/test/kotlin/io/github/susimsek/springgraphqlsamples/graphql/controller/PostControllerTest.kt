@@ -1,6 +1,5 @@
 package io.github.susimsek.springgraphqlsamples.graphql.controller
 
-import io.github.susimsek.springgraphqlsamples.client.PostClient
 import io.github.susimsek.springgraphqlsamples.config.GraphqlDateTimeConfig
 import io.github.susimsek.springgraphqlsamples.config.ValidationAutoConfiguration
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.PostStatus
@@ -43,9 +42,6 @@ class PostControllerTest {
 
     @MockBean
     private lateinit var postService: PostService
-
-    @MockBean
-    private lateinit var postClient: PostClient
 
     private lateinit var post: PostPayload
 

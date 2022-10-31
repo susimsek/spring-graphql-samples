@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component
 import java.time.Instant
 import java.util.*
 
-
 const val AUTHORITIES_KEY = "auth"
 
 @Component
@@ -49,5 +48,4 @@ class TokenProvider(
 
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).tokenValue
     }
-
 }
