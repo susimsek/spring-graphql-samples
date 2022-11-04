@@ -10,9 +10,6 @@ import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 
-
-
-
 @Internal
 class OffsetDateTimeCoercing(
     private val formatter: DateTimeFormatter
@@ -36,7 +33,7 @@ class OffsetDateTimeCoercing(
         return if (input is OffsetDateTime) {
             input.format(formatter)
         } else {
-            val result = convertImpl(input) ?:  throw CoercingParseValueException("Invalid value '$input' for OffsetDateTime")
+            val result = convertImpl(input) ?: throw CoercingParseValueException("Invalid value '$input' for OffsetDateTime")
             result.format(formatter)
         }
     }

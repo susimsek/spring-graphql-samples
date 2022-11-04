@@ -64,6 +64,11 @@ class GraphqlDateTimeConfig {
     }
 
     @Bean
+    fun urlScalar(): GraphQLScalarType {
+        return ExtendedScalars.Url
+    }
+
+    @Bean
     fun graphQLPositiveIntScalar(): GraphQLScalarType {
         return ExtendedScalars.PositiveInt
     }
@@ -83,7 +88,8 @@ class GraphqlDateTimeConfig {
         graphQLBigDecimalScalar: GraphQLScalarType,
         graphQLPositiveIntScalar: GraphQLScalarType,
         graphQLUuidScalar: GraphQLScalarType,
-        graphQLObjectScalar: GraphQLScalarType
+        graphQLObjectScalar: GraphQLScalarType,
+        urlScalar: GraphQLScalarType
     ): RuntimeWiringConfigurer {
         return RuntimeWiringConfigurer { builder ->
             builder.scalar(graphQlOffsetDateTimeScalar)
@@ -94,6 +100,7 @@ class GraphqlDateTimeConfig {
             builder.scalar(graphQLPositiveIntScalar)
             builder.scalar(graphQLUuidScalar)
             builder.scalar(graphQLObjectScalar)
+            builder.scalar(urlScalar)
         }
     }
 
