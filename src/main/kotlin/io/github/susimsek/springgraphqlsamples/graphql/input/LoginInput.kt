@@ -6,9 +6,9 @@ import jakarta.validation.constraints.Size
 data class LoginInput(
     @field:NotBlank
     @field:Size(min = 4, max = 50)
-    var login: String? = null,
+    var login: String,
 
     @field:NotBlank
     @field:Size(min = 4, max = 100)
-    var password: String? = null
+    var password: String
 )

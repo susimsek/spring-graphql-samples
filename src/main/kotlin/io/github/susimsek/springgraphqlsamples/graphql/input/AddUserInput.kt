@@ -7,22 +7,22 @@ import jakarta.validation.constraints.Size
 data class AddUserInput(
     @field:NotBlank
     @field:Size(min = 4, max = 50)
-    var username: String? = null,
+    var username: String,
 
     @field:NotBlank
     @field:Size(min = 4, max = 100)
-    var password: String? = null,
+    var password: String,
 
     @field:NotBlank
     @field:Size(max = 50)
-    var firstName: String? = null,
+    var firstName: String,
 
     @field:NotBlank
     @field:Size(max = 50)
-    var lastName: String? = null,
+    var lastName: String,
 
     @field:Email
     @field:NotBlank
     @field:Size(min = 5, max = 254)
-    var email: String? = null
+    var email: String
 )

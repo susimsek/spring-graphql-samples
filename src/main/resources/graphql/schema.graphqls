@@ -4,8 +4,8 @@ type Query {
     userById(id: ID!): User
     userByUsername(username: String!): User
     usersByActivated(activated: Boolean!): [User]
-    count: Int
-    me: UserPayload
+    count: Int!
+    me: UserPayload!
     post(id: ID!): PostPayload!
     externalPost(id: ID!): PostPayload!
     posts(page: Int, size: Int, orders: [PostOrder!]): [PostPayload!]!
@@ -90,24 +90,24 @@ input PostOrder {
 
 type UserPayload {
     id: ID!
-    username: String
-    firstName: String
-    lastName: String
-    name: String
-    email: String
-    createdDate: OffsetDateTime
-    posts: [PostPayload]
+    username: String!
+    firstName: String!
+    lastName: String!
+    name: String!
+    email: String!
+    createdDate: OffsetDateTime!
+    posts: [PostPayload!]!
 }
 
 
 type User {
-    id: ID
-    username: String
-    firstName: String
-    lastName: String
-    email: String
-    createdDate: OffsetDateTime
-    activated: Boolean
+    id: ID!
+    username: String!
+    firstName: String!
+    lastName: String!
+    email: String!
+    createdDate: OffsetDateTime!
+    activated: Boolean!
 }
 
 type PostPayload{

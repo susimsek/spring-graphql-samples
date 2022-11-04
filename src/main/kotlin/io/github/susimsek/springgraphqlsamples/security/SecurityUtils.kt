@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.context.ReactiveSecurityContextHolder
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.oauth2.jwt.Jwt
 import reactor.core.publisher.Mono
 
 /**
@@ -28,6 +29,7 @@ fun extractPrincipal(authentication: Authentication?): String? {
 
     return when (val principal = authentication.principal) {
         is UserDetails -> principal.username
+        is Jwt -> principal.subject
         is String -> principal
         else -> null
     }

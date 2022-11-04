@@ -2,8 +2,9 @@ package io.github.susimsek.springgraphqlsamples.domain
 
 import io.github.susimsek.springgraphqlsamples.domain.audit.AbstractUserAuditingEntity
 import org.springframework.data.annotation.Id
+import java.util.UUID
 
 open class BaseEntity(
     @Id
-    var id: String? = null
+    var id: String = UUID.randomUUID().toString()
 ) : AbstractUserAuditingEntity()

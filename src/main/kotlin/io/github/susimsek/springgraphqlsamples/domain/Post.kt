@@ -7,19 +7,19 @@ import org.springframework.data.mongodb.core.mapping.Document
 @Document(collection = "post")
 data class Post(
 
-    var title: String? = null,
+    var title: String = "",
 
     @Indexed
-    var content: String? = null,
+    var content: String = "",
 
     @Indexed
-    var status: PostStatus? = null,
+    var status: PostStatus? = PostStatus.DRAFT,
 ) : BaseEntity() {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Post) return false
-        return id != null && other.id != null && id == other.id
+        return id == other.id
     }
 
     override fun hashCode(): Int {

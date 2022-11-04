@@ -28,17 +28,17 @@ class UserService(
 ) {
 
     suspend fun createUser(input: AddUserInput): UserPayload {
-        return userRepository.findOneByUsername(input.username!!)
+        return userRepository.findOneByUsername(input.username)
             .flatMap { existingUser ->
-                if (existingUser.activated == false) {
+                if (!existingUser.activated) {
                     userRepository.delete(existingUser)
                 } else {
                     Mono.error(ResourceAlreadyExistsException("Username is already in use!"))
                 }
             }
-            .then(userRepository.findOneByEmailIgnoreCase(input.email!!))
+            .then(userRepository.findOneByEmailIgnoreCase(input.email))
             .flatMap { existingUser ->
-                if (existingUser.activated == false) {
+                if (!existingUser.activated) {
                     userRepository.delete(existingUser)
                 } else {
                     Mono.error(ResourceAlreadyExistsException("Email is already in use!"))
@@ -46,8 +46,8 @@ class UserService(
             }.then(
                 Mono.fromCallable {
                 val encryptedPassword = passwordEncoder.encode(input.password)
-                input.username = input.username?.lowercase(Locale.getDefault())
-                input.email = input.email?.lowercase(Locale.getDefault())
+                input.username = input.username.lowercase(Locale.getDefault())
+                input.email = input.email.lowercase(Locale.getDefault())
                 input.password = encryptedPassword
                 val user = userMapper.toEntity(input)
                 user.activated = true

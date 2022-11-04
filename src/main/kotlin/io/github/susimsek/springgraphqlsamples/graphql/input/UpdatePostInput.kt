@@ -7,13 +7,13 @@ data class UpdatePostInput(
 
     @field:NotBlank
     @field:Size(min = 24, max = 24)
-    var id: String? = null,
+    var id: String,
 
     @field:NotBlank
     @field:Size(min = 5, max = 100)
-    var title: String? = null,
+    var title: String,
 
     @field:NotBlank
     @field:Size(min = 5, max = 1000)
-    var content: String? = null
+    var content: String
 )

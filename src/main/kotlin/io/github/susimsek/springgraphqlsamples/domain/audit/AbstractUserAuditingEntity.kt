@@ -10,9 +10,9 @@ open class AbstractUserAuditingEntity(
     @CreatedBy
     @Indexed
     @Field("created_by")
-    var createdBy: String? = null,
+    var createdBy: String = "",
 
     @LastModifiedBy
     @Field("last_modified_by")
-    var lastModifiedBy: String? = null
+    var lastModifiedBy: String = ""
 ) : AbstractAuditingEntity()

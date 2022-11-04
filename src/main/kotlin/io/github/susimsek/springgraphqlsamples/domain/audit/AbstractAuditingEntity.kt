@@ -10,9 +10,9 @@ open class AbstractAuditingEntity(
 
     @CreatedDate
     @Field("created_date")
-    var createdDate: OffsetDateTime? = OffsetDateTime.now(Clock.systemDefaultZone()),
+    var createdDate: OffsetDateTime = OffsetDateTime.now(Clock.systemDefaultZone()),
 
     @LastModifiedDate
     @Field("last_modified_date")
-    var lastModifiedDate: OffsetDateTime? = OffsetDateTime.now(Clock.systemDefaultZone())
+    var lastModifiedDate: OffsetDateTime = OffsetDateTime.now(Clock.systemDefaultZone())
 )

@@ -2,8 +2,7 @@ package io.github.susimsek.springgraphqlsamples.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.querydsl.core.annotations.QueryEntity
-import io.github.susimsek.springgraphqlsamples.domain.audit.AbstractAuditingEntity
-import org.springframework.data.annotation.Id
+import io.github.susimsek.springgraphqlsamples.graphql.enumerated.UserOrderField
 import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field
@@ -11,31 +10,28 @@ import org.springframework.data.mongodb.core.mapping.Field
 @QueryEntity
 @Document(collection = "user")
 data class User(
-    @Id
-    var id: String? = null,
-
     @Indexed
-    var username: String? = null,
+    var username: String = "",
 
     @JsonIgnore
-    var password: String? = null,
+    var password: String = "",
 
     @Field("first_name")
-    var firstName: String? = null,
+    var firstName: String = "",
 
     @Field("last_name")
-    var lastName: String? = null,
+    var lastName: String = "",
 
     @Indexed
-    var email: String? = null,
+    var email: String = "",
 
-    var activated: Boolean? = false,
+    var activated: Boolean = false,
 
-    ) : AbstractAuditingEntity() {
+    ) : BaseEntity() {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is User) return false
-        return id != null && other.id != null && id == other.id
+        return id == other.id
     }
 
     override fun hashCode(): Int {
@@ -44,11 +40,11 @@ data class User(
 
     override fun toString(): String {
         return "User(id=$id, " +
-                "username=$username, " +
+                "username=${UserOrderField.username}, " +
                 "password=$password, " +
-                "firstName=$firstName, " +
-                "lastName=$lastName, " +
-                "email=$email, " +
+                "firstName=${UserOrderField.firstName}, " +
+                "lastName=${UserOrderField.lastName}, " +
+                "email=${UserOrderField.email}, " +
                 "activated=$activated)"
     }
 }

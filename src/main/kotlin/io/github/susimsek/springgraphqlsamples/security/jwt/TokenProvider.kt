@@ -1,8 +1,5 @@
 package io.github.susimsek.springgraphqlsamples.security.jwt
 
-import com.nimbusds.jose.JOSEObjectType
-import com.nimbusds.jose.JWSAlgorithm
-import com.nimbusds.jose.JWSHeader
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.jwt.JwtClaimsSet
@@ -33,10 +30,6 @@ class TokenProvider(
         val now = Instant.now()
 
         val validity = now.plusMillis(tokenValidityInMilliseconds)
-
-        val header = JWSHeader.Builder(JWSAlgorithm.HS512)
-            .type(JOSEObjectType.JWT)
-            .build()
 
         val claims = JwtClaimsSet.builder()
             .issuer("self")
