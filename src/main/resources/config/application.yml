@@ -11,6 +11,8 @@ spring:
       mapping: graphql
   main:
     allow-bean-definition-overriding: true
+  web:
+    locale: es
 management:
   endpoints:
     web:

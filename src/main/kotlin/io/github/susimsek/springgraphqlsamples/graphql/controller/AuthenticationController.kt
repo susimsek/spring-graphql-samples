@@ -7,12 +7,14 @@ import jakarta.validation.Valid
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.stereotype.Controller
+import java.util.*
 
 @Controller
 class AuthenticationController(private val authenticationService: AuthenticationService) {
 
     @MutationMapping
-    suspend fun login(@Argument @Valid input: LoginInput): Token {
+    suspend fun login(@Argument @Valid input: LoginInput, locale: Locale): Token {
+        println(locale.country)
         return authenticationService.authorize(input)
     }
 }

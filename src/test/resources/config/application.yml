@@ -5,3 +5,5 @@ spring:
   cloud:
     kubernetes:
       enabled: false
+  web:
+    locale: es

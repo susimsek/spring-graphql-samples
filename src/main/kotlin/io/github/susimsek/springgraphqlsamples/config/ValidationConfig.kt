@@ -5,6 +5,7 @@ import jakarta.validation.ParameterNameProvider
 import org.hibernate.validator.internal.engine.DefaultClockProvider
 import org.springframework.beans.factory.config.BeanDefinition
 import org.springframework.boot.validation.MessageInterpolatorFactory
+import org.springframework.context.MessageSource
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
@@ -24,9 +25,10 @@ class ValidationAutoConfiguration {
     @Primary
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-    fun defaultValidator(): LocalValidatorFactoryBean {
+    fun defaultValidator(messageSource: MessageSource): LocalValidatorFactoryBean {
         val factoryBean = KotlinCoroutinesLocalValidatorFactoryBean()
         factoryBean.messageInterpolator = MessageInterpolatorFactory().getObject()
+        factoryBean.setValidationMessageSource(messageSource)
         return factoryBean
     }
 }
