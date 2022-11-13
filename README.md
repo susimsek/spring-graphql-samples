@@ -69,7 +69,7 @@ mvn -Pjib verify jib:dockerBuild
 
 
 ```sh
-rsc --stream --route=graphql --dataMimeType="application/graphql+json" --data='{"query":"subscription { postAdded { id, title, content } }" }' --debug tcp://localhost:8079 --authBearer ${TOKEN} 
+rsc --stream --route=subscriptions --dataMimeType="application/graphql+json" --data='{"query":"subscription { postAdded { id, title, content } }" }' --debug tcp://localhost:8079 --authBearer ${TOKEN} 
 ```
 
 ```sh

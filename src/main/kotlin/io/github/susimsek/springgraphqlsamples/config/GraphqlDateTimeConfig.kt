@@ -5,8 +5,13 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import graphql.scalars.ExtendedScalars
 import graphql.schema.GraphQLScalarType
+import graphql.schema.idl.SchemaDirectiveWiring
+import graphql.validation.rules.OnValidationErrorStrategy
+import graphql.validation.rules.ValidationRules
+import graphql.validation.schemawiring.ValidationSchemaWiring
 import io.github.susimsek.springgraphqlsamples.graphql.scalar.GraphQlDateTimeProperties
 import io.github.susimsek.springgraphqlsamples.graphql.scalar.ScalarUtil
+import io.github.susimsek.springgraphqlsamples.validation.EmailRule
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
@@ -15,6 +20,7 @@ import org.springframework.context.annotation.ImportRuntimeHints
 import org.springframework.core.io.ClassPathResource
 import org.springframework.graphql.execution.RuntimeWiringConfigurer
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
+
 
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(GraphQlDateTimeProperties::class)
@@ -79,6 +85,15 @@ class GraphqlDateTimeConfig {
     }
 
     @Bean
+    fun validationSchemaWiring(): SchemaDirectiveWiring {
+        val validationRules = ValidationRules.newValidationRules()
+            .onValidationErrorStrategy(OnValidationErrorStrategy.RETURN_NULL)
+            .addRule(EmailRule())
+            .build()
+        return ValidationSchemaWiring(validationRules)
+    }
+
+    @Bean
     @ImportRuntimeHints(GraphqlRuntimeHintsRegistrar::class)
     @SuppressWarnings("LongParameterList")
     fun graphqlDateTimeConfigurer(
@@ -89,7 +104,8 @@ class GraphqlDateTimeConfig {
         graphQLPositiveIntScalar: GraphQLScalarType,
         graphQLUuidScalar: GraphQLScalarType,
         graphQLObjectScalar: GraphQLScalarType,
-        urlScalar: GraphQLScalarType
+        urlScalar: GraphQLScalarType,
+        validationSchemaWiring: SchemaDirectiveWiring
     ): RuntimeWiringConfigurer {
         return RuntimeWiringConfigurer { builder ->
             builder.scalar(graphQlOffsetDateTimeScalar)
@@ -101,6 +117,7 @@ class GraphqlDateTimeConfig {
             builder.scalar(graphQLUuidScalar)
             builder.scalar(graphQLObjectScalar)
             builder.scalar(urlScalar)
+            builder.directiveWiring(validationSchemaWiring)
         }
     }
 

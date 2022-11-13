@@ -8,7 +8,7 @@ spring:
       transport: tcp
   graphql:
     rsocket:
-      mapping: graphql
+      mapping: subscriptions
   main:
     allow-bean-definition-overriding: true
   web:

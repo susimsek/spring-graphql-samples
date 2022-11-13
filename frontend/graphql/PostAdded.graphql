@@ -1,0 +1,9 @@
+subscription OnPostAdded {
+    postAdded{
+        id,
+        title,
+        content,
+        status,
+        createdDate
+    }
+}

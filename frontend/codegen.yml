@@ -1,0 +1,14 @@
+overwrite: true
+schema: "http://localhost:9091/graphql"
+documents: "graphql/**/!(*.d).{ts,tsx,graphql}"
+generates:
+  generated/graphql-types.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
+    config:
+      skipTypename: true
+      preResolveTypes: true
+      declarationKind: "interface"
+      onlyOperationTypes: true

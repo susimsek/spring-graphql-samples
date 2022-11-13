@@ -1,3 +1,7 @@
+directive @NotBlank(message : String = "graphql.validation.NotBlank.message") on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
+directive @Size(min : Int = 0, max : Int = 2147483647, message : String = "graphql.validation.Size.message") on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
+directive @Email(message : String = "graphql.validation.Email.message") on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
+
 scalar OffsetDateTime
 
 type Query {
@@ -24,16 +28,16 @@ type Subscription{
 }
 
 input LoginInput {
-    login: String!
-    password: String!
+    login: String! @NotBlank @Size(min: 4, max: 50)
+    password: String! @NotBlank @Size(min: 4, max: 100)
 }
 
 input AddUserInput {
-    username: String!
-    password: String!
-    firstName: String!
-    lastName: String!
-    email: String!
+    username: String! @NotBlank @Size(min: 4, max: 50)
+    password: String! @NotBlank @Size(min: 4, max: 100)
+    firstName: String! @NotBlank @Size(max: 50)
+    lastName: String! @NotBlank @Size(max: 50)
+    email: String! @NotBlank @Email @Size(min: 5, max: 254)
 }
 
 enum UserOrderField {
