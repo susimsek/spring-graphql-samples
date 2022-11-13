@@ -6,4 +6,4 @@ spring:
     kubernetes:
       enabled: false
   web:
-    locale: es
+    locale: en

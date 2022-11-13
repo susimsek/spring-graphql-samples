@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 import org.springframework.context.annotation.Role
-import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.core.KotlinReflectionParameterNameDiscoverer
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer
 import org.springframework.core.ParameterNameDiscoverer
@@ -24,14 +23,6 @@ import kotlin.reflect.jvm.kotlinFunction
 
 @Configuration(proxyBeanMethods = false)
 class ValidationAutoConfiguration {
-
-    @Bean
-    fun messageSource(): MessageSource {
-        val messageSource = ReloadableResourceBundleMessageSource()
-        messageSource.setBasenames("classpath:i18n")
-        messageSource.setDefaultEncoding("UTF-8")
-        return messageSource
-    }
 
     @Primary
     @Bean

@@ -1,6 +1,7 @@
 directive @NotBlank(message : String = "graphql.validation.NotBlank.message") on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
 directive @Size(min : Int = 0, max : Int = 2147483647, message : String = "graphql.validation.Size.message") on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
 directive @Email(message : String = "graphql.validation.Email.message") on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
+directive @Pattern(regexp : String! =".*", message : String = "graphql.validation.Pattern.message") on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
 
 scalar OffsetDateTime
 
@@ -33,10 +34,10 @@ input LoginInput {
 }
 
 input AddUserInput {
-    username: String! @NotBlank @Size(min: 4, max: 50)
+    username: String! @NotBlank @Size(min: 4, max: 50) @Pattern(regexp: "^[A-Za-z][A-Za-z0-9_]+$")
     password: String! @NotBlank @Size(min: 4, max: 100)
-    firstName: String! @NotBlank @Size(max: 50)
-    lastName: String! @NotBlank @Size(max: 50)
+    firstName: String! @NotBlank @Size(max: 50) @Pattern(regexp: "^[A-Za-z]+$")
+    lastName: String! @NotBlank @Size(max: 50) @Pattern(regexp: "^[A-Za-z]+$")
     email: String! @NotBlank @Email @Size(min: 5, max: 254)
 }
 

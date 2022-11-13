@@ -12,7 +12,7 @@ spring:
   main:
     allow-bean-definition-overriding: true
   web:
-    locale: es
+    locale: en
 management:
   endpoints:
     web:
