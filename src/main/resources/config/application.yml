@@ -3,12 +3,15 @@ spring:
     name: spring-gql-service
   profiles:
     active: local
-  rsocket:
-    server:
-      transport: tcp
+#  rsocket:
+#    server:
+#      transport: tcp
+#  graphql:
+#    rsocket:
+#      mapping: subscriptions
   graphql:
-    rsocket:
-      mapping: subscriptions
+    websocket:
+      path: /subscriptions
   main:
     allow-bean-definition-overriding: true
   web:

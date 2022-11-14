@@ -1,9 +1,9 @@
 server:
   port: ${PORT:9091}
 spring:
-  rsocket:
-    server:
-      port: 8079
+#  rsocket:
+#    server:
+#      port: 8079
   data:
     mongodb:
       uri: mongodb+srv://test_user123456:4hRsOKoJxkHswunQ@cluster0.nbzfi.mongodb.net/demo

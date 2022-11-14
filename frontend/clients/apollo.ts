@@ -1,5 +1,5 @@
 import {ApolloClient as Apollo, createHttpLink, InMemoryCache, split} from "@apollo/client";
-import {GRAPHQL_HTTP_URI} from "../constants";
+import {GRAPHQL_HTTP_URI, GRAPHQL_WS_URL} from "../constants";
 import {GraphQLWsLink} from "@apollo/client/link/subscriptions";
 import {createClient} from "graphql-ws";
 import {getMainDefinition} from "@apollo/client/utilities";
@@ -10,9 +10,9 @@ const httpLink = createHttpLink({
 
 const wsLink = typeof window !== "undefined"
     ? new GraphQLWsLink(createClient({
-        url: 'ws://localhost:4000/subscriptions',
+        url: GRAPHQL_WS_URL,
         connectionParams: {
-            authToken: 'PADIKXL0YscBUXmIm3iW/i37Mwp1MEtWbr7dHGGtQSp1IsIpKvcZlwPXgLa+8iVyin48DCMq5GrnJfrhMILTIQQcbaoW3ERMsjOEuXmgF4WLu2lh3ljVk4m2/ouZEYYR6JmJa8ZpIenUdlcy1mbWr6X1VJL4YBO2ManrjjR22j1+I66CjAVxiV7etUtDZY2mWJqv2fdsiy+RHIlAA1LXC3QC3zAq+FeEkU2QVPj7YDach7bRzt0eJfOJLsGoNgvJ580pS88I7qi7j+duksEjTVDtdCpRyR3CKL8RkiA1oApCRuYEZDYmVFs7CwKGbhNRj7bBboLKE/zyZh6Fe3f1xvzx3DvA2sRF/RXu9oOKdMJM6Rf2/bEyMkgpWcB/hB9tn/ZLreHB14gHEjlskfAx6NyCJw78HnRz+ud8HxiAir6Z+WSLDBJYsvBYKBD2OZA1O986ACxewbrlxfenDLzt0zTcX7vPuBSaKxqYB+gLVK+VjkaukwBE5PmzAa49754nLv9qfl9kVhqxqtfM8QnX9yCEC1Qk53+VKyfpGwdorAcdyLu1xOne0GGbCY76RTdIt5MVMlRXf4csFXHHZJ9KMvDMmPH9Z/ge0eERCMZhwND7UMA2Xeg3HFCDcP0hM98VNTX4JwesRZF6UHYjbnCdoLQE1ZwjlZ5EuvRMEyj63IwtLnss3MFOkYY0Yamp750drLQmjGhTms2JMEQfxm+ZPw==',
+            authToken: 'Bearer CMYyRbUVfx38p12Llw12cXYQseSASiUgkwudqBf7JNmDOt+g6LaknXcqlFOluWavMq7Jxt7KUoOtSUwuYQeSJktGUz//9klMnX16XhwrnpFJ1B/LGVda0xDlZjVSxODybNEETlqWzddx0P0UJM0QjZpXtHz3uUnsJ3tGWOB61OH3wIE2REgtzSV16+pJIa5/4Vv+BoqAZmzGEZN43/bNnzp10DRX5UkWmAiugMqXO/awJ78c98gkCDpC21NajoBuJBLXv6aYCoxBx9qDIhUZTGluUh4ZwhXmyryVbrRt0FNdE3w/CuIMyuNpjvk4brAj41nYGEMYZ4ZZ5K2HerBYlU+lXE/8Ug2YUfqVmGvnHA90PuOxwl/4jestL7DCBiAqAXmjtKZ/jG4sZvNNuRGCx8iocZozf84Dx6rnWqCESbBXSILvopH9NzkK12scMUQuiB10h1DjNRZ9qcIz4Y5F9cCgfAzxK5x8rhqOw1EwXynImkIh/bp8x5Wu+wZlMi4W8bgtJt4xIJeA/hIgH7j2XprIybWIJ74hy9qPn/WGcv943AEeIcMCTdFIN2UhMUFQXZWBdA5nZZIHWzTRDKCuD6okAg5/n1tffIBrr0KpWRXfvpNSAweqPRC3gO2USbDPun8CtaQPgzgueq++mbmJ+R25mCJSj7jPo9x0iGkoG3sgRxX3j7/H9M73apom0QLirE/mp/8n6+NIlwhw2Q+pGEYr0HDkDpwRi9bHFk7Rx0E=',
         }
     }))
     : null;

@@ -3,7 +3,11 @@ import {useOnPostAddedSubscription} from "../generated/graphql-types";
 
 const Home = () => {
 
-  const { data, loading } = useOnPostAddedSubscription();
+  const { data, loading, error } = useOnPostAddedSubscription();
+
+  if (error) {
+      console.log(error)
+  }
 
   return (
     <div className={styles.container}>
