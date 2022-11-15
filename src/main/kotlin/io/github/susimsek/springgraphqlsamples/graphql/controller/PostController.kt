@@ -11,6 +11,7 @@ import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
 import io.github.susimsek.springgraphqlsamples.service.PostService
 import jakarta.validation.Valid
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.reactive.asPublisher
 import org.reactivestreams.Publisher
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -19,9 +20,11 @@ import org.springframework.graphql.data.method.annotation.BatchMapping
 import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.graphql.data.method.annotation.SubscriptionMapping
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 
 @Controller
+@PreAuthorize("isAuthenticated()")
 class PostController(
     private val postService: PostService
 ) {
@@ -65,12 +68,13 @@ class PostController(
     }
 
     @QueryMapping
+    @PreAuthorize("isAnonymous()")
     suspend fun post(@Argument id: String): PostPayload {
         return postService.getPost(id)
     }
 
     @SubscriptionMapping
     fun postAdded(): Publisher<PostPayload> {
-        return postService.postAdded()
+        return postService.postAdded().asPublisher()
     }
 }

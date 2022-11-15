@@ -16,6 +16,7 @@ import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.graphql.data.method.annotation.SchemaMapping
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 
 
@@ -27,6 +28,7 @@ class UserController(private val userService: UserService) {
     }
 
     @QueryMapping
+    @PreAuthorize("isAuthenticated()")
     suspend fun users(
         @Argument page: Int?,
         @Argument size: Int?,
@@ -42,6 +44,7 @@ class UserController(private val userService: UserService) {
     }
 
     @QueryMapping
+    @PreAuthorize("isAuthenticated()")
     suspend fun me(): UserPayload {
         return userService.getCurrentUser()
     }

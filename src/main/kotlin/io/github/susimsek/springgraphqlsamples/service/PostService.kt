@@ -10,26 +10,26 @@ import io.github.susimsek.springgraphqlsamples.repository.PostRepository
 import io.github.susimsek.springgraphqlsamples.security.getCurrentUserLogin
 import io.github.susimsek.springgraphqlsamples.service.mapper.PostMapper
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.data.domain.Pageable
 import org.springframework.security.access.AccessDeniedException
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
-import reactor.core.publisher.Sinks
 
 @Component
-@PreAuthorize("isAuthenticated()")
 class PostService(
     private val postRepository: PostRepository,
     private val postMapper: PostMapper,
     private val userService: UserService
 ) {
 
-    private val sink = Sinks.many().replay().latest<PostPayload>()
-    // private val flow = MutableSharedFlow<PostPayload>(replay = 1)
+    // private val sink = Sinks.many().replay().latest<PostPayload>()
+    private val flow = MutableSharedFlow<PostPayload>(replay = 1)
 
     suspend fun createPost(input: AddPostInput): PostPayload {
         val entity = postMapper.toEntity(input)
@@ -41,8 +41,8 @@ class PostService(
             .map(postMapper::toType)
             .awaitSingle()
 
-        // flow.emit(payload)
-        sink.emitNext(payload, Sinks.EmitFailureHandler.FAIL_FAST)
+        flow.emit(payload)
+        // sink.emitNext(payload, Sinks.EmitFailureHandler.FAIL_FAST)
         return payload
     }
 
@@ -83,7 +83,7 @@ class PostService(
                         }
                     }
                     .switchIfEmpty(Mono.error((ResourceNotFoundException("Post with id $id was not found"))))
-            }.map { it.id!! }
+            }.map { it.id }
             .awaitSingle()
     }
 
@@ -93,7 +93,6 @@ class PostService(
             .asFlow()
     }
 
-    @PreAuthorize("isAnonymous()")
     suspend fun getPost(id: String): PostPayload {
         return postRepository.findById(id)
             .map(postMapper::toType)
@@ -127,8 +126,8 @@ class PostService(
             }.awaitSingle()
     }
 
-    fun postAdded(): Flux<PostPayload> {
-        return sink.asFlux()
-        // return flow.asSharedFlow()
+    fun postAdded(): SharedFlow<PostPayload> {
+        // return sink.asFlux()
+        return flow.asSharedFlow()
     }
 }
