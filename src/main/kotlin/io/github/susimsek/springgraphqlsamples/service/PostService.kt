@@ -15,23 +15,26 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactor.awaitSingle
+import org.springframework.context.MessageSource
 import org.springframework.data.domain.Pageable
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.util.*
 
 @Component
 class PostService(
     private val postRepository: PostRepository,
     private val postMapper: PostMapper,
-    private val userService: UserService
+    private val userService: UserService,
+    private val messageSource: MessageSource
 ) {
 
     // private val sink = Sinks.many().replay().latest<PostPayload>()
     private val flow = MutableSharedFlow<PostPayload>(replay = 1)
 
-    suspend fun createPost(input: AddPostInput): PostPayload {
+    suspend fun createPost(input: AddPostInput, locale: Locale): PostPayload {
         val entity = postMapper.toEntity(input)
         entity.status = PostStatus.DRAFT
 
@@ -41,7 +44,11 @@ class PostService(
             .map(postMapper::toType)
             .awaitSingle()
 
-        flow.emit(payload)
+        val event = payload
+        val localizedTitle = messageSource.getMessage("post.title", arrayOf(payload.title), locale)
+        event.title = localizedTitle
+
+        flow.emit(event)
         // sink.emitNext(payload, Sinks.EmitFailureHandler.FAIL_FAST)
         return payload
     }
@@ -61,7 +68,8 @@ class PostService(
                                 )
                             )
                         }
-                    }.switchIfEmpty(Mono.error((ResourceNotFoundException("Post with id ${input.id} was not found"))))
+                    }.switchIfEmpty(Mono.error((ResourceNotFoundException(
+                        "error.post.not.found.message", arrayOf(input.id)))))
             }.map(postMapper::toType)
             .awaitSingle()
     }
@@ -82,7 +90,8 @@ class PostService(
                             )
                         }
                     }
-                    .switchIfEmpty(Mono.error((ResourceNotFoundException("Post with id $id was not found"))))
+                    .switchIfEmpty(Mono.error((ResourceNotFoundException(
+                        "error.post.not.found.message", arrayOf(id)))))
             }.map { it.id }
             .awaitSingle()
     }
@@ -96,7 +105,8 @@ class PostService(
     suspend fun getPost(id: String): PostPayload {
         return postRepository.findById(id)
             .map(postMapper::toType)
-            .switchIfEmpty(Mono.error((ResourceNotFoundException("Post with id $id was not found"))))
+            .switchIfEmpty(Mono.error((ResourceNotFoundException(
+                "error.post.not.found.message", arrayOf(id)))))
             .awaitSingle()
     }
 

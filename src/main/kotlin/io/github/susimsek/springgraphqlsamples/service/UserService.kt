@@ -32,7 +32,7 @@ class UserService(
                 if (!existingUser.activated) {
                     userRepository.delete(existingUser)
                 } else {
-                    Mono.error(ResourceAlreadyExistsException("Username is already in use!"))
+                    Mono.error(ResourceAlreadyExistsException("error.username.already.exists.message"))
                 }
             }
             .then(userRepository.findOneByEmailIgnoreCase(input.email))
@@ -40,7 +40,7 @@ class UserService(
                 if (!existingUser.activated) {
                     userRepository.delete(existingUser)
                 } else {
-                    Mono.error(ResourceAlreadyExistsException("Email is already in use!"))
+                    Mono.error(ResourceAlreadyExistsException("error.email.already.exists.message"))
                 }
             }.then(
                 Mono.fromCallable {
@@ -78,7 +78,8 @@ class UserService(
     fun getUser(id: String): Mono<UserPayload> {
         return userRepository.findById(id)
             .map(userMapper::toType)
-            .switchIfEmpty(Mono.error((ResourceNotFoundException("User with id $id was not found"))))
+            .switchIfEmpty(Mono.error((ResourceNotFoundException(
+                "error.user.not.found.message", arrayOf(id)))))
     }
 
     fun getUserByIdIn(ids: MutableSet<String>?): Flux<UserPayload> {

@@ -84,7 +84,7 @@ import java.util.function.Consumer
 class GraphqlRuntimeHintsRegistrar : RuntimeHintsRegistrar {
     private val values = MemberCategory.values()
     override fun registerHints(hints: RuntimeHints, classLoader: ClassLoader?) {
-        mutableSetOf(ClassPathResource("graphiql/index.html"), GraphqlDateTimeConfig.SCHEMA_RESOURCE)
+        mutableSetOf(ClassPathResource("graphiql/index.html"), GraphqlConfig.SCHEMA_RESOURCE)
             .forEach(Consumer { s: ClassPathResource -> hints.resources().registerResource(s) })
         mutableSetOf("i18n/Validation.properties", "i18n/Validation", "i18n/Execution.properties", "i18n/General.properties")
             .forEach(Consumer { r: String -> hints.resources().registerResourceBundle(r) })

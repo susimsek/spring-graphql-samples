@@ -13,6 +13,7 @@ import jakarta.validation.Valid
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.reactive.asPublisher
 import org.reactivestreams.Publisher
+import org.slf4j.LoggerFactory
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.graphql.data.method.annotation.Argument
@@ -22,6 +23,7 @@ import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.graphql.data.method.annotation.SubscriptionMapping
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
+import java.util.Locale
 
 @Controller
 @PreAuthorize("isAuthenticated()")
@@ -29,9 +31,11 @@ class PostController(
     private val postService: PostService
 ) {
 
+    private val log = LoggerFactory.getLogger(javaClass)
+
     @MutationMapping
-    suspend fun createPost(@Argument @Valid input: AddPostInput): PostPayload {
-        return postService.createPost(input)
+    suspend fun createPost(@Argument @Valid input: AddPostInput, locale: Locale): PostPayload {
+        return postService.createPost(input, locale)
     }
 
     @MutationMapping
@@ -58,8 +62,10 @@ class PostController(
     suspend fun posts(
         @Argument page: Int?,
         @Argument size: Int?,
-        @Argument orders: MutableList<PostOrder>?
+        @Argument orders: MutableList<PostOrder>?,
+        locale: Locale
     ): List<PostPayload> {
+        log.info("locale: {}", locale)
         val pageNo = page ?: DEFAULT_PAGE_NO
         val sizeNo = (size ?: DEFAULT_SIZE).coerceAtMost(MAX_SIZE)
         val sort = orders?.map(PostOrder::toOrder)?.let { Sort.by(it) } ?: Sort.unsorted()

@@ -1,6 +1,6 @@
 package io.github.susimsek.springgraphqlsamples.graphql.controller
 
-import io.github.susimsek.springgraphqlsamples.config.GraphqlDateTimeConfig
+import io.github.susimsek.springgraphqlsamples.config.GraphqlConfig
 import io.github.susimsek.springgraphqlsamples.config.ValidationAutoConfiguration
 import io.github.susimsek.springgraphqlsamples.exception.FieldError
 import io.github.susimsek.springgraphqlsamples.service.PostService
@@ -19,7 +19,7 @@ private const val DEFAULT_CONTENT = "test content"
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @GraphQlTest(controllers = [PostController::class])
-@Import(*[GraphqlDateTimeConfig::class, ValidationAutoConfiguration::class])
+@Import(*[GraphqlConfig::class, ValidationAutoConfiguration::class])
 @WithMockUser
 class ValidationTest {
 

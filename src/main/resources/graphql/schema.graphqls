@@ -1,3 +1,5 @@
+directive @uppercase on FIELD_DEFINITION
+
 directive @NotBlank(message : String = "graphql.validation.NotBlank.message") on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
 directive @Size(min : Int = 0, max : Int = 2147483647, message : String = "graphql.validation.Size.message") on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
 directive @Email(message : String = "graphql.validation.Email.message") on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
@@ -117,7 +119,7 @@ type User {
 
 type PostPayload{
     id: ID!
-    title: String!
+    title: String! @uppercase
     content: String!
     status: PostStatus!
     createdDate: OffsetDateTime!

@@ -9,9 +9,10 @@ import graphql.schema.idl.SchemaDirectiveWiring
 import graphql.validation.rules.OnValidationErrorStrategy
 import graphql.validation.rules.ValidationRules
 import graphql.validation.schemawiring.ValidationSchemaWiring
+import io.github.susimsek.springgraphqlsamples.graphql.directive.UppercaseDirective
 import io.github.susimsek.springgraphqlsamples.graphql.scalar.GraphQlDateTimeProperties
 import io.github.susimsek.springgraphqlsamples.graphql.scalar.ScalarUtil
-import io.github.susimsek.springgraphqlsamples.validation.EmailRule
+import io.github.susimsek.springgraphqlsamples.graphql.validation.EmailRule
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
@@ -24,7 +25,7 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
 
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(GraphQlDateTimeProperties::class)
-class GraphqlDateTimeConfig {
+class GraphqlConfig {
 
     @Bean
     fun jsonCustomizer(): Jackson2ObjectMapperBuilderCustomizer {
@@ -118,6 +119,7 @@ class GraphqlDateTimeConfig {
             builder.scalar(graphQLObjectScalar)
             builder.scalar(urlScalar)
             builder.directiveWiring(validationSchemaWiring)
+            builder.directive("uppercase", UppercaseDirective())
         }
     }
 

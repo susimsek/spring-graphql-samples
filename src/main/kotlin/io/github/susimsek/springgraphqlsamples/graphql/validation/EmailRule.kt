@@ -1,4 +1,4 @@
-package io.github.susimsek.springgraphqlsamples.validation
+package io.github.susimsek.springgraphqlsamples.graphql.validation
 
 import graphql.GraphQLError
 import graphql.Scalars
