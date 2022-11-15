@@ -83,12 +83,62 @@ export enum UserOrderField {
   Username = 'username'
 }
 
+export type GetAllPostsQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']>;
+  size?: InputMaybe<Scalars['Int']>;
+  orders?: InputMaybe<Array<PostOrder> | PostOrder>;
+}>;
+
+
+export type GetAllPostsQuery = { posts: Array<{ id: string, title: string, content: string, status: PostStatus, createdDate: any }> };
+
 export type OnPostAddedSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
 export type OnPostAddedSubscription = { postAdded: { id: string, title: string, content: string, status: PostStatus, createdDate: any } };
 
 
+export const GetAllPostsDocument = gql`
+    query GetAllPosts($page: Int, $size: Int, $orders: [PostOrder!]) {
+  posts(page: $page, size: $size, orders: $orders) {
+    id
+    title
+    content
+    status
+    createdDate
+  }
+}
+    `;
+
+/**
+ * __useGetAllPostsQuery__
+ *
+ * To run a query within a React component, call `useGetAllPostsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllPostsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllPostsQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *      size: // value for 'size'
+ *      orders: // value for 'orders'
+ *   },
+ * });
+ */
+export function useGetAllPostsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllPostsQuery, GetAllPostsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllPostsQuery, GetAllPostsQueryVariables>(GetAllPostsDocument, options);
+      }
+export function useGetAllPostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllPostsQuery, GetAllPostsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllPostsQuery, GetAllPostsQueryVariables>(GetAllPostsDocument, options);
+        }
+export type GetAllPostsQueryHookResult = ReturnType<typeof useGetAllPostsQuery>;
+export type GetAllPostsLazyQueryHookResult = ReturnType<typeof useGetAllPostsLazyQuery>;
+export type GetAllPostsQueryResult = Apollo.QueryResult<GetAllPostsQuery, GetAllPostsQueryVariables>;
 export const OnPostAddedDocument = gql`
     subscription OnPostAdded {
   postAdded {
