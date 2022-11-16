@@ -1,22 +1,25 @@
 import React from "react";
-import {IPost} from "../types/post";
-import {Button, Card} from "react-bootstrap";
+import {Button} from "react-bootstrap";
 import {useRouter} from "next/router";
-import Link from "next/link";
-
+import {useCookies} from "react-cookie";
 
 
 const LanguageBar: React.FC = () => {
-    const currentPath = useRouter().asPath;
+
+    const setCookie = useCookies(['NEXT_LOCALE'])[1]
+
+
+    const router = useRouter();
+
+    const changeLanguage = (locale: string) => (event: any) => {
+        setCookie("NEXT_LOCALE", locale, {path: "/"})
+        router.push(router.asPath, undefined, { locale })
+    }
 
     return (
         <section className="mt-3 mb-3">
-            <Link href={currentPath} locale="en" className="me-2">
-                <Button variant="outline-primary" size="sm">English</Button>
-            </Link>
-            <Link href={currentPath} locale="tr">
-                <Button variant="outline-primary" size="sm">Turkish</Button>
-            </Link>
+            <Button variant="outline-primary" size="sm" className="me-2" onClick={changeLanguage('en')}>English</Button>
+            <Button variant="outline-primary" size="sm" onClick={changeLanguage('tr')}>Turkish</Button>
         </section>
     );
 }

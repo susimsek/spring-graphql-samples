@@ -4,17 +4,23 @@ import {GraphQLWsLink} from "@apollo/client/link/subscriptions";
 import {createClient} from "graphql-ws";
 import {getMainDefinition} from "@apollo/client/utilities";
 import {setContext} from "@apollo/client/link/context";
+import {Cookies} from "react-cookie";
 
 const httpLink = createHttpLink({
     uri: GRAPHQL_HTTP_URI,
 });
 
+const cookies = new Cookies();
+
+const token = 'dIvXJpYcpMRKITv+kZuVVENE6H/cH05rKrgEfPE2695uXf7H4rd0O0DJkfjVfnYMmaXVLP8j+4DcrkognGRdDxguwzZDisalgwZyMT1DLjMjuKCtMky6+H+jEo4/iU8KoZzZn9Hv6RI7suZOMMqlNeRbvhtt1LB+cL+QPnaGnfZkKDIk2QlHrEC0QKoHmloqrj7JaaSrbbc1iIngRW5j+hCaREnSt8Ls1DQqs/YufzvlW1Ybh+2i0cCK0rMxHw2Ek894RhCm5Sbs8rcgbgw0VChf00UcjYwUlFWUt/rJfD/WR+INy6Te1wbENAizer4M43Shl7MwuA39Ldb4z5G36gx/ame6UUYl9t0JC9E7zf+9V8FTe1/5mmg/3B3p+CU358M45VCulyGD+xU6m1pDc19FJ9IFUReYSSV2hZd0c/bnjYOGfi+n6VWRkFForWAMjfjDTbzjt/+kTz0UK0c00t+WeRXgm64TKRCi7FQwzOVAuMenJzKDHPnKuO4+2HJuDDvhSFa8hPt9i46rtYeq3kYoWUSajaPVwgRYwuXpQgRte5+A46B+jWcFZ7hKndTdMnZOVrNDHoygGrCcVV+ZecxPzynACqaGR8gyvAPE1LbGDQIFD00sqACh2z+h+9L+FLhQ6SndrVdwhVmy6IKdoH9RwdGo2+M7gUEkL2dY2Pdy005SgPizdj2/6HzXgXaqC44bFgo4wE9YlMLe+2P+Qw==';
+
 const authLink = setContext((_, { headers }) => {
+    const lng = cookies.get('NEXT_LOCALE')
     return {
         headers: {
             ...headers,
-            authorization: 'Bearer 4cF8r+zUivwptsRCt30ENeXPpTXwYtYBb9EQD2ECFl3J1lGe22RXVpl0+pF/z1maZynZ8hRl1dalrn0b9kFQv/PYUwf0ye6SesOTr6x9nu9gWX1dea4y7CcyH8UDBYntsxUw8XuZeEBFoY+gjB1jNYuMPUwPmL5ynfF06QLzXJFoX7V6tf8HCANUH4LIpgM9SW6NUT6iJaFCCdR9kSuLX2RpcPcT5iTzspqedsnonAHWzaKgmP8JlxtIF9A6LAVD/iWIDblYug6cVFGTpIp4sK/ki99H0KLfr4xqnw0kaAHvdcXBEAohRzWrT4ED1KNkuUlOuRncxTj8YpE80Kb2ZmZGbo9kEEWbNIkUSZbCV9DOF8oPF7kX0U5RvkvvpPlW6/m8Uy/enJh30bF6JlY10jsolFZh39dy/9W75q2JOn9InZL9n67CCP4AYcuoHnK11vwtuHP2U56EJRmxIl7vdjGn87YayDK4Rnrc3nHFaGHKpfAfJ+IQQAWOY0qy7vYUxpUB9Hp0xAzNJyN36kx/zn4kx+ukPHxgQ6OhBfvmGiaNjgDVZ7z0zafmT415nya1k1PfVUiLY7VQiozlkGSE1c7VJK7HmNZoxvV6alW1ApSeNw6itvZk6zMTDUsoi6a7T5HAXY3UuuYLMnWnwEogOkpXdmGEUXrBTE03oVcO8zZZ3xMTSchZw4bBpTgr8FGtJjnYOcC6C5XrYD+olD46ZpmpyFU5nAn85XDsh+FNHVI=',
-            "Accept-Language": "tr",
+            authorization: `Bearer ${token}`,
+            'Accept-Language': lng,
         }
     }
 });
@@ -23,7 +29,7 @@ const wsLink = typeof window !== "undefined"
     ? new GraphQLWsLink(createClient({
         url: GRAPHQL_WS_URL,
         connectionParams: {
-            authToken: 'Bearer 4cF8r+zUivwptsRCt30ENeXPpTXwYtYBb9EQD2ECFl3J1lGe22RXVpl0+pF/z1maZynZ8hRl1dalrn0b9kFQv/PYUwf0ye6SesOTr6x9nu9gWX1dea4y7CcyH8UDBYntsxUw8XuZeEBFoY+gjB1jNYuMPUwPmL5ynfF06QLzXJFoX7V6tf8HCANUH4LIpgM9SW6NUT6iJaFCCdR9kSuLX2RpcPcT5iTzspqedsnonAHWzaKgmP8JlxtIF9A6LAVD/iWIDblYug6cVFGTpIp4sK/ki99H0KLfr4xqnw0kaAHvdcXBEAohRzWrT4ED1KNkuUlOuRncxTj8YpE80Kb2ZmZGbo9kEEWbNIkUSZbCV9DOF8oPF7kX0U5RvkvvpPlW6/m8Uy/enJh30bF6JlY10jsolFZh39dy/9W75q2JOn9InZL9n67CCP4AYcuoHnK11vwtuHP2U56EJRmxIl7vdjGn87YayDK4Rnrc3nHFaGHKpfAfJ+IQQAWOY0qy7vYUxpUB9Hp0xAzNJyN36kx/zn4kx+ukPHxgQ6OhBfvmGiaNjgDVZ7z0zafmT415nya1k1PfVUiLY7VQiozlkGSE1c7VJK7HmNZoxvV6alW1ApSeNw6itvZk6zMTDUsoi6a7T5HAXY3UuuYLMnWnwEogOkpXdmGEUXrBTE03oVcO8zZZ3xMTSchZw4bBpTgr8FGtJjnYOcC6C5XrYD+olD46ZpmpyFU5nAn85XDsh+FNHVI=',
+            authToken: `Bearer ${token}`
         }
     }))
     : null;
