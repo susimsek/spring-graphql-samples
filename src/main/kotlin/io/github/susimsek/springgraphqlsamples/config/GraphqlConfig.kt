@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import graphql.scalars.ExtendedScalars
+import graphql.scalars.locale.LocaleScalar
 import graphql.schema.GraphQLScalarType
 import graphql.schema.idl.SchemaDirectiveWiring
 import graphql.validation.rules.OnValidationErrorStrategy
@@ -21,6 +22,7 @@ import org.springframework.context.annotation.ImportRuntimeHints
 import org.springframework.core.io.ClassPathResource
 import org.springframework.graphql.execution.RuntimeWiringConfigurer
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
+import java.util.Locale
 
 
 @Configuration(proxyBeanMethods = false)
@@ -86,6 +88,11 @@ class GraphqlConfig {
     }
 
     @Bean
+    fun localeScalar(): GraphQLScalarType {
+        return ExtendedScalars.Locale
+    }
+
+    @Bean
     fun validationSchemaWiring(): SchemaDirectiveWiring {
         val validationRules = ValidationRules.newValidationRules()
             .onValidationErrorStrategy(OnValidationErrorStrategy.RETURN_NULL)
@@ -106,6 +113,7 @@ class GraphqlConfig {
         graphQLUuidScalar: GraphQLScalarType,
         graphQLObjectScalar: GraphQLScalarType,
         urlScalar: GraphQLScalarType,
+        localeScalar: GraphQLScalarType,
         validationSchemaWiring: SchemaDirectiveWiring
     ): RuntimeWiringConfigurer {
         return RuntimeWiringConfigurer { builder ->
@@ -118,6 +126,7 @@ class GraphqlConfig {
             builder.scalar(graphQLUuidScalar)
             builder.scalar(graphQLObjectScalar)
             builder.scalar(urlScalar)
+            builder.scalar(localeScalar)
             builder.directiveWiring(validationSchemaWiring)
             builder.directive("uppercase", UppercaseDirective())
         }

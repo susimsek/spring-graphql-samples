@@ -18,6 +18,7 @@ import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.graphql.data.method.annotation.SchemaMapping
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
+import java.util.Locale
 
 
 @Controller
@@ -45,8 +46,10 @@ class UserController(private val userService: UserService) {
 
     @QueryMapping
     @PreAuthorize("isAuthenticated()")
-    suspend fun me(): UserPayload {
-        return userService.getCurrentUser()
+    suspend fun me(locale: Locale): UserPayload {
+        val user = userService.getCurrentUser()
+        user.locale = locale
+        return user
     }
 
     @SchemaMapping

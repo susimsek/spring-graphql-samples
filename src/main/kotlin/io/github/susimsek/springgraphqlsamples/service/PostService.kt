@@ -47,6 +47,7 @@ class PostService(
         val event = payload
         val localizedTitle = messageSource.getMessage("post.title", arrayOf(payload.title), locale)
         event.title = localizedTitle
+        event.locale = locale
 
         flow.emit(event)
         // sink.emitNext(payload, Sinks.EmitFailureHandler.FAIL_FAST)

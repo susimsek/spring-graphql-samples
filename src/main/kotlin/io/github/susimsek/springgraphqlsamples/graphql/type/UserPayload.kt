@@ -1,6 +1,7 @@
 package io.github.susimsek.springgraphqlsamples.graphql.type
 
 import java.time.OffsetDateTime
+import java.util.Locale
 
 data class UserPayload(
     var id: String? = null,
@@ -13,5 +14,7 @@ data class UserPayload(
 
     var email: String? = null,
 
-    var createdDate: OffsetDateTime
+    var createdDate: OffsetDateTime,
+
+    var locale: Locale? = null
 )

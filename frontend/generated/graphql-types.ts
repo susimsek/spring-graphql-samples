@@ -13,6 +13,7 @@ export interface Scalars {
   Boolean: boolean;
   Int: number;
   Float: number;
+  Locale: any;
   OffsetDateTime: any;
 }
 
@@ -95,7 +96,7 @@ export type GetAllPostsQuery = { posts: Array<{ id: string, title: string, conte
 export type OnPostAddedSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
-export type OnPostAddedSubscription = { postAdded: { id: string, title: string, content: string, status: PostStatus, createdDate: any } };
+export type OnPostAddedSubscription = { postAdded: { id: string, title: string, content: string, status: PostStatus, createdDate: any, locale?: any | null } };
 
 
 export const GetAllPostsDocument = gql`
@@ -147,6 +148,7 @@ export const OnPostAddedDocument = gql`
     content
     status
     createdDate
+    locale
   }
 }
     `;

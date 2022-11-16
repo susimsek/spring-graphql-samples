@@ -6,4 +6,5 @@ export interface IPost {
     content: string;
     status: PostStatus,
     createdDate: any;
+    locale?: any | null
 }

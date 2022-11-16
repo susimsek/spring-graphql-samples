@@ -2,6 +2,7 @@ package io.github.susimsek.springgraphqlsamples.graphql.type
 
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.PostStatus
 import java.time.OffsetDateTime
+import java.util.*
 
 data class PostPayload(
     var id: String? = null,
@@ -18,5 +19,7 @@ data class PostPayload(
 
     var createdBy: String? = null,
 
-    var posts: MutableList<PostPayload>? = null
+    var posts: MutableList<PostPayload>? = null,
+
+    var locale: Locale? = null
 )

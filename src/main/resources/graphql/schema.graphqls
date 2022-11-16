@@ -6,6 +6,7 @@ directive @Email(message : String = "graphql.validation.Email.message") on ARGUM
 directive @Pattern(regexp : String! =".*", message : String = "graphql.validation.Pattern.message") on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
 
 scalar OffsetDateTime
+scalar Locale
 
 type Query {
     userById(id: ID!): User
@@ -104,6 +105,7 @@ type UserPayload {
     email: String!
     createdDate: OffsetDateTime!
     posts: [PostPayload!]!
+    locale: Locale
 }
 
 
@@ -124,6 +126,7 @@ type PostPayload{
     status: PostStatus!
     createdDate: OffsetDateTime!
     author: UserPayload!
+    locale: Locale
 }
 
 type Token {
