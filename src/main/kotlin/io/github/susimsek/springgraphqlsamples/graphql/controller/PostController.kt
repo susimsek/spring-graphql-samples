@@ -65,7 +65,7 @@ class PostController(
         @Argument orders: MutableList<PostOrder>?,
         locale: Locale
     ): List<PostPayload> {
-        log.info("locale: {}", locale)
+        log.info("called posts locale: {}", locale)
         val pageNo = page ?: DEFAULT_PAGE_NO
         val sizeNo = (size ?: DEFAULT_SIZE).coerceAtMost(MAX_SIZE)
         val sort = orders?.map(PostOrder::toOrder)?.let { Sort.by(it) } ?: Sort.unsorted()
@@ -80,7 +80,8 @@ class PostController(
     }
 
     @SubscriptionMapping
-    fun postAdded(): Publisher<PostPayload> {
+    fun postAdded(locale: Locale): Publisher<PostPayload> {
+        log.info("called postAdded locale: {}", locale)
         return postService.postAdded().asPublisher()
     }
 }

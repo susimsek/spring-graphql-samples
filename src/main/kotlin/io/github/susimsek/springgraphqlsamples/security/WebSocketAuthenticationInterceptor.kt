@@ -19,7 +19,7 @@ class WebSocketAuthenticationInterceptor(
     private val jwtReactiveAuthenticationManager: JwtReactiveAuthenticationManager
 ) : WebSocketGraphQlInterceptor {
     private companion object {
-        const val TOKEN_KEY_NAME = "authToken"
+        const val TOKEN_KEY_NAME = "authorization"
         const val TOKEN_PREFIX = "Bearer "
 
         private val AUTHENTICATION_SESSION_ATTRIBUTE_KEY =
