@@ -2,7 +2,6 @@ package io.github.susimsek.springgraphqlsamples.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.querydsl.core.annotations.QueryEntity
-import io.github.susimsek.springgraphqlsamples.graphql.enumerated.UserOrderField
 import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field
@@ -40,11 +39,11 @@ data class User(
 
     override fun toString(): String {
         return "User(id=$id, " +
-                "username=${UserOrderField.username}, " +
+                "username=$username}, " +
                 "password=$password, " +
-                "firstName=${UserOrderField.firstName}, " +
-                "lastName=${UserOrderField.lastName}, " +
-                "email=${UserOrderField.email}, " +
+                "firstName=${firstName}, " +
+                "lastName=${lastName}, " +
+                "email=${email}, " +
                 "activated=$activated)"
     }
 }
