@@ -7,6 +7,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {appWithTranslation} from "next-i18next";
 import { CookiesProvider } from 'react-cookie';
 
+import { config } from '@fortawesome/fontawesome-svg-core'
+import '@fortawesome/fontawesome-svg-core/styles.css' // Import the CSS
+config.autoAddCss = false
+
 const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
     return (
         <CookiesProvider>

@@ -4,7 +4,7 @@ import Post from "../components/Post";
 import {useTranslation} from "next-i18next";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 import LanguageBar from "../components/LanguageBar";
-import {Container, Spinner} from "react-bootstrap";
+import {Alert, Container, Spinner} from "react-bootstrap";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
@@ -38,14 +38,9 @@ const Home = () => {
           <main>
               <Header/>
               <Container className="mt-3">
-                  <h3>Current Locale is {i18n.language}</h3>
-                  <LanguageBar/>
                   <h3>{t('new.post.title')}</h3>
-                  {loading ?
-                      <div className="text-center">
-                          <Spinner animation="border" variant="secondary"/>
-                      </div> :
-                      data?.postAdded && <Post post={data?.postAdded as IPost}/>}
+                  { data ? data.postAdded && <Post post={data?.postAdded as IPost}/>:
+                      <Alert variant='info'>{t('new.post.not.found')}</Alert>}
                   <hr/>
                   <h3>{t('post.list.title')}</h3>
                   {postDataLoading ?

@@ -3,6 +3,7 @@ import {Container, Nav, Navbar} from "react-bootstrap";
 import logo from '../public/logo.png'
 import Image from "next/image";
 import {useTranslation} from "next-i18next";
+import LanguageBar from "./LanguageBar";
 
 const Header: React.FC = () => {
     const { t } = useTranslation()
@@ -18,9 +19,15 @@ const Header: React.FC = () => {
                         height="30"
                         className="d-inline-block align-top"
                     />{' '}I18N</Navbar.Brand>
-                <Nav className="me-auto">
-                    <Nav.Link href="/">{t('home.label')}</Nav.Link>
-                </Nav>
+                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                <Navbar.Collapse id="responsive-navbar-nav">
+                    <Nav className="me-auto">
+                        <Nav.Link href="/">{t('home.label')}</Nav.Link>
+                    </Nav>
+                    <Nav>
+                        <LanguageBar/>
+                    </Nav>
+                </Navbar.Collapse>
             </Container>
         </Navbar>
     );

@@ -1,26 +1,52 @@
 import React from "react";
-import {Button} from "react-bootstrap";
+import {NavDropdown, Navbar} from "react-bootstrap";
 import {useRouter} from "next/router";
 import {useCookies} from "react-cookie";
+import Language from "./Language";
+import Image from "next/image";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faGlobe} from "@fortawesome/free-solid-svg-icons";
+import {useTranslation} from "next-i18next";
+
+const languages = [
+    {
+        locale: 'en',
+        countryCode: 'US'
+    },
+    {
+        locale: 'tr',
+        countryCode: 'TR'
+    }
+];
 
 
 const LanguageBar: React.FC = () => {
 
     const setCookie = useCookies(['NEXT_LOCALE'])[1]
+    const { i18n } = useTranslation()
 
 
     const router = useRouter();
 
-    const changeLanguage = (locale: string) => (event: any) => {
+    const changeLanguage = (locale: string) => {
         setCookie("NEXT_LOCALE", locale, {path: "/"})
         router.push(router.asPath, undefined, { locale })
     }
 
+    const currentLanguage = languages.find((language) => {
+        return language.locale === i18n.language
+    })
+
+    const languageIcon = (<Navbar.Text><FontAwesomeIcon icon={faGlobe} /> {currentLanguage?.countryCode}</Navbar.Text>)
+
     return (
-        <section className="mt-3 mb-3">
-            <Button variant="outline-primary" size="sm" className="me-2" onClick={changeLanguage('en')}>English</Button>
-            <Button variant="outline-primary" size="sm" onClick={changeLanguage('tr')}>Turkish</Button>
-        </section>
+        <NavDropdown title={languageIcon} menuVariant="dark" id="collasible-nav-dropdown">
+            {languages.map(language => <Language
+                key={language.locale}
+                changeLanguage={() => changeLanguage(language.locale)}
+                countryCode={language.countryCode}
+            />)}
+        </NavDropdown>
     );
 }
 
