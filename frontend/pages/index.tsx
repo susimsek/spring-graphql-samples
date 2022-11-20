@@ -1,10 +1,12 @@
-import styles from '../styles/Home.module.css'
 import {OrderType, PostOrderField, useGetAllPostsQuery, useOnPostAddedSubscription} from "../generated/graphql-types";
 import {IPost} from "../types/post";
 import Post from "../components/Post";
 import {useTranslation} from "next-i18next";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 import LanguageBar from "../components/LanguageBar";
+import {Container, Spinner} from "react-bootstrap";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 const Home = () => {
 
@@ -32,23 +34,37 @@ const Home = () => {
     }
 
   return (
-    <div className={styles.container}>
-      <h3>Current Locale is {i18n.language}</h3>
-        <LanguageBar/>
-      <h3>{t('new.post.title')}</h3>
-        {data?.postAdded && <Post post={data?.postAdded as IPost}/> }
-       <hr/>
-       <h3>{t('post.list.title')}</h3>
-        {postsData?.posts?.map((post: IPost) => (
-        <Post key={post.id} post={post}/>
-        ))}
-    </div>
+      <>
+          <main>
+              <Header/>
+              <Container className="mt-3">
+                  <h3>Current Locale is {i18n.language}</h3>
+                  <LanguageBar/>
+                  <h3>{t('new.post.title')}</h3>
+                  {loading ?
+                      <div className="text-center">
+                          <Spinner animation="border" variant="secondary"/>
+                      </div> :
+                      data?.postAdded && <Post post={data?.postAdded as IPost}/>}
+                  <hr/>
+                  <h3>{t('post.list.title')}</h3>
+                  {postDataLoading ?
+                      <div className="text-center">
+                          <Spinner animation="border" variant="secondary"/>
+                      </div> :
+                      postsData?.posts?.map((post: IPost) => (
+                          <Post key={post.id} post={post}/>
+                      ))}
+              </Container>
+          </main>
+          <Footer />
+      </>
   )
 }
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
     props: {
-        ...(await serverSideTranslations(locale, ['home']))
+        ...(await serverSideTranslations(locale, ['home', 'common']))
     }
 })
 
