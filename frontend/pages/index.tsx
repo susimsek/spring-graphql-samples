@@ -10,7 +10,7 @@ const Home = () => {
 
   const { data, loading, error } = useOnPostAddedSubscription();
 
-    const { data: postsData, loading: postDataLoading, error: postsDataError } = useGetAllPostsQuery({
+    const { data: postsData, loading: postDataLoading, error: postsDataError, refetch} = useGetAllPostsQuery({
         variables: {
         page: 0,
         size: 5,
@@ -26,6 +26,10 @@ const Home = () => {
   if (error || postsDataError) {
       console.log(error || postsDataError)
   }
+
+    if (data) {
+        refetch()
+    }
 
   return (
     <div className={styles.container}>
