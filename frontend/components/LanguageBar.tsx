@@ -3,21 +3,11 @@ import {NavDropdown, Navbar} from "react-bootstrap";
 import {useRouter} from "next/router";
 import {useCookies} from "react-cookie";
 import Language from "./Language";
-import Image from "next/image";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faGlobe} from "@fortawesome/free-solid-svg-icons";
 import {useTranslation} from "next-i18next";
+import {LANGUAGES} from "../constants";
 
-const languages = [
-    {
-        locale: 'en',
-        countryCode: 'US'
-    },
-    {
-        locale: 'tr',
-        countryCode: 'TR'
-    }
-];
 
 
 const LanguageBar: React.FC = () => {
@@ -33,7 +23,7 @@ const LanguageBar: React.FC = () => {
         router.push(router.asPath, undefined, { locale })
     }
 
-    const currentLanguage = languages.find((language) => {
+    const currentLanguage = LANGUAGES.find((language) => {
         return language.locale === i18n.language
     })
 
@@ -41,7 +31,7 @@ const LanguageBar: React.FC = () => {
 
     return (
         <NavDropdown title={languageIcon} menuVariant="dark" id="collasible-nav-dropdown">
-            {languages.map(language => <Language
+            {LANGUAGES.map(language => <Language
                 key={language.locale}
                 changeLanguage={() => changeLanguage(language.locale)}
                 countryCode={language.countryCode}

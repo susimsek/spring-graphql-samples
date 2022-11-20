@@ -1,7 +1,10 @@
 package io.github.susimsek.springgraphqlsamples.service
 
+import io.github.susimsek.springgraphqlsamples.exception.EMAIL_ALREADY_EXISTS_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.exception.ResourceAlreadyExistsException
 import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundException
+import io.github.susimsek.springgraphqlsamples.exception.USERNAME_ALREADY_EXISTS_MSG_CODE
+import io.github.susimsek.springgraphqlsamples.exception.USER_NOT_FOUND_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.graphql.input.AddUserInput
 import io.github.susimsek.springgraphqlsamples.graphql.input.UserFilter
 import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
@@ -32,7 +35,7 @@ class UserService(
                 if (!existingUser.activated) {
                     userRepository.delete(existingUser)
                 } else {
-                    Mono.error(ResourceAlreadyExistsException("error.username.already.exists.message"))
+                    Mono.error(ResourceAlreadyExistsException(USERNAME_ALREADY_EXISTS_MSG_CODE))
                 }
             }
             .then(userRepository.findOneByEmailIgnoreCase(input.email))
@@ -40,7 +43,7 @@ class UserService(
                 if (!existingUser.activated) {
                     userRepository.delete(existingUser)
                 } else {
-                    Mono.error(ResourceAlreadyExistsException("error.email.already.exists.message"))
+                    Mono.error(ResourceAlreadyExistsException(EMAIL_ALREADY_EXISTS_MSG_CODE))
                 }
             }.then(
                 Mono.fromCallable {
@@ -78,8 +81,15 @@ class UserService(
     fun getUser(id: String): Mono<UserPayload> {
         return userRepository.findById(id)
             .map(userMapper::toType)
-            .switchIfEmpty(Mono.error((ResourceNotFoundException(
-                "error.user.not.found.message", arrayOf(id)))))
+            .switchIfEmpty(
+                Mono.error(
+                    (
+                        ResourceNotFoundException(
+                USER_NOT_FOUND_MSG_CODE, arrayOf(id)
+                        )
+                    )
+                )
+            )
     }
 
     fun getUserByIdIn(ids: MutableSet<String>?): Flux<UserPayload> {

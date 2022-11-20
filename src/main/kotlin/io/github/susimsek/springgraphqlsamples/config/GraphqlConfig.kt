@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import graphql.scalars.ExtendedScalars
-import graphql.scalars.locale.LocaleScalar
 import graphql.schema.GraphQLScalarType
 import graphql.schema.idl.SchemaDirectiveWiring
 import graphql.validation.rules.OnValidationErrorStrategy
@@ -22,8 +21,6 @@ import org.springframework.context.annotation.ImportRuntimeHints
 import org.springframework.core.io.ClassPathResource
 import org.springframework.graphql.execution.RuntimeWiringConfigurer
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
-import java.util.Locale
-
 
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(GraphQlDateTimeProperties::class)
@@ -62,37 +59,30 @@ class GraphqlConfig {
         )
     }
 
-    @Bean
     fun graphQLObjectScalar(): GraphQLScalarType {
         return ExtendedScalars.Object
     }
 
-    @Bean
     fun graphQLBigDecimalScalar(): GraphQLScalarType {
         return ExtendedScalars.GraphQLBigDecimal
     }
 
-    @Bean
     fun urlScalar(): GraphQLScalarType {
         return ExtendedScalars.Url
     }
 
-    @Bean
     fun graphQLPositiveIntScalar(): GraphQLScalarType {
         return ExtendedScalars.PositiveInt
     }
 
-    @Bean
     fun graphQLUuidScalar(): GraphQLScalarType {
         return ExtendedScalars.UUID
     }
 
-    @Bean
     fun localeScalar(): GraphQLScalarType {
         return ExtendedScalars.Locale
     }
 
-    @Bean
     fun validationSchemaWiring(): SchemaDirectiveWiring {
         val validationRules = ValidationRules.newValidationRules()
             .onValidationErrorStrategy(OnValidationErrorStrategy.RETURN_NULL)
@@ -103,31 +93,23 @@ class GraphqlConfig {
 
     @Bean
     @ImportRuntimeHints(GraphqlRuntimeHintsRegistrar::class)
-    @SuppressWarnings("LongParameterList")
     fun graphqlDateTimeConfigurer(
         graphQlOffsetDateTimeScalar: GraphQLScalarType,
         graphQlLocalDateTimeScalar: GraphQLScalarType,
-        graphQlLocalDateScalar: GraphQLScalarType,
-        graphQLBigDecimalScalar: GraphQLScalarType,
-        graphQLPositiveIntScalar: GraphQLScalarType,
-        graphQLUuidScalar: GraphQLScalarType,
-        graphQLObjectScalar: GraphQLScalarType,
-        urlScalar: GraphQLScalarType,
-        localeScalar: GraphQLScalarType,
-        validationSchemaWiring: SchemaDirectiveWiring
+        graphQlLocalDateScalar: GraphQLScalarType
     ): RuntimeWiringConfigurer {
         return RuntimeWiringConfigurer { builder ->
             builder.scalar(graphQlOffsetDateTimeScalar)
             builder.scalar(graphQlLocalDateTimeScalar)
             builder.scalar(graphQlLocalDateScalar)
-            builder.scalar(graphQLBigDecimalScalar)
-            builder.scalar(graphQLBigDecimalScalar)
-            builder.scalar(graphQLPositiveIntScalar)
-            builder.scalar(graphQLUuidScalar)
-            builder.scalar(graphQLObjectScalar)
-            builder.scalar(urlScalar)
-            builder.scalar(localeScalar)
-            builder.directiveWiring(validationSchemaWiring)
+            builder.scalar(graphQLBigDecimalScalar())
+            builder.scalar(graphQLBigDecimalScalar())
+            builder.scalar(graphQLPositiveIntScalar())
+            builder.scalar(graphQLUuidScalar())
+            builder.scalar(graphQLObjectScalar())
+            builder.scalar(urlScalar())
+            builder.scalar(localeScalar())
+            builder.directiveWiring(validationSchemaWiring())
             builder.directive("uppercase", UppercaseDirective())
         }
     }

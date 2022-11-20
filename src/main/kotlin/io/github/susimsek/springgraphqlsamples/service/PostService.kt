@@ -1,5 +1,6 @@
 package io.github.susimsek.springgraphqlsamples.service
 
+import io.github.susimsek.springgraphqlsamples.exception.POST_NOT_FOUND_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundException
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.PostStatus
 import io.github.susimsek.springgraphqlsamples.graphql.input.AddPostInput
@@ -21,7 +22,7 @@ import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
-import java.util.*
+import java.util.Locale
 
 @Component
 class PostService(
@@ -57,7 +58,7 @@ class PostService(
     suspend fun updatePost(input: UpdatePostInput): PostPayload {
         return getCurrentUserLogin()
             .flatMap { authUser ->
-                postRepository.findById(input.id!!)
+                postRepository.findById(input.id)
                     .flatMap {
                         if (it.createdBy == authUser) {
                             postMapper.partialUpdate(it, input)
@@ -69,8 +70,15 @@ class PostService(
                                 )
                             )
                         }
-                    }.switchIfEmpty(Mono.error((ResourceNotFoundException(
-                        "error.post.not.found.message", arrayOf(input.id)))))
+                    }.switchIfEmpty(
+                        Mono.error(
+                            (
+                                ResourceNotFoundException(
+                                    POST_NOT_FOUND_MSG_CODE, arrayOf(input.id)
+                                )
+                            )
+                        )
+                    )
             }.map(postMapper::toType)
             .awaitSingle()
     }
@@ -91,8 +99,15 @@ class PostService(
                             )
                         }
                     }
-                    .switchIfEmpty(Mono.error((ResourceNotFoundException(
-                        "error.post.not.found.message", arrayOf(id)))))
+                    .switchIfEmpty(
+                        Mono.error(
+                            (
+                                ResourceNotFoundException(
+                                    POST_NOT_FOUND_MSG_CODE, arrayOf(id)
+                                )
+                            )
+                        )
+                    )
             }.map { it.id }
             .awaitSingle()
     }
@@ -106,8 +121,15 @@ class PostService(
     suspend fun getPost(id: String): PostPayload {
         return postRepository.findById(id)
             .map(postMapper::toType)
-            .switchIfEmpty(Mono.error((ResourceNotFoundException(
-                "error.post.not.found.message", arrayOf(id)))))
+            .switchIfEmpty(
+                Mono.error(
+                    (
+                        ResourceNotFoundException(
+                POST_NOT_FOUND_MSG_CODE, arrayOf(id)
+                        )
+                    )
+                )
+            )
             .awaitSingle()
     }
 

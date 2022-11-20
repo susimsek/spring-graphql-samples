@@ -4,7 +4,7 @@ import graphql.GraphQL
 import graphql.analysis.QueryVisitorFieldArgumentEnvironment
 import graphql.analysis.QueryVisitorFieldArgumentInputValue
 import graphql.execution.Execution
-import graphql.execution.nextgen.result.RootExecutionResultNode
+import graphql.execution.nextgen.result.RootExecutionResultNode //NOSONAR
 import graphql.language.Argument
 import graphql.language.ArrayValue
 import graphql.language.BooleanValue
@@ -86,7 +86,9 @@ class GraphqlRuntimeHintsRegistrar : RuntimeHintsRegistrar {
     override fun registerHints(hints: RuntimeHints, classLoader: ClassLoader?) {
         mutableSetOf(ClassPathResource("graphiql/index.html"), GraphqlConfig.SCHEMA_RESOURCE)
             .forEach(Consumer { s: ClassPathResource -> hints.resources().registerResource(s) })
-        mutableSetOf("i18n/Validation.properties", "i18n/Validation", "i18n/Execution.properties", "i18n/General.properties")
+        mutableSetOf(
+            "i18n/Validation.properties", "i18n/Validation", "i18n/Execution.properties", "i18n/General.properties"
+        )
             .forEach(Consumer { r: String -> hints.resources().registerResourceBundle(r) })
         mutableSetOf("graphql.analysis.QueryTraversalContext", "graphql.schema.idl.SchemaParseOrder")
             .forEach(

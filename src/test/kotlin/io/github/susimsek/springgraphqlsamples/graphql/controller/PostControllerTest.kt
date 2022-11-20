@@ -68,7 +68,7 @@ class PostControllerTest {
             .variable("id", id)
             .execute()
             .path("data.post.id").entity(String::class.java).isEqualTo(DEFAULT_ID)
-            .path("data.post.title").entity(String::class.java).isEqualTo(DEFAULT_TITLE)
+            .path("data.post.title").entity(String::class.java).isEqualTo(DEFAULT_TITLE.uppercase())
             .path("data.post.content").entity(String::class.java).isEqualTo(DEFAULT_CONTENT)
 
         verify(postService, Mockito.times(1)).getPost(Mockito.anyString())
