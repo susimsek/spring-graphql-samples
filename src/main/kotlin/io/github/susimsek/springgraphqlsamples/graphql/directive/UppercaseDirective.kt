@@ -4,7 +4,7 @@ import graphql.schema.DataFetcherFactories
 import graphql.schema.GraphQLFieldDefinition
 import graphql.schema.idl.SchemaDirectiveWiring
 import graphql.schema.idl.SchemaDirectiveWiringEnvironment
-import java.util.*
+import java.util.Locale
 
 class UppercaseDirective : SchemaDirectiveWiring {
     override fun onField(
