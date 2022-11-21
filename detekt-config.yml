@@ -289,7 +289,7 @@ naming:
   EnumNaming:
     active: true
     excludes: '**/test/**,**/androidTest/**,**/*.Test.kt,**/*.Spec.kt,**/*.Spek.kt'
-    enumEntryPattern: '^[A-Z][_a-zA-Z0-9]*'
+    enumEntryPattern: '^[A-Za-z][_a-zA-Z0-9]*'
   ForbiddenClassName:
     active: false
     excludes: '**/test/**,**/androidTest/**,**/*.Test.kt,**/*.Spec.kt,**/*.Spek.kt'
