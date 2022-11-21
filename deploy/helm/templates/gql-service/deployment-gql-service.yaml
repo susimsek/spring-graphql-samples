@@ -69,8 +69,6 @@ spec:
             - secretRef:
                 name: db-secret
             - secretRef:
-                name: token-secret
-            - secretRef:
                 name: cipher-secret
             - configMapRef:
                 name: spring-gql-service-config

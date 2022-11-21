@@ -6,6 +6,8 @@ volumes:
 networks:
   backend:
     name: backend
+  frontend:
+    name: frontend
 
 services:
   mongodb:
@@ -38,8 +40,15 @@ services:
       - SPRING_PROFILES_ACTIVE=prod
       - PORT
       - SPRING_DATA_MONGODB_URI
-      - SECURITY_AUTHENTICATION_TOKEN_BASE64_SECRET
       - SECURITY_AUTHENTICATION_TOKEN_TOKEN_VALIDITY_IN_SECONDS
       - SECURITY_CIPHER_BASE64_SECRET
     ports:
       - "9091:9091"
+  web:
+    image: suayb/spring-graphql-samples-web:latest
+    restart: unless-stopped
+    container_name: web
+    networks:
+      - frontend
+    ports:
+      - '3000:3000'
