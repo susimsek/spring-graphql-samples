@@ -1,5 +1,8 @@
 package io.github.susimsek.springgraphqlsamples.graphql.input
 
+import com.querydsl.core.BooleanBuilder
+import com.querydsl.core.types.Predicate
+import io.github.susimsek.springgraphqlsamples.domain.QUser
 import org.springframework.data.mongodb.core.query.Criteria
 
 data class UserFilter(
@@ -18,10 +21,10 @@ data class UserFilter(
             criteria.add(Criteria.where("username").`is`(username))
         }
         if (!firstName.isNullOrBlank()) {
-            criteria.add(Criteria.where("firstName").regex("^$firstName"))
+            criteria.add(Criteria.where("firstName").regex("^$firstName", "i"))
         }
         if (!lastName.isNullOrBlank()) {
-            criteria.add(Criteria.where("lastName").regex("^$lastName"))
+            criteria.add(Criteria.where("lastName").regex("^$lastName", "i"))
         }
         if (!email.isNullOrBlank()) {
             criteria.add(Criteria.where("email").`is`(email))
@@ -30,5 +33,27 @@ data class UserFilter(
             return null
         }
         return Criteria().andOperator(criteria)
+    }
+
+    fun toPredicate(): Predicate? {
+        val predicate = BooleanBuilder()
+        val qUser = QUser("user")
+
+        if (!username.isNullOrBlank()) {
+            predicate.and(qUser.username.eq(username))
+        }
+        if (!firstName.isNullOrBlank()) {
+            predicate.and(qUser.firstName.startsWithIgnoreCase(firstName))
+        }
+        if (!lastName.isNullOrBlank()) {
+            predicate.and(qUser.lastName.startsWithIgnoreCase(lastName))
+        }
+        if (!email.isNullOrBlank()) {
+            predicate.and(qUser.email.eq(email))
+        }
+        if (!predicate.hasValue()) {
+            return null
+        }
+        return predicate
     }
 }

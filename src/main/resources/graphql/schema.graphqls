@@ -9,6 +9,7 @@ scalar OffsetDateTime
 scalar Locale
 
 type Query {
+    users(page: Int, size: Int, filter: UserFilter, orders: [UserOrder!]): [UserPayload!]!
     userById(id: ID!): User
     userByUsername(username: String!): User
     usersByActivated(activated: Boolean!): [User]
