@@ -17,7 +17,6 @@ data:
     security:
       authentication:
         token:
-          base64-secret: ${TOKEN_SECRET}
           token-validity-in-seconds: {{ .Values.token.tokenValidityInSeconds| quote }}
       cipher:
         base64-secret: ${CIPHER_SECRET}
