@@ -3,6 +3,7 @@ package io.github.susimsek.springgraphqlsamples.domain.audit
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.annotation.Version
+import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Field
 import java.time.Clock
 import java.time.OffsetDateTime
