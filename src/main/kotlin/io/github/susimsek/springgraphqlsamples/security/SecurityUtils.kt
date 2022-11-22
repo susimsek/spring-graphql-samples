@@ -21,6 +21,7 @@ fun getCurrentUserLogin(): Mono<String> =
         .map(SecurityContext::getAuthentication)
         .flatMap { Mono.justOrEmpty(extractPrincipal(it)) }
 
+
 fun extractPrincipal(authentication: Authentication?): String? {
 
     if (authentication == null) {
