@@ -49,7 +49,7 @@ class PostController(
     }
 
     @BatchMapping
-    suspend fun posts(users: MutableList<UserPayload>): Map<UserPayload, MutableList<PostPayload>> {
+    suspend fun posts(users: List<UserPayload>): Map<UserPayload, List<PostPayload>> {
         return postService.getUsersWithPosts(users)
     }
 

@@ -1,14 +1,19 @@
 package io.github.susimsek.springgraphqlsamples.repository
 
 import io.github.susimsek.springgraphqlsamples.domain.Post
+import kotlinx.coroutines.flow.Flow
 import org.springframework.data.domain.Pageable
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository
-import org.springframework.stereotype.Repository
-import reactor.core.publisher.Flux
+import org.springframework.data.querydsl.ReactiveQuerydslPredicateExecutor
+import org.springframework.data.repository.kotlin.CoroutineCrudRepository
+import org.springframework.data.repository.kotlin.CoroutineSortingRepository
+import org.springframework.graphql.data.GraphQlRepository
 
-@Repository
-interface PostRepository : ReactiveMongoRepository<Post, String> {
+@GraphQlRepository
+interface PostRepository :
+    CoroutineCrudRepository<Post, String>,
+    CoroutineSortingRepository<Post, String>,
+    ReactiveQuerydslPredicateExecutor<Post> {
 
-    fun findByIdNotNull(pageable: Pageable): Flux<Post>
-    fun findAllByCreatedByIn(createdBy: MutableSet<String>?): Flux<Post>
+    fun findByIdNotNull(pageable: Pageable): Flow<Post>
+    fun findAllByCreatedByIn(createdBy: MutableSet<String>?): Flow<Post>
 }
