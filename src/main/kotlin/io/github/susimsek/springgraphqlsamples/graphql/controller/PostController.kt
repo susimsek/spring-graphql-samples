@@ -54,8 +54,8 @@ class PostController(
     }
 
     @BatchMapping
-    suspend fun author(posts: MutableList<PostPayload>): List<UserPayload> {
-        return postService.getPostsWithAuthors(posts).toList()
+    suspend fun author(posts: List<PostPayload>): Map<PostPayload, UserPayload?> {
+        return postService.getPostsWithAuthors(posts)
     }
 
     @QueryMapping

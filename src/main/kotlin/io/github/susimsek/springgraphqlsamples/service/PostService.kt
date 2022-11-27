@@ -1,6 +1,5 @@
 package io.github.susimsek.springgraphqlsamples.service
 
-import io.github.susimsek.springgraphqlsamples.domain.QPost.post
 import io.github.susimsek.springgraphqlsamples.exception.POST_NOT_FOUND_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundException
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.PostStatus
@@ -17,6 +16,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
@@ -98,13 +98,14 @@ class PostService(
         return postMapper.toType(post)
     }
 
-    @OptIn(FlowPreview::class)
-    fun getPostsWithAuthors(posts: MutableList<PostPayload>): Flow<UserPayload> {
+    suspend fun getPostsWithAuthors(posts: List<PostPayload>): Map<PostPayload, UserPayload?> {
         val authorIds = posts.map { post -> post.createdBy!! }.toMutableSet()
-        val authors = userService.getUserByIdIn(authorIds)
-        return authors.flatMapMerge {
-            authors.filter { post.createdBy.equals(it.id) }
+        val authors = userService.getUserByIdIn(authorIds).toList()
+        val mappedUsers = mutableMapOf<PostPayload, UserPayload?>()
+        posts.forEach { post ->
+            mappedUsers[post] = authors.firstOrNull { it.id == post.createdBy }
         }
+        return mappedUsers
     }
 
     fun getPostsByCreatedByIn(userIds: MutableSet<String>?): Flow<PostPayload> {

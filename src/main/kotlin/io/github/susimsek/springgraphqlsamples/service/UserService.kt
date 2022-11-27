@@ -86,7 +86,7 @@ class UserService(
         return userMapper.toType(user)
     }
 
-    fun getUserByIdIn(ids: MutableSet<String>?): Flow<UserPayload> {
+    fun getUserByIdIn(ids: MutableSet<String>): Flow<UserPayload> {
         return userRepository.findAllByIdIn(ids)
             .map(userMapper::toType)
     }
