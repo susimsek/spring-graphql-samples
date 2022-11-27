@@ -1,4 +1,7 @@
 directive @uppercase on FIELD_DEFINITION
+directive @lowercase on FIELD_DEFINITION
+directive @capitalize on FIELD_DEFINITION
+directive @trim on FIELD_DEFINITION
 
 directive @NotBlank(message : String = "graphql.validation.NotBlank.message") on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
 directive @Size(min : Int = 0, max : Int = 2147483647, message : String = "graphql.validation.Size.message") on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
@@ -112,7 +115,7 @@ type UserPayload {
 
 type User {
     id: ID!
-    username: String!
+    username: String! @uppercase
     firstName: String!
     lastName: String!
     email: String!
@@ -122,8 +125,8 @@ type User {
 
 type PostPayload{
     id: ID!
-    title: String! @uppercase
-    content: String!
+    title: String! @trim @capitalize
+    content: String! @lowercase
     status: PostStatus!
     createdDate: OffsetDateTime!
     author: UserPayload!

@@ -9,6 +9,9 @@ import graphql.schema.idl.SchemaDirectiveWiring
 import graphql.validation.rules.OnValidationErrorStrategy
 import graphql.validation.rules.ValidationRules
 import graphql.validation.schemawiring.ValidationSchemaWiring
+import io.github.susimsek.springgraphqlsamples.graphql.directive.CapitalizeDirective
+import io.github.susimsek.springgraphqlsamples.graphql.directive.LowercaseDirective
+import io.github.susimsek.springgraphqlsamples.graphql.directive.TrimDirective
 import io.github.susimsek.springgraphqlsamples.graphql.directive.UppercaseDirective
 import io.github.susimsek.springgraphqlsamples.graphql.scalar.GraphQlDateTimeProperties
 import io.github.susimsek.springgraphqlsamples.graphql.scalar.ScalarUtil
@@ -111,6 +114,9 @@ class GraphqlConfig {
             builder.scalar(localeScalar())
             builder.directiveWiring(validationSchemaWiring())
             builder.directive("uppercase", UppercaseDirective())
+            builder.directive("lowercase", LowercaseDirective())
+            builder.directive("capitalize", CapitalizeDirective())
+            builder.directive("trim", TrimDirective())
         }
     }
 
