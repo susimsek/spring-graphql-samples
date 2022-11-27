@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import graphql.scalars.ExtendedScalars
+import graphql.schema.DataFetchingEnvironmentImpl
+import graphql.schema.GraphQLAppliedDirective
 import graphql.schema.GraphQLScalarType
 import graphql.schema.idl.SchemaDirectiveWiring
 import graphql.validation.rules.OnValidationErrorStrategy
@@ -16,6 +18,10 @@ import io.github.susimsek.springgraphqlsamples.graphql.directive.UppercaseDirect
 import io.github.susimsek.springgraphqlsamples.graphql.scalar.GraphQlDateTimeProperties
 import io.github.susimsek.springgraphqlsamples.graphql.scalar.ScalarUtil
 import io.github.susimsek.springgraphqlsamples.graphql.validation.EmailRule
+import org.springframework.aot.hint.MemberCategory
+import org.springframework.aot.hint.RuntimeHints
+import org.springframework.aot.hint.RuntimeHintsRegistrar
+import org.springframework.aot.hint.TypeReference
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
@@ -23,9 +29,11 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.ImportRuntimeHints
 import org.springframework.core.io.ClassPathResource
 import org.springframework.graphql.execution.RuntimeWiringConfigurer
+import org.springframework.graphql.server.support.GraphQlWebSocketMessage
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
 
 @Configuration(proxyBeanMethods = false)
+@ImportRuntimeHints(GraphqlConfig.GraphQlRuntimeHints::class)
 @EnableConfigurationProperties(GraphQlDateTimeProperties::class)
 class GraphqlConfig {
 
@@ -95,8 +103,7 @@ class GraphqlConfig {
     }
 
     @Bean
-    @ImportRuntimeHints(GraphqlRuntimeHintsRegistrar::class)
-    fun graphqlDateTimeConfigurer(
+    fun graphqlConfigurer(
         graphQlOffsetDateTimeScalar: GraphQLScalarType,
         graphQlLocalDateTimeScalar: GraphQLScalarType,
         graphQlLocalDateScalar: GraphQLScalarType
@@ -120,7 +127,21 @@ class GraphqlConfig {
         }
     }
 
-    companion object {
-        val SCHEMA_RESOURCE = ClassPathResource("/graphql/schema.graphqls")
+    internal class GraphQlRuntimeHints : RuntimeHintsRegistrar {
+        private val values: Array<MemberCategory> = MemberCategory.values()
+
+        @Suppress("SpreadOperator")
+        override fun registerHints(hints: RuntimeHints, classLoader: ClassLoader?) {
+            setOf(
+                GraphQLAppliedDirective::class.java,
+                DataFetchingEnvironmentImpl::class.java,
+                GraphQlWebSocketMessage::class.java,
+            ).forEach{hints.reflection().registerType(it, *values)}
+            hints.proxies().registerJdkProxy(
+                TypeReference.of(
+                "graphql.validation.interpolation.ResourceBundleMessageInterpolator\$BridgeAnnotation"))
+            hints.resources().registerPattern("graphql/validation/ValidationMessages*.properties")
+        }
     }
+
 }

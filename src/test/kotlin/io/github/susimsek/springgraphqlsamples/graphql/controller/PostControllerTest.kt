@@ -5,6 +5,7 @@ import io.github.susimsek.springgraphqlsamples.config.ValidationAutoConfiguratio
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.PostStatus
 import io.github.susimsek.springgraphqlsamples.graphql.type.PostPayload
 import io.github.susimsek.springgraphqlsamples.service.PostService
+import io.github.susimsek.springgraphqlsamples.util.capitalize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -24,6 +25,7 @@ import org.springframework.graphql.test.tester.GraphQlTester
 import org.springframework.security.test.context.support.WithMockUser
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 private const val DEFAULT_ID = "632c8028feb9e053546a88f2"
 private const val DEFAULT_TITLE = "test"
@@ -68,8 +70,10 @@ class PostControllerTest {
             .variable("id", id)
             .execute()
             .path("data.post.id").entity(String::class.java).isEqualTo(DEFAULT_ID)
-            .path("data.post.title").entity(String::class.java).isEqualTo(DEFAULT_TITLE.uppercase())
-            .path("data.post.content").entity(String::class.java).isEqualTo(DEFAULT_CONTENT)
+            .path("data.post.title").entity(String::class.java).isEqualTo(DEFAULT_TITLE.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(Locale.getDefault())
+                else it.toString()})
+            .path("data.post.content").entity(String::class.java).isEqualTo(DEFAULT_CONTENT.lowercase())
 
         verify(postService, Mockito.times(1)).getPost(Mockito.anyString())
     }
