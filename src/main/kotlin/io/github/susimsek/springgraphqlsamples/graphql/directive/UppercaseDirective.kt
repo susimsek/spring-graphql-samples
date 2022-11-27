@@ -4,7 +4,6 @@ import graphql.schema.DataFetcherFactories
 import graphql.schema.GraphQLFieldDefinition
 import graphql.schema.idl.SchemaDirectiveWiring
 import graphql.schema.idl.SchemaDirectiveWiringEnvironment
-import java.util.Locale
 
 class UppercaseDirective : SchemaDirectiveWiring {
     override fun onField(
@@ -17,9 +16,9 @@ class UppercaseDirective : SchemaDirectiveWiring {
         val originalFetcher = env.codeRegistry.getDataFetcher(parentType, field)
         val dataFetcher = DataFetcherFactories.wrapDataFetcher(
             originalFetcher
-        ) { _, value ->
+        ) { dfe, value ->
             if (value is String) {
-                value.uppercase(Locale.getDefault())
+                value.uppercase(dfe.locale)
             } else {
                 value
             }
