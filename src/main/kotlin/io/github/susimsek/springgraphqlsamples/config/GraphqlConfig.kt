@@ -13,6 +13,7 @@ import graphql.validation.rules.ValidationRules
 import graphql.validation.schemawiring.ValidationSchemaWiring
 import io.github.susimsek.springgraphqlsamples.graphql.directive.CapitalizeDirective
 import io.github.susimsek.springgraphqlsamples.graphql.directive.LowercaseDirective
+import io.github.susimsek.springgraphqlsamples.graphql.directive.SchemaDirective
 import io.github.susimsek.springgraphqlsamples.graphql.directive.TrimDirective
 import io.github.susimsek.springgraphqlsamples.graphql.directive.UppercaseDirective
 import io.github.susimsek.springgraphqlsamples.graphql.scalar.GraphQlDateTimeProperties
@@ -27,7 +28,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.ImportRuntimeHints
-import org.springframework.core.io.ClassPathResource
+import org.springframework.data.mongodb.repository.support.MappingMongoEntityInformation
 import org.springframework.graphql.execution.RuntimeWiringConfigurer
 import org.springframework.graphql.server.support.GraphQlWebSocketMessage
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
@@ -47,7 +48,7 @@ class GraphqlConfig {
     }
 
     @Bean
-    fun graphQlOffsetDateTimeScalar(configurationProperties: GraphQlDateTimeProperties): GraphQLScalarType {
+    fun offsetDateTimeScalarType(configurationProperties: GraphQlDateTimeProperties): GraphQLScalarType {
         return ScalarUtil.offsetDateTimeScalar(
             configurationProperties.offsetDateTime.scalarName,
             configurationProperties.offsetDateTime.format
@@ -55,7 +56,7 @@ class GraphqlConfig {
     }
 
     @Bean
-    fun graphQlLocalDateScalar(configurationProperties: GraphQlDateTimeProperties): GraphQLScalarType {
+    fun localDateScalarType(configurationProperties: GraphQlDateTimeProperties): GraphQLScalarType {
         return ScalarUtil.localDateScalar(
             configurationProperties.localDate.scalarName,
             configurationProperties.localDate.format
@@ -63,38 +64,45 @@ class GraphqlConfig {
     }
 
     @Bean
-    fun graphQlLocalDateTimeScalar(configurationProperties: GraphQlDateTimeProperties): GraphQLScalarType {
+    fun localDateTimeScalarType(configurationProperties: GraphQlDateTimeProperties): GraphQLScalarType {
         return ScalarUtil.localDateTimeScalar(
             configurationProperties.localDateTime.scalarName,
             configurationProperties.localDateTime.format
         )
     }
 
-    fun graphQLObjectScalar(): GraphQLScalarType {
+    @Bean
+    fun objectScalarType(): GraphQLScalarType {
         return ExtendedScalars.Object
     }
 
-    fun graphQLBigDecimalScalar(): GraphQLScalarType {
+    @Bean
+    fun graphQLBigDecimalScalarType(): GraphQLScalarType {
         return ExtendedScalars.GraphQLBigDecimal
     }
 
-    fun urlScalar(): GraphQLScalarType {
+    @Bean
+    fun urlScalarType(): GraphQLScalarType {
         return ExtendedScalars.Url
     }
 
-    fun graphQLPositiveIntScalar(): GraphQLScalarType {
+    @Bean
+    fun positiveIntScalarType(): GraphQLScalarType {
         return ExtendedScalars.PositiveInt
     }
 
-    fun graphQLUuidScalar(): GraphQLScalarType {
+    @Bean
+    fun uuidScalarType(): GraphQLScalarType {
         return ExtendedScalars.UUID
     }
 
-    fun localeScalar(): GraphQLScalarType {
+    @Bean
+    fun localeScalarType(): GraphQLScalarType {
         return ExtendedScalars.Locale
     }
 
-    fun validationSchemaWiring(): SchemaDirectiveWiring {
+    @Bean
+    fun validationSchemaDirective(): SchemaDirectiveWiring {
         val validationRules = ValidationRules.newValidationRules()
             .onValidationErrorStrategy(OnValidationErrorStrategy.RETURN_NULL)
             .addRule(EmailRule())
@@ -103,26 +111,35 @@ class GraphqlConfig {
     }
 
     @Bean
+    fun uppercaseDirective(): SchemaDirective {
+        return SchemaDirective("uppercase", UppercaseDirective())
+    }
+
+    @Bean
+    fun lowercaseDirective(): SchemaDirective {
+        return SchemaDirective("lowercase", LowercaseDirective())
+    }
+
+    @Bean
+    fun capitalizeDirective(): SchemaDirective {
+        return SchemaDirective("capitalize", CapitalizeDirective())
+    }
+
+    @Bean
+    fun trimDirective(): SchemaDirective {
+        return SchemaDirective("trim", TrimDirective())
+    }
+
+    @Bean
     fun graphqlConfigurer(
-        graphQlOffsetDateTimeScalar: GraphQLScalarType,
-        graphQlLocalDateTimeScalar: GraphQLScalarType,
-        graphQlLocalDateScalar: GraphQLScalarType
+        graphQLScalarTypes: List<GraphQLScalarType>,
+        validationSchemaDirective :SchemaDirectiveWiring,
+        schemaDirectives :List<SchemaDirective>
     ): RuntimeWiringConfigurer {
         return RuntimeWiringConfigurer { builder ->
-            builder.scalar(graphQlOffsetDateTimeScalar)
-            builder.scalar(graphQlLocalDateTimeScalar)
-            builder.scalar(graphQlLocalDateScalar)
-            builder.scalar(graphQLBigDecimalScalar())
-            builder.scalar(graphQLPositiveIntScalar())
-            builder.scalar(graphQLUuidScalar())
-            builder.scalar(graphQLObjectScalar())
-            builder.scalar(urlScalar())
-            builder.scalar(localeScalar())
-            builder.directiveWiring(validationSchemaWiring())
-            builder.directive("uppercase", UppercaseDirective())
-            builder.directive("lowercase", LowercaseDirective())
-            builder.directive("capitalize", CapitalizeDirective())
-            builder.directive("trim", TrimDirective())
+            graphQLScalarTypes.forEach{builder.scalar(it)}
+            builder.directiveWiring(validationSchemaDirective)
+            schemaDirectives.forEach{builder.directive(it.name, it.directive)}
         }
     }
 
@@ -134,7 +151,7 @@ class GraphqlConfig {
             setOf(
                 GraphQLAppliedDirective::class.java,
                 DataFetchingEnvironmentImpl::class.java,
-                GraphQlWebSocketMessage::class.java,
+                GraphQlWebSocketMessage::class.java
             ).forEach{hints.reflection().registerType(it, *values)}
             hints.proxies().registerJdkProxy(
                 TypeReference.of(

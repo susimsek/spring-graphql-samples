@@ -102,13 +102,16 @@ class SecurityConfig(
     }
 
     @Bean
-    fun jwtReactiveAuthenticationManager(decoder: ReactiveJwtDecoder): JwtReactiveAuthenticationManager {
+    fun jwtReactiveAuthenticationManager(decoder: ReactiveJwtDecoder,
+                                         jwtAuthenticationConverter: JwtAuthenticationConverter
+    ): JwtReactiveAuthenticationManager {
         val manager = JwtReactiveAuthenticationManager(decoder)
-        manager.setJwtAuthenticationConverter(ReactiveJwtAuthenticationConverterAdapter(jwtAuthenticationConverter()))
+        manager.setJwtAuthenticationConverter(ReactiveJwtAuthenticationConverterAdapter(jwtAuthenticationConverter))
         return manager
     }
 
-    private fun jwtAuthenticationConverter(): JwtAuthenticationConverter {
+    @Bean
+    fun jwtAuthenticationConverter(): JwtAuthenticationConverter {
         val authoritiesConverter = JwtGrantedAuthoritiesConverter()
         authoritiesConverter.setAuthoritiesClaimName(AUTHORITIES_KEY)
         authoritiesConverter.setAuthorityPrefix("")
