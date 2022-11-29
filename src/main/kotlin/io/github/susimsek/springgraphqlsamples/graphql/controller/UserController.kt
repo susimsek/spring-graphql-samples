@@ -46,10 +46,8 @@ class UserController(private val userService: UserService) {
 
     @QueryMapping
     @PreAuthorize("isAuthenticated()")
-    suspend fun me(locale: Locale): UserPayload {
-        val user = userService.getCurrentUser()
-        user.locale = locale
-        return user
+    suspend fun me(): UserPayload {
+        return userService.getCurrentUser()
     }
 
     @SchemaMapping

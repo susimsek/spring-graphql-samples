@@ -46,6 +46,7 @@ input AddUserInput {
     firstName: String! @NotBlank @Size(max: 50) @Pattern(regexp: "^[A-Za-z]+$")
     lastName: String! @NotBlank @Size(max: 50) @Pattern(regexp: "^[A-Za-z]+$")
     email: String! @NotBlank @Email @Size(min: 5, max: 254)
+    lang: Locale
 }
 
 enum UserOrderField {
@@ -109,7 +110,7 @@ type UserPayload {
     email: String!
     createdDate: OffsetDateTime!
     posts: [PostPayload!]!
-    locale: Locale
+    lang: Locale!
 }
 
 
@@ -121,6 +122,7 @@ type User {
     email: String!
     createdDate: OffsetDateTime!
     activated: Boolean!
+    lang: Locale!
 }
 
 type PostPayload{

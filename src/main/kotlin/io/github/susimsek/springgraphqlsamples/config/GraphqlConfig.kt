@@ -113,7 +113,6 @@ class GraphqlConfig {
             builder.scalar(graphQlLocalDateTimeScalar)
             builder.scalar(graphQlLocalDateScalar)
             builder.scalar(graphQLBigDecimalScalar())
-            builder.scalar(graphQLBigDecimalScalar())
             builder.scalar(graphQLPositiveIntScalar())
             builder.scalar(graphQLUuidScalar())
             builder.scalar(graphQLObjectScalar())

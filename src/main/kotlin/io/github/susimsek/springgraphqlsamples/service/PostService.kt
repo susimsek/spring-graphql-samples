@@ -10,14 +10,10 @@ import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
 import io.github.susimsek.springgraphqlsamples.repository.PostRepository
 import io.github.susimsek.springgraphqlsamples.security.getCurrentUserLogin
 import io.github.susimsek.springgraphqlsamples.service.mapper.PostMapper
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.reactor.awaitSingleOrNull
@@ -25,10 +21,10 @@ import org.springframework.context.MessageSource
 import org.springframework.data.domain.Pageable
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.core.userdetails.UsernameNotFoundException
-import org.springframework.stereotype.Component
-import java.util.Locale
+import org.springframework.stereotype.Service
+import java.util.*
 
-@Component
+@Service
 class PostService(
     private val postRepository: PostRepository,
     private val postMapper: PostMapper,

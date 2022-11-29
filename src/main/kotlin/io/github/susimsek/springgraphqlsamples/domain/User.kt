@@ -5,6 +5,7 @@ import com.querydsl.core.annotations.QueryEntity
 import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field
+import java.util.Locale
 
 @QueryEntity
 @Document(collection = "user")
@@ -20,6 +21,9 @@ data class User(
 
     @Field("last_name")
     var lastName: String = "",
+
+    @Field("lang")
+    var lang: Locale = Locale.ENGLISH,
 
     @Indexed
     var email: String = "",

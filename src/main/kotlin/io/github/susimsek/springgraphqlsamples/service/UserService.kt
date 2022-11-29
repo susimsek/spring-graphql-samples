@@ -19,11 +19,11 @@ import kotlinx.coroutines.reactor.awaitSingleOrNull
 import org.springframework.data.domain.Pageable
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
-import java.util.Locale
+import java.util.*
 
-@Component
+@Service
 class UserService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,

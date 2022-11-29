@@ -7,9 +7,9 @@ import io.github.susimsek.springgraphqlsamples.security.jwt.TokenProvider
 import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 
-@Component
+@Service
 class AuthenticationService(
     private val tokenProvider: TokenProvider,
     private val securityCipher: SecurityCipher,

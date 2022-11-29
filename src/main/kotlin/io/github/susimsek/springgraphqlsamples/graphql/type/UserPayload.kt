@@ -16,5 +16,5 @@ data class UserPayload(
 
     var createdDate: OffsetDateTime,
 
-    var locale: Locale? = null
+    var lang: Locale
 )
