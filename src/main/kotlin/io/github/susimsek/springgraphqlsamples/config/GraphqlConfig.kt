@@ -72,6 +72,11 @@ class GraphqlConfig {
     }
 
     @Bean
+    fun jsonScalarType(): GraphQLScalarType {
+        return ExtendedScalars.Json
+    }
+
+    @Bean
     fun objectScalarType(): GraphQLScalarType {
         return ExtendedScalars.Object
     }

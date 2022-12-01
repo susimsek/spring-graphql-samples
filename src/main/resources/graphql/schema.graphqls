@@ -10,6 +10,7 @@ directive @Pattern(regexp : String! =".*", message : String = "graphql.validatio
 
 scalar OffsetDateTime
 scalar Locale
+scalar JSON
 
 type Query {
     users(page: Int, size: Int, filter: UserFilter, orders: [UserOrder!]): [UserPayload!]!
@@ -21,6 +22,11 @@ type Query {
     post(id: ID!): PostPayload!
     externalPost(id: ID!): PostPayload!
     posts(page: Int, size: Int, orders: [PostOrder!]): [PostPayload!]!
+    hello: Message!
+}
+
+type Message {
+    content: JSON
 }
 
 type Mutation {
