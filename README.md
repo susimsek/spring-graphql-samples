@@ -28,6 +28,18 @@ You can install the dependencies and build by typing the following command
 mvn clean install
 ```
 
+To compile as native, run the following goal:
+
+```
+$ mvn native:compile -Pnative
+```
+
+Then, you can run the app as follows:
+
+```
+$ target/spring-graphql-samples
+```
+
 ## Testing
 
 You can run application's tests by typing the following command
@@ -63,6 +75,11 @@ The docker image of sample app can be built as follows:
 
 ```sh
 mvn -Pjib verify jib:dockerBuild
+```
+
+to build native image
+```sh
+mvn -Pnative spring-boot:build-image
 ```
 
 ## Rsocket
