@@ -1,5 +1,6 @@
 package io.github.susimsek.springgraphqlsamples.service
 
+import io.github.susimsek.springgraphqlsamples.domain.User
 import io.github.susimsek.springgraphqlsamples.exception.EMAIL_ALREADY_EXISTS_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundException
 import io.github.susimsek.springgraphqlsamples.exception.USERNAME_ALREADY_EXISTS_MSG_CODE
@@ -67,6 +68,21 @@ class UserService(
             .map(userMapper::toType)
             .asFlow()
     }
+
+    /*
+    fun getUsers(pageRequest: Pageable, filter: UserFilter?): Flow<UserPayload> {
+        return userRepository.findBy<User, Page<User>, Mono<Page<User>>>(
+            filter?.toPredicate()!!,
+        ) {
+            it.page(
+                pageRequest
+            )
+        }.flatMapIterable{it.content}
+            .map(userMapper::toType)
+            .asFlow()
+    }
+
+     */
 
     suspend fun getCurrentUser(): UserPayload {
         val currentUserId = getCurrentUserLogin().awaitSingleOrNull()
