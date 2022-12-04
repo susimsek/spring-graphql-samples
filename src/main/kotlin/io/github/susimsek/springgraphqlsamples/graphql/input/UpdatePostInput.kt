@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size
 data class UpdatePostInput(
 
     @field:NotBlank
-    @field:Size(min = 24, max = 24)
+    @field:Size(min = 36, max = 36)
     var id: String,
 
     @field:NotBlank
