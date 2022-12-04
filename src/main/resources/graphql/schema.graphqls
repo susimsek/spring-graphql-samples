@@ -7,6 +7,8 @@ directive @NotBlank(message : String = "graphql.validation.NotBlank.message") on
 directive @Size(min : Int = 0, max : Int = 2147483647, message : String = "graphql.validation.Size.message") on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
 directive @Email(message : String = "graphql.validation.Email.message") on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
 directive @Pattern(regexp : String! =".*", message : String = "graphql.validation.Pattern.message") on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
+directive @Max(value : Int! = 2147483647, message : String = "graphql.validation.Max.message") on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
+directive @Min(value : Int! = 0, message : String = "graphql.validation.Min.message") on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
 
 scalar DateTime
 scalar Date
@@ -14,14 +16,14 @@ scalar Locale
 scalar JSON
 
 type Query {
-    users(page: Int, size: Int, filter: UserFilter, orders: [UserOrder!]): UserSearchResult!
-    userById(id: ID!): User
-    userByUsername(username: String!): User
+    users(page: Int @Min(value : 0), size: Int @Max(value : 100), filter: UserFilter, orders: [UserOrder!]): UserSearchResult!
+    userById(id: ID! @NotBlank): User
+    userByUsername(username: String! @NotBlank): User
     usersByActivated(activated: Boolean!): [User]
     count: Int!
     me: UserPayload!
-    post(id: ID!): PostPayload!
-    externalPost(id: ID!): PostPayload!
+    post(id: ID! @NotBlank): PostPayload!
+    externalPost(id: ID! @NotBlank): PostPayload!
     posts(page: Int, size: Int, orders: [PostOrder!]): [PostPayload!]!
     hello: Message!
 }
