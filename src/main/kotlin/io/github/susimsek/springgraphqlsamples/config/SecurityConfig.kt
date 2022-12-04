@@ -9,6 +9,7 @@ import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet
 import com.nimbusds.jose.jwk.source.JWKSource
 import com.nimbusds.jose.proc.SecurityContext
+import io.github.susimsek.springgraphqlsamples.security.WebSocketAuthenticationInterceptor
 import io.github.susimsek.springgraphqlsamples.security.cipher.RSAKeyUtils
 import io.github.susimsek.springgraphqlsamples.security.cipher.SecurityCipher
 import io.github.susimsek.springgraphqlsamples.security.jwt.AUTHORITIES_KEY
@@ -17,7 +18,6 @@ import io.github.susimsek.springgraphqlsamples.security.jwt.TokenProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Primary
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity
@@ -102,12 +102,12 @@ class SecurityConfig(
     }
 
     @Bean
-    fun jwtReactiveAuthenticationManager(decoder: ReactiveJwtDecoder,
+    fun graphqlWsAuthenticationInterceptor(decoder: ReactiveJwtDecoder,
                                          jwtAuthenticationConverter: JwtAuthenticationConverter
-    ): JwtReactiveAuthenticationManager {
+    ): WebSocketAuthenticationInterceptor {
         val manager = JwtReactiveAuthenticationManager(decoder)
         manager.setJwtAuthenticationConverter(ReactiveJwtAuthenticationConverterAdapter(jwtAuthenticationConverter))
-        return manager
+        return WebSocketAuthenticationInterceptor(manager)
     }
 
     @Bean
@@ -121,7 +121,6 @@ class SecurityConfig(
     }
 
     @Bean
-    @Primary
     fun reactiveAuthenticationManager() =
         UserDetailsRepositoryReactiveAuthenticationManager(userDetailsService).apply {
             setPasswordEncoder(passwordEncoder())
