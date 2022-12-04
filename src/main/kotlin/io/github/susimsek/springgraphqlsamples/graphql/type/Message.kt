@@ -1,6 +1,9 @@
 package io.github.susimsek.springgraphqlsamples.graphql.type
 
+import java.time.LocalDate
+
 
 data class Message(
-    var content: Map<String, Any>
+    val content: Map<String, Any>,
+    val sentDate: LocalDate
 )

@@ -10,8 +10,6 @@ import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
 import io.github.susimsek.springgraphqlsamples.graphql.type.UserSearchResult
 import io.github.susimsek.springgraphqlsamples.service.UserService
 import jakarta.validation.Valid
-import kotlinx.coroutines.flow.toList
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.graphql.data.method.annotation.Argument
@@ -20,7 +18,6 @@ import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.graphql.data.method.annotation.SchemaMapping
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
-import java.util.Locale
 
 
 @Controller

@@ -16,26 +16,21 @@ import io.github.susimsek.springgraphqlsamples.graphql.directive.LowercaseDirect
 import io.github.susimsek.springgraphqlsamples.graphql.directive.SchemaDirective
 import io.github.susimsek.springgraphqlsamples.graphql.directive.TrimDirective
 import io.github.susimsek.springgraphqlsamples.graphql.directive.UppercaseDirective
-import io.github.susimsek.springgraphqlsamples.graphql.scalar.GraphQlDateTimeProperties
-import io.github.susimsek.springgraphqlsamples.graphql.scalar.ScalarUtil
 import io.github.susimsek.springgraphqlsamples.graphql.validation.EmailRule
 import org.springframework.aot.hint.MemberCategory
 import org.springframework.aot.hint.RuntimeHints
 import org.springframework.aot.hint.RuntimeHintsRegistrar
 import org.springframework.aot.hint.TypeReference
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer
-import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.ImportRuntimeHints
-import org.springframework.data.mongodb.repository.support.MappingMongoEntityInformation
 import org.springframework.graphql.execution.RuntimeWiringConfigurer
 import org.springframework.graphql.server.support.GraphQlWebSocketMessage
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
 
 @Configuration(proxyBeanMethods = false)
 @ImportRuntimeHints(GraphqlConfig.GraphQlRuntimeHints::class)
-@EnableConfigurationProperties(GraphQlDateTimeProperties::class)
 class GraphqlConfig {
 
     @Bean
@@ -48,27 +43,13 @@ class GraphqlConfig {
     }
 
     @Bean
-    fun offsetDateTimeScalarType(configurationProperties: GraphQlDateTimeProperties): GraphQLScalarType {
-        return ScalarUtil.offsetDateTimeScalar(
-            configurationProperties.offsetDateTime.scalarName,
-            configurationProperties.offsetDateTime.format
-        )
+    fun dateTimeScalarType(): GraphQLScalarType {
+        return ExtendedScalars.DateTime
     }
 
     @Bean
-    fun localDateScalarType(configurationProperties: GraphQlDateTimeProperties): GraphQLScalarType {
-        return ScalarUtil.localDateScalar(
-            configurationProperties.localDate.scalarName,
-            configurationProperties.localDate.format
-        )
-    }
-
-    @Bean
-    fun localDateTimeScalarType(configurationProperties: GraphQlDateTimeProperties): GraphQLScalarType {
-        return ScalarUtil.localDateTimeScalar(
-            configurationProperties.localDateTime.scalarName,
-            configurationProperties.localDateTime.format
-        )
+    fun dateScalarType(): GraphQLScalarType {
+        return ExtendedScalars.Date
     }
 
     @Bean

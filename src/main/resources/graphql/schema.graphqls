@@ -8,7 +8,8 @@ directive @Size(min : Int = 0, max : Int = 2147483647, message : String = "graph
 directive @Email(message : String = "graphql.validation.Email.message") on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
 directive @Pattern(regexp : String! =".*", message : String = "graphql.validation.Pattern.message") on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
 
-scalar OffsetDateTime
+scalar DateTime
+scalar Date
 scalar Locale
 scalar JSON
 
@@ -104,7 +105,8 @@ input PostOrder {
 }
 
 type Message {
-    content: JSON
+    content: JSON!
+    sentDate: Date!
 }
 
 type PageInfo {
@@ -129,7 +131,7 @@ type UserPayload {
     lastName: String!
     name: String!
     email: String!
-    createdDate: OffsetDateTime!
+    createdDate: DateTime!
     posts: [PostPayload!]!
     lang: Locale!
 }
@@ -141,7 +143,7 @@ type User {
     firstName: String!
     lastName: String!
     email: String!
-    createdDate: OffsetDateTime!
+    createdDate: DateTime!
     activated: Boolean!
     lang: Locale!
 }
@@ -151,7 +153,7 @@ type PostPayload{
     title: String! @trim @capitalize
     content: String! @lowercase
     status: PostStatus!
-    createdDate: OffsetDateTime!
+    createdDate: DateTime!
     author: UserPayload!
     locale: Locale
 }
