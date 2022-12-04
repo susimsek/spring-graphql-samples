@@ -63,7 +63,7 @@ class GraphqlConfig {
     }
 
     @Bean
-    fun graphQLBigDecimalScalarType(): GraphQLScalarType {
+    fun bigDecimalScalarType(): GraphQLScalarType {
         return ExtendedScalars.GraphQLBigDecimal
     }
 
