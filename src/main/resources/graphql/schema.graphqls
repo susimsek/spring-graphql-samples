@@ -14,6 +14,7 @@ scalar DateTime
 scalar Date
 scalar Locale
 scalar JSON
+scalar BigDecimal
 
 type Query {
     users(page: Int @Min(value : 0), size: Int @Min(value : 1) @Max(value : 100), filter: UserFilter, orders: [UserOrder!]): UserSearchResult!
@@ -109,6 +110,7 @@ input PostOrder {
 type Message {
     content: JSON!
     sentDate: Date!
+    price: BigDecimal!
 }
 
 type PageInfo {
