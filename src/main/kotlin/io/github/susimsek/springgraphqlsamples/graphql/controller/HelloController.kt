@@ -2,10 +2,12 @@ package io.github.susimsek.springgraphqlsamples.graphql.controller
 
 import io.github.susimsek.springgraphqlsamples.graphql.type.Message
 import kotlinx.coroutines.reactor.awaitSingle
+import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.stereotype.Controller
 import reactor.core.publisher.Mono
 import java.time.LocalDate
+import java.time.OffsetDateTime
 
 
 @Controller

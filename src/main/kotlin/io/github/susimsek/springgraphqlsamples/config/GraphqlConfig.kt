@@ -73,11 +73,6 @@ class GraphqlConfig {
     }
 
     @Bean
-    fun positiveIntScalarType(): GraphQLScalarType {
-        return ExtendedScalars.PositiveInt
-    }
-
-    @Bean
     fun uuidScalarType(): GraphQLScalarType {
         return ExtendedScalars.UUID
     }
