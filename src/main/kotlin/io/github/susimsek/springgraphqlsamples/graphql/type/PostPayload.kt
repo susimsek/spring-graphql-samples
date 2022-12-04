@@ -13,7 +13,7 @@ data class PostPayload(
 
     var status: PostStatus? = null,
 
-    var createdDate: OffsetDateTime,
+    var createdAt: OffsetDateTime,
 
     var author: UserPayload? = null,
 

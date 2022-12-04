@@ -4,6 +4,6 @@ query Post($id: ID!) {
         title,
         content,
         status,
-        createdDate
+        createdAt
     }
 }

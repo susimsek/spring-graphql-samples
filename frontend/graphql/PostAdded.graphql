@@ -4,7 +4,7 @@ subscription OnPostAdded {
         title,
         content,
         status,
-        createdDate,
+        createdAt,
         locale
     }
 }

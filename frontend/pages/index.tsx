@@ -17,7 +17,7 @@ const Home = () => {
         page: 0,
         size: 5,
         orders: {
-            field: PostOrderField.CreatedDate,
+            field: PostOrderField.CreatedAt,
             order: OrderType.Desc
         }
     }

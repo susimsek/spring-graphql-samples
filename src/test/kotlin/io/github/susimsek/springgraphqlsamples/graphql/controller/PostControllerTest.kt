@@ -54,7 +54,7 @@ class PostControllerTest {
             title = DEFAULT_TITLE,
             content = DEFAULT_CONTENT,
             status = DEFAULT_STATUS,
-            createdDate = OffsetDateTime.parse(DEFAULT_CREATED_DATE, DateTimeFormatter.ISO_DATE_TIME)
+            createdAt = OffsetDateTime.parse(DEFAULT_CREATED_DATE, DateTimeFormatter.ISO_DATE_TIME)
         )
     }
 

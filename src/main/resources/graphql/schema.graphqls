@@ -63,7 +63,7 @@ enum UserOrderField {
     firstName
     lastName
     email
-    createdDate
+    createdAt
 }
 
 enum OrderType {
@@ -101,7 +101,7 @@ enum PostStatus {
 enum PostOrderField {
     id
     title
-    createdDate
+    createdAt
 }
 
 input PostOrder {
@@ -139,7 +139,7 @@ type UserPayload {
     lastName: String!
     name: String!
     email: String!
-    createdDate: DateTime!
+    createdAt: DateTime!
     posts: [PostPayload!]!
     lang: Locale!
 }
@@ -151,7 +151,7 @@ type User {
     firstName: String!
     lastName: String!
     email: String!
-    createdDate: DateTime!
+    createdAt: DateTime!
     activated: Boolean!
     lang: Locale!
 }
@@ -161,7 +161,7 @@ type PostPayload{
     title: String! @trim @capitalize
     content: String! @lowercase
     status: PostStatus!
-    createdDate: DateTime!
+    createdAt: DateTime!
     author: UserPayload!
     locale: Locale
 }

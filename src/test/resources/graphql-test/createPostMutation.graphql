@@ -4,6 +4,6 @@ mutation CreatePost($input: AddPostInput!) {
         title,
         content,
         status,
-        createdDate
+        createdAt
     }
 }

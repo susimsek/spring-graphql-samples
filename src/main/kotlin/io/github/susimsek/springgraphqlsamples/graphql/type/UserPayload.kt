@@ -14,7 +14,7 @@ data class UserPayload(
 
     var email: String? = null,
 
-    var createdDate: OffsetDateTime,
+    var createdAt: OffsetDateTime,
 
     var lang: Locale
 )

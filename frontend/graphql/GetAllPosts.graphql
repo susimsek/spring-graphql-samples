@@ -4,6 +4,6 @@ query GetAllPosts($page: Int, $size: Int, $orders: [PostOrder!]) {
         title,
         content,
         status,
-        createdDate
+        createdAt
     }
 }

@@ -13,8 +13,13 @@ export interface Scalars {
   Boolean: boolean;
   Int: number;
   Float: number;
+  BigDecimal: any;
+  Date: any;
+  DateTime: any;
+  JSON: any;
   Locale: any;
-  OffsetDateTime: any;
+  UUID: any;
+  Url: any;
 }
 
 export interface AddPostInput {
@@ -25,6 +30,7 @@ export interface AddPostInput {
 export interface AddUserInput {
   email: Scalars['String'];
   firstName: Scalars['String'];
+  lang?: InputMaybe<Scalars['Locale']>;
   lastName: Scalars['String'];
   password: Scalars['String'];
   username: Scalars['String'];
@@ -46,7 +52,7 @@ export interface PostOrder {
 }
 
 export enum PostOrderField {
-  CreatedDate = 'createdDate',
+  CreatedAt = 'createdAt',
   Id = 'id',
   Title = 'title'
 }
@@ -76,7 +82,7 @@ export interface UserOrder {
 }
 
 export enum UserOrderField {
-  CreatedDate = 'createdDate',
+  CreatedAt = 'createdAt',
   Email = 'email',
   FirstName = 'firstName',
   Id = 'id',
@@ -91,12 +97,12 @@ export type GetAllPostsQueryVariables = Exact<{
 }>;
 
 
-export type GetAllPostsQuery = { posts: Array<{ id: string, title: string, content: string, status: PostStatus, createdDate: any }> };
+export type GetAllPostsQuery = { posts: Array<{ id: string, title: string, content: string, status: PostStatus, createdAt: any }> };
 
 export type OnPostAddedSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
-export type OnPostAddedSubscription = { postAdded: { id: string, title: string, content: string, status: PostStatus, createdDate: any, locale?: any | null } };
+export type OnPostAddedSubscription = { postAdded: { id: string, title: string, content: string, status: PostStatus, createdAt: any, locale?: any | null } };
 
 
 export const GetAllPostsDocument = gql`
@@ -106,7 +112,7 @@ export const GetAllPostsDocument = gql`
     title
     content
     status
-    createdDate
+    createdAt
   }
 }
     `;
@@ -147,7 +153,7 @@ export const OnPostAddedDocument = gql`
     title
     content
     status
-    createdDate
+    createdAt
     locale
   }
 }
