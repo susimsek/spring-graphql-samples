@@ -1,5 +1,6 @@
 package io.github.susimsek.springgraphqlsamples.service
 
+import com.querydsl.core.BooleanBuilder
 import io.github.susimsek.springgraphqlsamples.domain.User
 import io.github.susimsek.springgraphqlsamples.exception.EMAIL_ALREADY_EXISTS_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundException
@@ -9,14 +10,17 @@ import io.github.susimsek.springgraphqlsamples.exception.ValidationException
 import io.github.susimsek.springgraphqlsamples.graphql.input.AddUserInput
 import io.github.susimsek.springgraphqlsamples.graphql.input.UserFilter
 import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
+import io.github.susimsek.springgraphqlsamples.graphql.type.UserSearchResult
 import io.github.susimsek.springgraphqlsamples.repository.UserRepository
 import io.github.susimsek.springgraphqlsamples.security.getCurrentUserLogin
 import io.github.susimsek.springgraphqlsamples.service.mapper.UserMapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.reactive.asFlow
+import kotlinx.coroutines.reactive.awaitSingle
 import kotlinx.coroutines.reactor.awaitSingle
 import kotlinx.coroutines.reactor.awaitSingleOrNull
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -63,26 +67,28 @@ class UserService(
         return userMapper.toType(user)
     }
 
+    /*
     fun getUsers(pageRequest: Pageable, filter: UserFilter?): Flow<UserPayload> {
         return userRepository.findAllByFilter(filter, pageRequest)
             .map(userMapper::toType)
             .asFlow()
     }
 
-    /*
-    fun getUsers(pageRequest: Pageable, filter: UserFilter?): Flow<UserPayload> {
+     */
+
+
+
+    suspend fun getUsers(pageRequest: Pageable, filter: UserFilter?): UserSearchResult {
         return userRepository.findBy<User, Page<User>, Mono<Page<User>>>(
-            filter?.toPredicate()!!,
+            filter?.toPredicate() ?: BooleanBuilder(),
         ) {
             it.page(
                 pageRequest
             )
-        }.flatMapIterable{it.content}
-            .map(userMapper::toType)
-            .asFlow()
+        }.map{it.map(userMapper::toType)}
+            .map{UserSearchResult(it)}
+            .awaitSingle()
     }
-
-     */
 
     suspend fun getCurrentUser(): UserPayload {
         val currentUserId = getCurrentUserLogin().awaitSingleOrNull()

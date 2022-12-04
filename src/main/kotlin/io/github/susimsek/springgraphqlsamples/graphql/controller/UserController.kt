@@ -7,9 +7,11 @@ import io.github.susimsek.springgraphqlsamples.graphql.input.AddUserInput
 import io.github.susimsek.springgraphqlsamples.graphql.input.UserFilter
 import io.github.susimsek.springgraphqlsamples.graphql.input.UserOrder
 import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
+import io.github.susimsek.springgraphqlsamples.graphql.type.UserSearchResult
 import io.github.susimsek.springgraphqlsamples.service.UserService
 import jakarta.validation.Valid
 import kotlinx.coroutines.flow.toList
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.graphql.data.method.annotation.Argument
@@ -35,13 +37,12 @@ class UserController(private val userService: UserService) {
         @Argument size: Int?,
         @Argument filter: UserFilter?,
         @Argument orders: MutableList<UserOrder>?
-    ): List<UserPayload> {
+    ): UserSearchResult {
         val pageNo = page ?: DEFAULT_PAGE_NO
         val sizeNo = (size ?: DEFAULT_SIZE).coerceAtMost(MAX_SIZE)
         val sort = orders?.map(UserOrder::toOrder)?.let { Sort.by(it) } ?: Sort.unsorted()
         val pageRequest = PageRequest.of(pageNo, sizeNo, sort)
         return userService.getUsers(pageRequest, filter)
-            .toList()
     }
 
     @QueryMapping

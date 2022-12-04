@@ -13,7 +13,7 @@ scalar Locale
 scalar JSON
 
 type Query {
-    users(page: Int, size: Int, filter: UserFilter, orders: [UserOrder!]): [UserPayload!]!
+    users(page: Int, size: Int, filter: UserFilter, orders: [UserOrder!]): UserSearchResult!
     userById(id: ID!): User
     userByUsername(username: String!): User
     usersByActivated(activated: Boolean!): [User]
@@ -23,10 +23,6 @@ type Query {
     externalPost(id: ID!): PostPayload!
     posts(page: Int, size: Int, orders: [PostOrder!]): [PostPayload!]!
     hello: Message!
-}
-
-type Message {
-    content: JSON
 }
 
 type Mutation {
@@ -105,6 +101,25 @@ enum PostOrderField {
 input PostOrder {
     field: PostOrderField!
     order: OrderType
+}
+
+type Message {
+    content: JSON
+}
+
+type PageInfo {
+    pageNumber: Int!
+    totalCount: Int!
+    totalPages: Int!
+    hasNext: Boolean!
+    hasPrev: Boolean!
+    nextPage: Int
+    prevPage: Int
+}
+
+type UserSearchResult {
+    pageInfo: PageInfo!
+    users: [UserPayload!]!
 }
 
 type UserPayload {
