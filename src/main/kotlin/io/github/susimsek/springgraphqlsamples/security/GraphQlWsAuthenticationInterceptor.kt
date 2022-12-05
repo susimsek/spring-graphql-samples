@@ -12,7 +12,7 @@ import org.springframework.security.core.context.SecurityContextImpl
 import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthenticationToken
 import reactor.core.publisher.Mono
 
-class WebSocketAuthenticationInterceptor(
+class GraphQlWsAuthenticationInterceptor(
     private val reactiveAuthenticationManager: ReactiveAuthenticationManager
 ) : WebSocketGraphQlInterceptor {
     private companion object {
@@ -20,7 +20,7 @@ class WebSocketAuthenticationInterceptor(
         const val TOKEN_PREFIX = "Bearer "
 
         private val AUTHENTICATION_SESSION_ATTRIBUTE_KEY =
-            WebSocketAuthenticationInterceptor::class.qualifiedName + ".authentication"
+            GraphQlWsAuthenticationInterceptor::class.qualifiedName + ".authentication"
 
         fun WebSocketSessionInfo.getAuthentication(): BearerTokenAuthenticationToken? =
             attributes[AUTHENTICATION_SESSION_ATTRIBUTE_KEY] as? BearerTokenAuthenticationToken

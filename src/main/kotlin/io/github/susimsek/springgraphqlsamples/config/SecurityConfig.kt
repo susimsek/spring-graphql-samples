@@ -9,7 +9,7 @@ import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet
 import com.nimbusds.jose.jwk.source.JWKSource
 import com.nimbusds.jose.proc.SecurityContext
-import io.github.susimsek.springgraphqlsamples.security.WebSocketAuthenticationInterceptor
+import io.github.susimsek.springgraphqlsamples.security.GraphQlWsAuthenticationInterceptor
 import io.github.susimsek.springgraphqlsamples.security.cipher.RSAKeyUtils
 import io.github.susimsek.springgraphqlsamples.security.cipher.SecurityCipher
 import io.github.susimsek.springgraphqlsamples.security.jwt.AUTHORITIES_KEY
@@ -106,12 +106,12 @@ class SecurityConfig(
     }
 
     @Bean
-    fun graphqlWsAuthenticationInterceptor(decoder: ReactiveJwtDecoder,
+    fun graphQlWsAuthenticationInterceptor(decoder: ReactiveJwtDecoder,
                                          jwtAuthenticationConverter: Converter<Jwt, Mono<AbstractAuthenticationToken>>
-    ): WebSocketAuthenticationInterceptor {
+    ): GraphQlWsAuthenticationInterceptor {
         val manager = JwtReactiveAuthenticationManager(decoder)
         manager.setJwtAuthenticationConverter(jwtAuthenticationConverter)
-        return WebSocketAuthenticationInterceptor(manager)
+        return GraphQlWsAuthenticationInterceptor(manager)
     }
 
     @Bean
