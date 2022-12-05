@@ -18,13 +18,16 @@ import io.github.susimsek.springgraphqlsamples.security.jwt.TokenProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.convert.converter.Converter
 import org.springframework.http.HttpMethod
+import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
 import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.jwt.JwtEncoder
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder
@@ -37,6 +40,7 @@ import org.springframework.security.web.server.header.ReferrerPolicyServerHttpHe
 import org.springframework.security.web.server.util.matcher.NegatedServerWebExchangeMatcher
 import org.springframework.security.web.server.util.matcher.OrServerWebExchangeMatcher
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers.pathMatchers
+import reactor.core.publisher.Mono
 import java.security.KeyPair
 import java.security.interfaces.RSAPublicKey
 
@@ -103,21 +107,21 @@ class SecurityConfig(
 
     @Bean
     fun graphqlWsAuthenticationInterceptor(decoder: ReactiveJwtDecoder,
-                                         jwtAuthenticationConverter: JwtAuthenticationConverter
+                                         jwtAuthenticationConverter: Converter<Jwt, Mono<AbstractAuthenticationToken>>
     ): WebSocketAuthenticationInterceptor {
         val manager = JwtReactiveAuthenticationManager(decoder)
-        manager.setJwtAuthenticationConverter(ReactiveJwtAuthenticationConverterAdapter(jwtAuthenticationConverter))
+        manager.setJwtAuthenticationConverter(jwtAuthenticationConverter)
         return WebSocketAuthenticationInterceptor(manager)
     }
 
     @Bean
-    fun jwtAuthenticationConverter(): JwtAuthenticationConverter {
+    fun jwtAuthenticationConverter(): Converter<Jwt, Mono<AbstractAuthenticationToken>> {
         val authoritiesConverter = JwtGrantedAuthoritiesConverter()
         authoritiesConverter.setAuthoritiesClaimName(AUTHORITIES_KEY)
         authoritiesConverter.setAuthorityPrefix("")
         val converter = JwtAuthenticationConverter()
         converter.setJwtGrantedAuthoritiesConverter(authoritiesConverter)
-        return converter
+        return ReactiveJwtAuthenticationConverterAdapter(converter)
     }
 
     @Bean
@@ -127,7 +131,9 @@ class SecurityConfig(
         }
 
     @Bean
-    fun springSecurityFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
+    fun springSecurityFilterChain(
+        http: ServerHttpSecurity,
+        jwtAuthenticationConverter: Converter<Jwt, Mono<AbstractAuthenticationToken>>): SecurityWebFilterChain {
         // @formatter:off
         http
             .securityMatcher(
@@ -152,6 +158,7 @@ class SecurityConfig(
             .and()
             .oauth2ResourceServer()
             .jwt()
+            .jwtAuthenticationConverter(jwtAuthenticationConverter)
         // @formatter:on
         return http.build()
     }

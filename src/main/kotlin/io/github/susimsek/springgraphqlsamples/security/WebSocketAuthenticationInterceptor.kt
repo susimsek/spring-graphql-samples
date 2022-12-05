@@ -6,14 +6,14 @@ import org.springframework.graphql.server.WebGraphQlResponse
 import org.springframework.graphql.server.WebSocketGraphQlInterceptor
 import org.springframework.graphql.server.WebSocketGraphQlRequest
 import org.springframework.graphql.server.WebSocketSessionInfo
+import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.core.context.ReactiveSecurityContextHolder
 import org.springframework.security.core.context.SecurityContextImpl
 import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthenticationToken
-import org.springframework.security.oauth2.server.resource.authentication.JwtReactiveAuthenticationManager
 import reactor.core.publisher.Mono
 
 class WebSocketAuthenticationInterceptor(
-    private val jwtReactiveAuthenticationManager: JwtReactiveAuthenticationManager
+    private val reactiveAuthenticationManager: ReactiveAuthenticationManager
 ) : WebSocketGraphQlInterceptor {
     private companion object {
         const val TOKEN_KEY_NAME = "authorization"
@@ -34,7 +34,7 @@ class WebSocketAuthenticationInterceptor(
         val token = (request as? WebSocketGraphQlRequest)?.sessionInfo?.getAuthentication()
             ?: return chain.next(request)
 
-        val securityContext =  jwtReactiveAuthenticationManager.authenticate(token)
+        val securityContext =  reactiveAuthenticationManager.authenticate(token)
             .map { SecurityContextImpl(it) }
 
         return chain.next(request)
