@@ -1,37 +1,61 @@
 package io.github.susimsek.springgraphqlsamples.config
 
+
 import jakarta.validation.ClockProvider
 import jakarta.validation.ParameterNameProvider
 import org.hibernate.validator.internal.engine.DefaultClockProvider
 import org.springframework.beans.factory.config.BeanDefinition
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication
 import org.springframework.boot.validation.MessageInterpolatorFactory
-import org.springframework.context.MessageSource
+import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 import org.springframework.context.annotation.Role
+import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.core.KotlinReflectionParameterNameDiscoverer
-import org.springframework.core.LocalVariableTableParameterNameDiscoverer
 import org.springframework.core.ParameterNameDiscoverer
 import org.springframework.core.PrioritizedParameterNameDiscoverer
 import org.springframework.core.StandardReflectionParameterNameDiscoverer
+import org.springframework.http.server.reactive.HttpHandler
+import org.springframework.http.server.reactive.ServerHttpRequest
+import org.springframework.http.server.reactive.ServerHttpResponse
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean
+import org.springframework.web.server.ServerWebExchange
+import org.springframework.web.server.adapter.HttpWebHandlerAdapter
+import org.springframework.web.server.adapter.WebHttpHandlerBuilder
 import java.lang.reflect.Constructor
 import java.lang.reflect.Method
 import kotlin.reflect.jvm.kotlinFunction
 
-
 @Configuration(proxyBeanMethods = false)
-class ValidationAutoConfiguration {
-
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
+class ValidationConfig {
     @Primary
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-    fun validatorFactoryBean(messageSource: MessageSource): LocalValidatorFactoryBean {
+    fun defaultValidator(): LocalValidatorFactoryBean {
         val factoryBean = KotlinCoroutinesLocalValidatorFactoryBean()
         factoryBean.messageInterpolator = MessageInterpolatorFactory().getObject()
-        factoryBean.setValidationMessageSource(messageSource)
         return factoryBean
+    }
+
+    @Bean
+    fun httpHandler(applicationContext: ApplicationContext): HttpHandler {
+        val delegate = WebHttpHandlerBuilder
+            .applicationContext(applicationContext).build()
+        return object : HttpWebHandlerAdapter((delegate as HttpWebHandlerAdapter)) {
+            override fun createExchange(
+                request: ServerHttpRequest,
+                response: ServerHttpResponse
+            ): ServerWebExchange {
+                val serverWebExchange = super
+                    .createExchange(request, response)
+                val localeContext = serverWebExchange.localeContext
+                LocaleContextHolder.setLocaleContext(localeContext)
+                return serverWebExchange
+            }
+        }
     }
 }
 
@@ -44,7 +68,6 @@ class KotlinCoroutinesLocalValidatorFactoryBean : LocalValidatorFactoryBean() {
         val discoverer = PrioritizedParameterNameDiscoverer()
         discoverer.addDiscoverer(SuspendAwareKotlinParameterNameDiscoverer())
         discoverer.addDiscoverer(StandardReflectionParameterNameDiscoverer())
-        discoverer.addDiscoverer(LocalVariableTableParameterNameDiscoverer())
 
         val defaultProvider = configuration.defaultParameterNameProvider
         configuration.parameterNameProvider(object : ParameterNameProvider {

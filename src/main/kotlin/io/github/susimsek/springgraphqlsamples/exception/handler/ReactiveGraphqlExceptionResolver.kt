@@ -1,8 +1,10 @@
-package io.github.susimsek.springgraphqlsamples.exception
+package io.github.susimsek.springgraphqlsamples.exception.handler
 
 import graphql.GraphQLError
 import graphql.GraphqlErrorBuilder
 import graphql.schema.DataFetchingEnvironment
+import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundException
+import io.github.susimsek.springgraphqlsamples.exception.ValidationException
 import jakarta.validation.ConstraintViolationException
 import org.springframework.context.MessageSource
 import org.springframework.graphql.client.FieldAccessException
@@ -14,6 +16,28 @@ import org.springframework.stereotype.Component
 class ReactiveGraphqlExceptionResolver(
     private val messageSource: MessageSource
 ) : DataFetcherExceptionResolverAdapter() {
+
+    override fun resolveToMultipleErrors(
+        ex: Throwable,
+        env: DataFetchingEnvironment
+    ): List<GraphQLError>? {
+        return when (ex) {
+            is ConstraintViolationException -> {
+                return ex.constraintViolations.map {
+                    val validatedPath = it.propertyPath.map { node ->  node.name}
+                    GraphqlErrorBuilder.newError(env)
+                        .message("${it.propertyPath}: ${it.message}")
+                        .errorType(graphql.ErrorType.ValidationError)
+                        .extensions(mapOf(
+                            "validatedPath" to validatedPath)
+                        )
+                        .build()
+                }
+            }
+
+            else -> super.resolveToMultipleErrors(ex, env)
+        }
+    }
     override fun resolveToSingleError(
         ex: Throwable,
         env: DataFetchingEnvironment
@@ -40,22 +64,6 @@ class ReactiveGraphqlExceptionResolver(
                 val errorMessage = messageSource.getMessage(ex.message, ex.args, locale)
                 return GraphqlErrorBuilder.newError(env)
                     .message(errorMessage).errorType(ErrorType.BAD_REQUEST).build()
-            }
-
-            is ConstraintViolationException -> {
-                val errors = ex.constraintViolations.map {
-                    FieldError(
-                        property = it.propertyPath.reduce { _, second -> second }.toString(),
-                        message = it.message
-                    )
-                }
-
-                val errorMessage = messageSource.getMessage("error.constraint.violation.message", null, locale)
-
-                return GraphqlErrorBuilder.newError(env)
-                    .message(errorMessage).errorType(graphql.ErrorType.ValidationError)
-                    .extensions(mapOf("errors" to errors))
-                    .build()
             }
 
             else -> super.resolveToSingleError(ex, env)

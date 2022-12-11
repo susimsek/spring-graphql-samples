@@ -1,11 +1,10 @@
 package io.github.susimsek.springgraphqlsamples.graphql.controller
 
 import io.github.susimsek.springgraphqlsamples.config.GraphqlConfig
-import io.github.susimsek.springgraphqlsamples.config.ValidationAutoConfiguration
+import io.github.susimsek.springgraphqlsamples.config.ValidationConfig
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.PostStatus
 import io.github.susimsek.springgraphqlsamples.graphql.type.PostPayload
 import io.github.susimsek.springgraphqlsamples.service.PostService
-import io.github.susimsek.springgraphqlsamples.util.capitalize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -35,7 +34,7 @@ private const val DEFAULT_CREATED_DATE = "2022-09-22T18:32:56+03:00"
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @GraphQlTest(controllers = [PostController::class])
-@Import(*[GraphqlConfig::class, ValidationAutoConfiguration::class])
+@Import(*[GraphqlConfig::class, ValidationConfig::class])
 @WithMockUser
 class PostControllerTest {
 
