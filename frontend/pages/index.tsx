@@ -3,14 +3,16 @@ import {IPost} from "../types/post";
 import Post from "../components/Post";
 import {useTranslation} from "next-i18next";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
-import LanguageBar from "../components/LanguageBar";
 import {Alert, Container, Spinner} from "react-bootstrap";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import {useAuthToken} from "../contexts/AuthTokenProvider";
+import Layout from "../components/Layout";
+import React from "react";
 
 const Home = () => {
 
   const { data, loading, error } = useOnPostAddedSubscription();
+
+    const [token] = useAuthToken();
 
     const { data: postsData, loading: postDataLoading, error: postsDataError, refetch} = useGetAllPostsQuery({
         variables: {
@@ -34,26 +36,22 @@ const Home = () => {
     }
 
   return (
-      <>
-          <main>
-              <Header/>
-              <Container className="mt-3">
-                  <h3>{t('new.post.title')}</h3>
-                  { data ? data.postAdded && <Post post={data?.postAdded as IPost}/>:
-                      <Alert variant='info'>{t('new.post.not.found')}</Alert>}
-                  <hr/>
-                  <h3>{t('post.list.title')}</h3>
-                  {postDataLoading ?
-                      <div className="text-center">
-                          <Spinner animation="border" variant="secondary"/>
-                      </div> :
-                      postsData?.posts?.map((post: IPost) => (
-                          <Post key={post.id} post={post}/>
-                      ))}
-              </Container>
-          </main>
-          <Footer />
-      </>
+      <Layout>
+          <Container className="mt-3">
+              <h3>{t('new.post.title')}</h3>
+              { data ? data.postAdded && <Post post={data?.postAdded as IPost}/>:
+                  <Alert variant='info'>{t('new.post.not.found')}</Alert>}
+              <hr/>
+              <h3>{t('post.list.title')}</h3>
+              {postDataLoading ?
+                  <div className="text-center">
+                      <Spinner animation="border" variant="secondary"/>
+                  </div> :
+                  postsData?.posts?.map((post: IPost) => (
+                      <Post key={post.id} post={post}/>
+                  ))}
+          </Container>
+      </Layout>
   )
 }
 

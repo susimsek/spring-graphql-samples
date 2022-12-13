@@ -1,7 +1,4 @@
 import React from "react";
-import {Container, Nav, Navbar} from "react-bootstrap";
-import logo from '../public/logo.png'
-import Image from "next/image";
 import {useTranslation} from "next-i18next";
 
 const Footer: React.FC = () => {

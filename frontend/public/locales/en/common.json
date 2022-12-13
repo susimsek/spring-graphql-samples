@@ -1,4 +1,9 @@
 {
   "home.label": "Home",
-  "copyright": "All Rights reserved"
+  "copyright": "All Rights reserved",
+  "logout": "Sign Out",
+  "login": "Sign In",
+  "required": "${path} is a required field",
+  "min_string": "${path} must be at least ${min} characters",
+  "max_string": "${path} must be at most ${max} characters"
 }

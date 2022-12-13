@@ -1,4 +1,9 @@
 {
   "home.label": "Ana Sayfa",
-  "copyright": "Tüm hakları Saklıdır"
+  "copyright": "Tüm hakları Saklıdır",
+  "logout": "Oturumu Kapat",
+  "login": "Oturumu Aç",
+  "required": "${path} boş geçilemez",
+  "min_string": "${path}, en az ${min} karakter olmalıdır",
+  "max_string": "${path}, en fazla ${max} karakter olmalıdır"
 }

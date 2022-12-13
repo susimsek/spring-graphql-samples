@@ -4,9 +4,16 @@ import logo from '../public/logo.png'
 import Image from "next/image";
 import {useTranslation} from "next-i18next";
 import LanguageBar from "./LanguageBar";
+import {useLogout} from "../contexts/use-logout";
+import Button from "react-bootstrap/Button";
+import {useAuthToken} from "../contexts/AuthTokenProvider";
 
 const Header: React.FC = () => {
     const { t } = useTranslation()
+
+    const [token] = useAuthToken();
+
+    const handleSignOut = useLogout()
 
     return (
         <Navbar bg="dark" variant="dark" expand="lg">
@@ -25,6 +32,11 @@ const Header: React.FC = () => {
                         <Nav.Link href="/">{t('home.label')}</Nav.Link>
                     </Nav>
                     <Nav>
+                        {
+                            token ? <Nav.Link href="#" onClick={handleSignOut}>{t('logout')}</Nav.Link>
+                                : <Nav.Link href="/login">{t('login')}</Nav.Link>
+                        }
+
                         <LanguageBar/>
                     </Nav>
                 </Navbar.Collapse>
