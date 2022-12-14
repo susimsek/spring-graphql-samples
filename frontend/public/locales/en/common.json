@@ -1,5 +1,8 @@
 {
-  "home.label": "Home",
+  "menu": {
+    "home": "Home",
+    "myPosts": "My Posts"
+  },
   "copyright": "All Rights reserved",
   "logout": "Sign Out",
   "login": "Sign In",

@@ -18,9 +18,11 @@ const LanguageBar: React.FC = () => {
 
     const router = useRouter();
 
+    const { pathname, asPath, query } = router
+
     const changeLanguage = (locale: string) => {
         setCookie("NEXT_LOCALE", locale, {path: "/"})
-        router.push(router.asPath, undefined, { locale })
+        router.push({ pathname, query }, asPath, { locale })
     }
 
     const currentLanguage = LANGUAGES.find((language) => {

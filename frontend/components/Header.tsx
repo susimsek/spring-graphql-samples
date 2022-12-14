@@ -4,10 +4,10 @@ import logo from '../public/logo.png'
 import Image from "next/image";
 import {useTranslation} from "next-i18next";
 import LanguageBar from "./LanguageBar";
-import {useLogout} from "../hooks/use-logout";
-import Button from "react-bootstrap/Button";
 import {useAuthToken} from "../contexts/AuthTokenProvider";
 import AccountMenu from "./AccountMenu";
+import {useRouter} from "next/router";
+import Link from "next/link";
 
 const Header: React.FC = () => {
     const { t } = useTranslation()
@@ -28,12 +28,13 @@ const Header: React.FC = () => {
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="me-auto">
-                        <Nav.Link href="/">{t('home.label')}</Nav.Link>
+                        <Nav.Link as={Link} href="/">{t('menu.home')}</Nav.Link>
+                        {token && <Nav.Link as={Link} href="/my-posts">{t('menu.myPosts')}</Nav.Link>}
                     </Nav>
                     <Nav>
                         {
                             token ? <AccountMenu/>
-                                : <Nav.Link href="/login">{t('login')}</Nav.Link>
+                                : <Nav.Link as={Link} href="/login">{t('login')}</Nav.Link>
                         }
 
                         <LanguageBar/>

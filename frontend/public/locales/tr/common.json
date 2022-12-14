@@ -1,5 +1,8 @@
 {
-  "home.label": "Ana Sayfa",
+  "menu": {
+    "home": "Ana Sayfa",
+    "myPosts": "İletilerim"
+  },
   "copyright": "Tüm hakları Saklıdır",
   "logout": "Oturumu Kapat",
   "login": "Oturumu Aç",
