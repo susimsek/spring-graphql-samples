@@ -6,9 +6,11 @@
   "copyright": "All Rights reserved",
   "logout": "Sign Out",
   "login": "Sign In",
-  "required": "${path} is a required field",
-  "min_string": "${path} must be at least ${min} characters",
-  "max_string": "${path} must be at most ${max} characters",
+  "validation": {
+    "required": "This field is required.",
+    "minlength": "This field is required to be at least ${min} characters.",
+    "maxlength": "This field cannot be longer than ${max} characters."
+  },
   "login.info.text": "Signed in as <bold>{{name}}</bold>",
   "no.records.text": "There are no records to display"
 }

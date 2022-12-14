@@ -1,0 +1,10 @@
+{
+  "error": {
+    "http": {
+      "404": {
+        "title": "Page Not Found",
+        "detail": "Sorry, the requested page could not be found."
+      }
+    }
+  }
+}

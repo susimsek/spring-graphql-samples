@@ -43,11 +43,11 @@ const MyPostPage = () => {
     return (
         <Layout>
             <Container className="mt-3">
-                <h3>{t('new.post.title')}</h3>
+                <h3 className="h3">{t('new.post.title')}</h3>
                 { data ? data.postAdded && <Post post={data?.postAdded as IPost}/>:
                     <Alert variant='info'>{t('new.post.not.found')}</Alert>}
                 <hr/>
-                <h3>{t('post.list.title')}</h3>
+                <h3 className="h3">{t('post.list.title')}</h3>
                 {postDataLoading ?
                     <div className="text-center">
                         <Spinner animation="border" variant="secondary"/>

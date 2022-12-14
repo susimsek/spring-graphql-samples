@@ -19,8 +19,10 @@ const Login = () => {
     const { t } = useTranslation()
 
     const schema = yup.object({
-        username: yup.string().required(t("required")).min(4, t("min_string")).max(50, t("max_string")),
-        password: yup.string().required(t("required")).min(4, t("min_string")).max(100, t("max_string"))
+        username: yup.string().required(t("validation.required"))
+            .min(4, t("validation.minlength")).max(50, t("maxlength")),
+        password: yup.string().required(t("validation.required"))
+            .min(4, t("validation.minlength")).max(100, t("maxlength"))
     }).required();
 
     const [, updateToken] = useAuthToken();

@@ -1,0 +1,10 @@
+{
+  "error": {
+    "http": {
+      "404": {
+        "title": "Sayfa Bulunamadı",
+        "detail": "Üzgünüz, istenen sayfa bulunamadı."
+      }
+    }
+  }
+}
