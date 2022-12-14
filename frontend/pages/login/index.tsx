@@ -97,9 +97,11 @@ const Login = () => {
                                     aria-hidden="true"
                                 />} {t('login.form.button')}
                             </Button>
-                            {error && <Alert variant="danger">
-                                {error.message}
-                            </Alert>}
+                            {error && error.graphQLErrors.map(({ message }, i) => (
+                                <Alert key={i} variant="danger">
+                                    {message}
+                                </Alert>
+                            ))}
                         </Form>
                     </Card.Body>
                 </Card>
