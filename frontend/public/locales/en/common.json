@@ -6,5 +6,6 @@
   "required": "${path} is a required field",
   "min_string": "${path} must be at least ${min} characters",
   "max_string": "${path} must be at most ${max} characters",
-  "login.info.text": "Signed in as <bold>{{name}}</bold>"
+  "login.info.text": "Signed in as <bold>{{name}}</bold>",
+  "no.records.text": "There are no records to display"
 }
