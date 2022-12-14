@@ -1,0 +1,9 @@
+{
+  "post": {
+    "title": "All Posts",
+    "new": {
+      "notFound": "No new post created",
+      "title": "New Post"
+    }
+  }
+}

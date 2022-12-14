@@ -5,12 +5,13 @@
   },
   "copyright": "Tüm hakları Saklıdır",
   "logout": "Oturumu Kapat",
-  "login": "Oturumu Aç",
+  "login": "Oturum Aç",
   "validation": {
     "required": "Bu alan gerekli.",
     "minlength": "Bu alan en az ${min} karakterden oluşabilir.",
     "maxlength": "Bu alan en fazla ${max} karakterden oluşabilir."
   },
   "login.info.text": "<bold>{{name}}</bold> olarak oturum açıldı",
-  "no.records.text": "Gösterilecek kayıt yok"
+  "no.records.text": "Gösterilecek kayıt yok",
+  "language.label": "Dil"
 }

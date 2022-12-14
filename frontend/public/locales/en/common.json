@@ -12,5 +12,6 @@
     "maxlength": "This field cannot be longer than ${max} characters."
   },
   "login.info.text": "Signed in as <bold>{{name}}</bold>",
-  "no.records.text": "There are no records to display"
+  "no.records.text": "There are no records to display",
+  "language.label": "Language"
 }

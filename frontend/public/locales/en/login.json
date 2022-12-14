@@ -1,4 +1,10 @@
 {
-  "username.label": "Username",
-  "password.label": "Password"
+  "login": {
+    "title": "Sign in",
+    "form": {
+      "username": "Username",
+      "password": "Password",
+      "button": "Sign in"
+    }
+  }
 }

@@ -1,0 +1,9 @@
+{
+  "post": {
+    "title": "Bütün İletiler",
+    "new": {
+      "notFound": "Yeni ileti oluşmadı",
+      "title": "Yeni İleti"
+    }
+  }
+}

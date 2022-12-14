@@ -16,7 +16,7 @@ import * as yup from "yup";
 type LoginFormData = { username: string; password: string };
 
 const Login = () => {
-    const { t } = useTranslation()
+    const { t } = useTranslation('login')
 
     const schema = yup.object({
         username: yup.string().required(t("validation.required"))
@@ -61,11 +61,11 @@ const Login = () => {
         <Layout>
             <Container className="mt-3">
                 <Card className="col-6 offset-3">
-                    <Card.Header className="text-center">{t('login')}</Card.Header>
+                    <Card.Header className="text-center">{t('login.title')}</Card.Header>
                     <Card.Body>
                         <Form onSubmit={handleSubmit(handleLogin)}>
                             <Form.Group className="mb-3">
-                                <Form.Label>{t('login:username.label')}</Form.Label>
+                                <Form.Label>{t('login.form.username')}</Form.Label>
                                 <Form.Control
                                     type="text"
                                     {...register('username')}
@@ -77,7 +77,7 @@ const Login = () => {
                                 </Form.Control.Feedback>
                             </Form.Group>
                             <Form.Group className="mb-3">
-                                <Form.Label>{t('login:password.label')}</Form.Label>
+                                <Form.Label>{t('login.form.password')}</Form.Label>
                                 <Form.Control
                                     type="password"
                                     {...register('password')}
@@ -95,7 +95,7 @@ const Login = () => {
                                     size="sm"
                                     role="status"
                                     aria-hidden="true"
-                                />} {t('login')}
+                                />} {t('login.form.button')}
                             </Button>
                             {error && <Alert variant="danger">
                                 {error.message}

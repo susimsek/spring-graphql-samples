@@ -8,7 +8,7 @@ interface PostProps {
 }
 
 const Post: React.FC<PostProps> = ({ post }) => {
-    const { t } = useTranslation('home')
+    const { t } = useTranslation('post')
 
     return (
         <Card
@@ -17,7 +17,7 @@ const Post: React.FC<PostProps> = ({ post }) => {
         >
             <Card.Header>{post.title}</Card.Header>
             <Card.Body>
-                {post.locale && <Card.Title>{t('language.label') + ': ' + post.locale}</Card.Title>}
+                {post.locale && <Card.Title>{t('common:language.label') + ': ' + post.locale}</Card.Title>}
                 <Card.Text>
                     {post.content}
                 </Card.Text>

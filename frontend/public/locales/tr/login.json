@@ -1,4 +1,10 @@
 {
-  "username.label": "Kullanıcı Adı",
-  "password.label": "Şifre"
+  "login": {
+    "title": "Oturum Aç",
+    "form": {
+      "username": "Kullanıcı Adı",
+      "password": "Şifre",
+      "button": "Oturum Aç"
+    }
+  }
 }

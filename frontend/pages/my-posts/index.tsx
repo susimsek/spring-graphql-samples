@@ -30,7 +30,7 @@ const MyPostPage = () => {
         }
     })
 
-    const { t } = useTranslation('home')
+    const { t } = useTranslation('post')
 
     if (error || postsDataError) {
         console.log(error || postsDataError)
@@ -43,11 +43,11 @@ const MyPostPage = () => {
     return (
         <Layout>
             <Container className="mt-3">
-                <h3 className="h3">{t('new.post.title')}</h3>
+                <h3 className="h3">{t('post.new.title')}</h3>
                 { data ? data.postAdded && <Post post={data?.postAdded as IPost}/>:
-                    <Alert variant='info'>{t('new.post.not.found')}</Alert>}
+                    <Alert variant='info'>{t('post.new.notFound')}</Alert>}
                 <hr/>
-                <h3 className="h3">{t('post.list.title')}</h3>
+                <h3 className="h3">{t('post.title')}</h3>
                 {postDataLoading ?
                     <div className="text-center">
                         <Spinner animation="border" variant="secondary"/>
@@ -64,7 +64,7 @@ const MyPostPage = () => {
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
     props: {
-        ...(await serverSideTranslations(locale, ['home', 'common']))
+        ...(await serverSideTranslations(locale, ['post', 'common']))
     }
 })
 
