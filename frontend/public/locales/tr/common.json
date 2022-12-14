@@ -5,5 +5,6 @@
   "login": "Oturumu Aç",
   "required": "${path} boş geçilemez",
   "min_string": "${path}, en az ${min} karakter olmalıdır",
-  "max_string": "${path}, en fazla ${max} karakter olmalıdır"
+  "max_string": "${path}, en fazla ${max} karakter olmalıdır",
+  "login.info.text": "<bold>{{name}}</bold> olarak oturum açıldı"
 }

@@ -30,7 +30,7 @@ const LanguageBar: React.FC = () => {
     const languageIcon = (<Navbar.Text><FontAwesomeIcon icon={faGlobe} /> {currentLanguage?.countryCode}</Navbar.Text>)
 
     return (
-        <NavDropdown title={languageIcon} menuVariant="dark" id="collasible-nav-dropdown">
+        <NavDropdown align={{ lg: 'end' }} title={languageIcon} menuVariant="dark" id="collasible-nav-dropdown">
             {LANGUAGES.map(language => <Language
                 key={language.locale}
                 changeLanguage={() => changeLanguage(language.locale)}

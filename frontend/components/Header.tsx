@@ -4,16 +4,15 @@ import logo from '../public/logo.png'
 import Image from "next/image";
 import {useTranslation} from "next-i18next";
 import LanguageBar from "./LanguageBar";
-import {useLogout} from "../contexts/use-logout";
+import {useLogout} from "../hooks/use-logout";
 import Button from "react-bootstrap/Button";
 import {useAuthToken} from "../contexts/AuthTokenProvider";
+import AccountMenu from "./AccountMenu";
 
 const Header: React.FC = () => {
     const { t } = useTranslation()
 
     const [token] = useAuthToken();
-
-    const handleSignOut = useLogout()
 
     return (
         <Navbar bg="dark" variant="dark" expand="lg">
@@ -33,7 +32,7 @@ const Header: React.FC = () => {
                     </Nav>
                     <Nav>
                         {
-                            token ? <Nav.Link href="#" onClick={handleSignOut}>{t('logout')}</Nav.Link>
+                            token ? <AccountMenu/>
                                 : <Nav.Link href="/login">{t('login')}</Nav.Link>
                         }
 

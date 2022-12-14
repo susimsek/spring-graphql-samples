@@ -1,3 +1,7 @@
 .bg-gray-100 {
     background-color: rgb(243 244 246);
 }
+
+#account-menu-dropdown::after{
+    display: none;
+}
