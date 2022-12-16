@@ -15,14 +15,14 @@ import * as yup from "yup";
 
 type LoginFormData = { username: string; password: string };
 
-const Login = () => {
+const LoginPage = () => {
     const { t } = useTranslation('login')
 
     const schema = yup.object({
-        username: yup.string().required(t("validation.required"))
-            .min(4, t("validation.minlength")).max(50, t("maxlength")),
-        password: yup.string().required(t("validation.required"))
-            .min(4, t("validation.minlength")).max(100, t("maxlength"))
+        username: yup.string().required(t("common:validation.required"))
+            .min(4, t("common:validation.minlength")).max(50, t("maxlength")),
+        password: yup.string().required(t("common:validation.required"))
+            .min(4, t("common:validation.minlength")).max(100, t("maxlength"))
     }).required();
 
     const [, updateToken] = useAuthToken();
@@ -53,7 +53,8 @@ const Login = () => {
 
         if (result.data) {
             updateToken(result.data.login.token)
-            await router.push( '/')
+            const returnUrl = router.query.returnUrl as string || '/';
+            await router.push(returnUrl)
         }
     };
 
@@ -116,4 +117,4 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
     }
 })
 
-export default Login;
+export default LoginPage;

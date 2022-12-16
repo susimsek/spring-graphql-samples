@@ -2,7 +2,6 @@ import {useTranslation} from "next-i18next";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 import {Alert, Container, Spinner} from "react-bootstrap";
 import React from "react";
-import {useAuthToken} from "../../contexts/AuthTokenProvider";
 import {
     OrderType,
     PostOrderField,
@@ -15,9 +14,7 @@ import Layout from "../../components/Layout";
 
 const MyPostPage = () => {
 
-    const { data, loading, error } = useOnPostAddedSubscription();
-
-    const [token] = useAuthToken();
+    const { data, error } = useOnPostAddedSubscription();
 
     const { data: postsData, loading: postDataLoading, error: postsDataError, refetch} = useGetAllPostsQuery({
         variables: {
