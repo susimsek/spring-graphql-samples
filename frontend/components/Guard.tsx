@@ -16,12 +16,12 @@ const Guard: React.FC<GuardProps> = ({children, excludedRoutes}) => {
     const handleSignOut = useLogout()
 
     useEffect(() => {
-    }, [router.pathname, excludedRoutes]);
-
-    useEffect(() => {
         if (!token && !excludedRoutes?.includes(router.pathname)) {
             handleSignOut()
-            router.push("/login")
+            router.push({
+                pathname: '/login',
+                query: { returnUrl: router.asPath }
+            });
         }
     }, [token, router, excludedRoutes, handleSignOut]);
 
