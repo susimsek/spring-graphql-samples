@@ -16,6 +16,7 @@ single API call.
 ## Prerequisites
 
 * Java 17
+* GraalVM 22.3+
 * Kotlin
 * Maven 3.x
 
@@ -92,3 +93,29 @@ rsc --stream --route=subscriptions --dataMimeType="application/graphql+json" --d
 ```sh
 rsc --request --route=graphql --dataMimeType="application/graphql+json" --data='{"query":"{ post(id: \"632c8028feb9e053546a88f2\") { id, title } }" }' --debug tcp://localhost:8079  --authBearer ${TOKEN} 
 ```
+
+# Used Technologies
+## Backend Side
+* Java 17
+* Kotlin
+* GraalVM
+* Upx
+* Docker
+* Docker Compose
+* Kubernetes
+* Helm
+* Sonarqube
+* Detekt
+* Mongodb
+* Spring Boot 3.x
+* Spring Boot Graphql
+* Spring Boot Webflux
+* Spring Boot Oauth2 Resource Server
+* Spring Boot Security
+* Spring Boot Data Mongodb Reactive
+* Spring Boot Validation
+* Spring Boot Actuator
+* Spring Boot Configuration Processor
+* Graphql Java Extended Scalars
+* Graphql Java Extended Validation
+* Mapstruct
