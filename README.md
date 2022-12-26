@@ -97,7 +97,7 @@ rsc --request --route=graphql --dataMimeType="application/graphql+json" --data='
 # Used Technologies
 ## Backend Side
 * Java 17
-* Kotlin
+* Kotlin 
 * GraalVM
 * Upx
 * Docker
@@ -108,7 +108,7 @@ rsc --request --route=graphql --dataMimeType="application/graphql+json" --data='
 * Detekt
 * Mongodb
 * Spring Boot 3.x
-* Spring Boot Graphql
+* Spring Boot GraphQL
 * Spring Boot Webflux
 * Spring Boot Oauth2 Resource Server
 * Spring Boot Security
