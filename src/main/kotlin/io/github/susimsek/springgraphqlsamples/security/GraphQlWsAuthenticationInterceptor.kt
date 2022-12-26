@@ -1,23 +1,26 @@
 package io.github.susimsek.springgraphqlsamples.security
 
+import io.github.susimsek.springgraphqlsamples.security.jwt.TOKEN_PREFIX
+import io.github.susimsek.springgraphqlsamples.security.jwt.WS_TOKEN_KEY_NAME
 import org.springframework.graphql.server.WebGraphQlInterceptor
 import org.springframework.graphql.server.WebGraphQlRequest
 import org.springframework.graphql.server.WebGraphQlResponse
 import org.springframework.graphql.server.WebSocketGraphQlInterceptor
 import org.springframework.graphql.server.WebSocketGraphQlRequest
 import org.springframework.graphql.server.WebSocketSessionInfo
+import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.core.context.ReactiveSecurityContextHolder
 import org.springframework.security.core.context.SecurityContextImpl
 import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthenticationToken
+import org.springframework.util.CollectionUtils
+import org.springframework.web.util.WebUtils
 import reactor.core.publisher.Mono
 
 class GraphQlWsAuthenticationInterceptor(
     private val reactiveAuthenticationManager: ReactiveAuthenticationManager
 ) : WebSocketGraphQlInterceptor {
     private companion object {
-        const val TOKEN_KEY_NAME = "authorization"
-        const val TOKEN_PREFIX = "Bearer "
 
         private val AUTHENTICATION_SESSION_ATTRIBUTE_KEY =
             GraphQlWsAuthenticationInterceptor::class.qualifiedName + ".authentication"
@@ -31,10 +34,14 @@ class GraphQlWsAuthenticationInterceptor(
     }
 
     override fun intercept(request: WebGraphQlRequest, chain: WebGraphQlInterceptor.Chain): Mono<WebGraphQlResponse> {
-        val token = (request as? WebSocketGraphQlRequest)?.sessionInfo?.getAuthentication()
-            ?: return chain.next(request)
 
-        val securityContext =  reactiveAuthenticationManager.authenticate(token)
+        if (request !is WebSocketGraphQlRequest) {
+            return chain.next(request)
+        }
+
+        val securityContext = Mono.just(request)
+            .mapNotNull { it.sessionInfo.getAuthentication() }
+            .flatMap { reactiveAuthenticationManager.authenticate(it) }
             .map { SecurityContextImpl(it) }
 
         return chain.next(request)
@@ -52,7 +59,7 @@ class GraphQlWsAuthenticationInterceptor(
     }
 
     private fun resolveToken(connectionInitPayload: MutableMap<String, Any>): String? {
-       return (connectionInitPayload[TOKEN_KEY_NAME] as? String)
+       return (connectionInitPayload[WS_TOKEN_KEY_NAME] as? String)
             ?.takeIf { it.startsWith(TOKEN_PREFIX, ignoreCase = true) }
             ?.substring(TOKEN_PREFIX.length)
     }
