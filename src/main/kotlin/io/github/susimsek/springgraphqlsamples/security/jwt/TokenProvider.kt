@@ -1,5 +1,6 @@
 package io.github.susimsek.springgraphqlsamples.security.jwt
 
+import io.github.susimsek.springgraphqlsamples.graphql.type.Token
 import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.jwt.JwtClaimsSet
 import org.springframework.security.oauth2.jwt.JwtEncoder
@@ -13,7 +14,7 @@ class TokenProvider(
     private val jwtEncoder: JwtEncoder
 ) {
 
-    fun createToken(authentication: Authentication): String {
+    fun createToken(authentication: Authentication): Token {
         val tokenValidityInMilliseconds = 1000 * tokenProperties.tokenValidityInSeconds
         val authorities = authentication.authorities
             .map { it.authority }
@@ -30,6 +31,10 @@ class TokenProvider(
             .claim(AUTHORITIES_KEY, authorities)
             .build()
 
-        return jwtEncoder.encode(JwtEncoderParameters.from(claims)).tokenValue
+        val  tokenValue = jwtEncoder.encode(JwtEncoderParameters.from(claims)).tokenValue
+        return Token(
+            token = tokenValue,
+            expiresIn = tokenProperties.tokenValidityInSeconds
+        )
     }
 }

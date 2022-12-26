@@ -168,4 +168,6 @@ type PostPayload{
 
 type Token {
     token: String!
+    tokenType: String!
+    expiresIn: Int!
 }

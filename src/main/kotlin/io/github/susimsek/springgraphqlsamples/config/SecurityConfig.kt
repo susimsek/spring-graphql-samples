@@ -13,7 +13,10 @@ import io.github.susimsek.springgraphqlsamples.security.GraphQlWsAuthenticationI
 import io.github.susimsek.springgraphqlsamples.security.cipher.RSAKeyUtils
 import io.github.susimsek.springgraphqlsamples.security.cipher.SecurityCipher
 import io.github.susimsek.springgraphqlsamples.security.jwt.AUTHORITIES_KEY
+import io.github.susimsek.springgraphqlsamples.security.jwt.GraphQlTokenCookieInterceptor
 import io.github.susimsek.springgraphqlsamples.security.jwt.JwtDecoder
+import io.github.susimsek.springgraphqlsamples.security.jwt.TokenAuthenticationConverter
+import io.github.susimsek.springgraphqlsamples.security.jwt.TokenCookieProvider
 import io.github.susimsek.springgraphqlsamples.security.jwt.TokenProperties
 import io.github.susimsek.springgraphqlsamples.security.jwt.TokenProvider
 import org.springframework.boot.context.properties.EnableConfigurationProperties
@@ -37,6 +40,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.oauth2.server.resource.authentication.JwtReactiveAuthenticationManager
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter
 import org.springframework.security.web.server.SecurityWebFilterChain
+import org.springframework.security.web.server.authentication.ServerAuthenticationConverter
 import org.springframework.security.web.server.header.ReferrerPolicyServerHttpHeadersWriter
 import org.springframework.security.web.server.util.matcher.NegatedServerWebExchangeMatcher
 import org.springframework.security.web.server.util.matcher.OrServerWebExchangeMatcher
@@ -112,12 +116,23 @@ class SecurityConfig {
     }
 
     @Bean
+    fun tokenCookieProvider(
+    ): TokenCookieProvider {
+        return TokenCookieProvider()
+    }
+
+    @Bean
     fun graphQlWsAuthenticationInterceptor(decoder: ReactiveJwtDecoder,
                                          jwtAuthenticationConverter: Converter<Jwt, Mono<AbstractAuthenticationToken>>
     ): GraphQlWsAuthenticationInterceptor {
         val manager = JwtReactiveAuthenticationManager(decoder)
         manager.setJwtAuthenticationConverter(jwtAuthenticationConverter)
         return GraphQlWsAuthenticationInterceptor(manager)
+    }
+
+    @Bean
+    fun graphQlTokenCookieInterceptor(tokenCookieProvider: TokenCookieProvider): GraphQlTokenCookieInterceptor {
+        return GraphQlTokenCookieInterceptor(tokenCookieProvider)
     }
 
     @Bean
@@ -131,6 +146,11 @@ class SecurityConfig {
     }
 
     @Bean
+    fun bearerTokenConverter(): ServerAuthenticationConverter {
+        return TokenAuthenticationConverter()
+    }
+
+    @Bean
     fun reactiveAuthenticationManager(userDetailsService: ReactiveUserDetailsService) =
         UserDetailsRepositoryReactiveAuthenticationManager(userDetailsService).apply {
             setPasswordEncoder(passwordEncoder())
@@ -140,7 +160,8 @@ class SecurityConfig {
     fun springSecurityFilterChain(
         http: ServerHttpSecurity,
         securityMatcherProperties: SecurityMatcherProperties,
-        jwtAuthenticationConverter: Converter<Jwt, Mono<AbstractAuthenticationToken>>): SecurityWebFilterChain {
+        jwtAuthenticationConverter: Converter<Jwt, Mono<AbstractAuthenticationToken>>,
+        bearerTokenConverter: ServerAuthenticationConverter): SecurityWebFilterChain {
         // @formatter:off
         http
             .securityMatcher(
@@ -166,6 +187,8 @@ class SecurityConfig {
             .oauth2ResourceServer()
             .jwt()
             .jwtAuthenticationConverter(jwtAuthenticationConverter)
+            .and()
+            .bearerTokenConverter(bearerTokenConverter)
         // @formatter:on
         return http.build()
     }

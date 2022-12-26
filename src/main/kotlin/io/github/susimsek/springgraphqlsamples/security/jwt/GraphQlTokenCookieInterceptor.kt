@@ -1,0 +1,25 @@
+package io.github.susimsek.springgraphqlsamples.security.jwt
+
+import io.github.susimsek.springgraphqlsamples.graphql.type.Token
+import org.springframework.graphql.server.WebGraphQlInterceptor
+import org.springframework.graphql.server.WebGraphQlRequest
+import org.springframework.graphql.server.WebGraphQlResponse
+import org.springframework.http.HttpHeaders
+import reactor.core.publisher.Mono
+
+
+class GraphQlTokenCookieInterceptor(
+    private val tokenCookieProvider: TokenCookieProvider
+): WebGraphQlInterceptor {
+
+    override fun intercept(request: WebGraphQlRequest,
+                           chain: WebGraphQlInterceptor.Chain): Mono<WebGraphQlResponse> {
+        return chain.next(request).doOnNext { response ->
+            val token = response.executionInput.graphQLContext.get<Token>("token")
+            if (token != null) {
+                val cookie = tokenCookieProvider.createTokenCookie(token)
+                response.responseHeaders.add(HttpHeaders.SET_COOKIE, cookie.toString())
+            }
+        }
+    }
+}

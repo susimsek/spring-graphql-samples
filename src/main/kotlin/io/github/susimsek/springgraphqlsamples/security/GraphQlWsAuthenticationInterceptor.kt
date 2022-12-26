@@ -13,8 +13,6 @@ import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.core.context.ReactiveSecurityContextHolder
 import org.springframework.security.core.context.SecurityContextImpl
 import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthenticationToken
-import org.springframework.util.CollectionUtils
-import org.springframework.web.util.WebUtils
 import reactor.core.publisher.Mono
 
 class GraphQlWsAuthenticationInterceptor(
@@ -52,15 +50,29 @@ class GraphQlWsAuthenticationInterceptor(
         sessionInfo: WebSocketSessionInfo,
         connectionInitPayload: MutableMap<String, Any>,
     ): Mono<Any> {
-        val jwtToken = resolveToken(connectionInitPayload) ?: return Mono.empty()
+
+        val jwtToken = resolveToken(sessionInfo, connectionInitPayload) ?: return Mono.empty()
         val token = BearerTokenAuthenticationToken(jwtToken)
         sessionInfo.setAuthentication(token)
         return Mono.empty()
     }
 
-    private fun resolveToken(connectionInitPayload: MutableMap<String, Any>): String? {
+    private fun resolveToken(
+        sessionInfo: WebSocketSessionInfo,
+        connectionInitPayload: MutableMap<String, Any>): String? {
+        return resolveTokenFromCookie(sessionInfo.headers)
+            ?: resolveTokenFromPayload(connectionInitPayload)
+    }
+
+    private fun resolveTokenFromPayload(connectionInitPayload: MutableMap<String, Any>): String? {
        return (connectionInitPayload[WS_TOKEN_KEY_NAME] as? String)
             ?.takeIf { it.startsWith(TOKEN_PREFIX, ignoreCase = true) }
             ?.substring(TOKEN_PREFIX.length)
+    }
+
+    private fun resolveTokenFromCookie(headers: HttpHeaders): String? {
+        return headers.getFirst(HttpHeaders.COOKIE)
+            ?.takeIf { it.startsWith("$WS_TOKEN_KEY_NAME=", ignoreCase = true) }
+            ?.substring("$WS_TOKEN_KEY_NAME=".length)
     }
 }

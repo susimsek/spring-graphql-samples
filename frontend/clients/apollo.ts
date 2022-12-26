@@ -8,15 +8,16 @@ import {Cookies} from "react-cookie";
 
 const httpLink = createHttpLink({
     uri: GRAPHQL_HTTP_URI,
+    credentials: 'include'
 });
 
 const cookies = new Cookies();
 const authLink = setContext((_, { headers }) => {
-    const token = localStorage.getItem("token")
+    // const token = localStorage.getItem("token")
     return {
         headers: {
             ...headers,
-            authorization: token ? `Bearer ${token}` : "",
+            // authorization: token ? `Bearer ${token}` : "",
             'Accept-Language': cookies.get('NEXT_LOCALE'),
         }
     }
@@ -25,10 +26,7 @@ const authLink = setContext((_, { headers }) => {
 const wsLink = typeof window !== "undefined"
     ? new GraphQLWsLink(
         createClient({
-        url: GRAPHQL_WS_URL,
-        connectionParams: {
-            authorization: localStorage.getItem("token") ? `Bearer ${localStorage.getItem("token")}` : "",
-        }
+        url: GRAPHQL_WS_URL
     }))
     : null;
 

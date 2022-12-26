@@ -21,9 +21,10 @@ class AuthenticationService(
             credentials.login, credentials.password
             )
         )
-            .map { securityCipher.encrypt(tokenProvider.createToken(it)) }
-            .map { jwt ->
-                Token(jwt)
+            .map {
+                val token = tokenProvider.createToken(it)
+                token.token = securityCipher.encrypt(token.token)
+                token
             }.awaitSingle()
     }
 }
