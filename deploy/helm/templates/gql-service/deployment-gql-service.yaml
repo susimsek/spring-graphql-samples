@@ -65,11 +65,16 @@ spec:
           {{- if .Values.springGraphqlService.resources }}
           resources: {{- toYaml .Values.springGraphqlService.resources | nindent 12 }}
           {{- end }}
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: {{ .Values.spring.profiles.active }}
           envFrom:
             - secretRef:
                 name: db-secret
             - secretRef:
                 name: cipher-secret
+            - secretRef:
+                name: token-secret
             - configMapRef:
                 name: spring-gql-service-config
           volumeMounts:

@@ -62,7 +62,7 @@ springGraphqlService:
       port: http
       scheme: HTTP
       httpHeaders: [ ]
-    initialDelaySeconds: 10
+    initialDelaySeconds: 1
     periodSeconds: 10
     timeoutSeconds: 2
     failureThreshold: 3

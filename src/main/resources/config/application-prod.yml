@@ -24,7 +24,6 @@ security:
       token-validity-in-seconds: 86400
     security-matcher:
       ignore-patterns:
-        - /graphiql
         - /favicon.ico
       permit-all-patterns:
         - /actuator/**
