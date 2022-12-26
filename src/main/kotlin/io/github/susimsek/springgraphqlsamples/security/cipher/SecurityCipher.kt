@@ -4,6 +4,7 @@ import io.github.susimsek.springgraphqlsamples.security.cipher.CryptoUtils.getAE
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Component
+import java.lang.IllegalStateException
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 import java.util.Base64
@@ -26,7 +27,7 @@ class SecurityCipher(
     private val log = LoggerFactory.getLogger(javaClass)
     private var cipher: Cipher = Cipher.getInstance(ENCRYPT_ALGO)
 
-    fun encrypt(strToEncrypt: String): String? {
+    fun encrypt(strToEncrypt: String): String {
         try {
             val salt = CryptoUtils.getRandomNonce(SALT_LENGTH_BYTE)
             val iv = CryptoUtils.getRandomNonce(IV_LENGTH_BYTE)
@@ -42,11 +43,11 @@ class SecurityCipher(
             return Base64.getEncoder().encodeToString(cipherTextWithIvSalt)
         } catch (e: Exception) {
             log.trace("Cipher encrypt error {}", e.message)
+            throw IllegalStateException(e.message)
         }
-        return null
     }
 
-    fun decrypt(strToDecrypt: String): String? {
+    fun decrypt(strToDecrypt: String): String {
         try {
             val decode = Base64.getDecoder().decode(strToDecrypt.toByteArray(UTF_8))
             val bb = ByteBuffer.wrap(decode)
@@ -68,7 +69,7 @@ class SecurityCipher(
             return String(plainText, UTF_8)
         } catch (e: Exception) {
             log.trace("Cipher decrypt error {}", e.message)
+            throw IllegalStateException(e.message)
         }
-        return null
     }
 }

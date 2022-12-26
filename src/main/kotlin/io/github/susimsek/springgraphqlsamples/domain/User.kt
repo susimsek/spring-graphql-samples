@@ -1,13 +1,13 @@
 package io.github.susimsek.springgraphqlsamples.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.querydsl.core.annotations.QueryEntity
+// import com.querydsl.core.annotations.QueryEntity
 import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field
 import java.util.Locale
 
-@QueryEntity
+// @QueryEntity
 @Document(collection = "user")
 data class User(
     @Indexed

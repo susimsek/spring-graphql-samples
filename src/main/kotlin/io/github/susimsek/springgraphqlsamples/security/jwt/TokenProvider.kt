@@ -1,29 +1,20 @@
 package io.github.susimsek.springgraphqlsamples.security.jwt
 
-import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.jwt.JwtClaimsSet
 import org.springframework.security.oauth2.jwt.JwtEncoder
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters
-import org.springframework.stereotype.Component
 import java.time.Instant
-import java.util.*
 
 const val AUTHORITIES_KEY = "auth"
 
-@Component
-@EnableConfigurationProperties(TokenProperties::class)
 class TokenProvider(
-    tokenProperties: TokenProperties,
+    private val tokenProperties: TokenProperties,
     private val jwtEncoder: JwtEncoder
 ) {
-    private var tokenValidityInMilliseconds: Long = 0
-
-    init {
-        this.tokenValidityInMilliseconds = 1000 * tokenProperties.tokenValidityInSeconds
-    }
 
     fun createToken(authentication: Authentication): String {
+        val tokenValidityInMilliseconds = 1000 * tokenProperties.tokenValidityInSeconds
         val authorities = authentication.authorities
             .map { it.authority }
 

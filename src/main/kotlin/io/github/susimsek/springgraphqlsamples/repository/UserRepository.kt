@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono
 interface UserRepository :
     CoroutineCrudRepository<User, String>,
     CoroutineSortingRepository<User, String>,
-    ReactiveQuerydslPredicateExecutor<User>,
+    // ReactiveQuerydslPredicateExecutor<User>,
     UserRepositoryOverride {
     fun findOneByEmailIgnoreCase(email: String?): Mono<User>
 

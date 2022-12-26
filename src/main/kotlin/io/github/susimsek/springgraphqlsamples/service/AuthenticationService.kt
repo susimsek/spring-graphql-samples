@@ -21,7 +21,7 @@ class AuthenticationService(
             credentials.login, credentials.password
             )
         )
-            .map { securityCipher.encrypt(tokenProvider.createToken(it))!! }
+            .map { securityCipher.encrypt(tokenProvider.createToken(it)) }
             .map { jwt ->
                 Token(jwt)
             }.awaitSingle()

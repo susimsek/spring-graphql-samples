@@ -1,0 +1,13 @@
+[
+  {
+    "name": "graphql.schema.DataFetchingEnvironmentImpl",
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true,
+    "methods": [
+      {
+        "name": "getLocale",
+        "parameterTypes": [ ]
+      }
+    ]
+  }
+]

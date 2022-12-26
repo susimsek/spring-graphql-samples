@@ -11,8 +11,8 @@ import org.springframework.graphql.data.GraphQlRepository
 @GraphQlRepository
 interface PostRepository :
     CoroutineCrudRepository<Post, String>,
-    CoroutineSortingRepository<Post, String>,
-    ReactiveQuerydslPredicateExecutor<Post> {
+    // ReactiveQuerydslPredicateExecutor<Post>,
+    CoroutineSortingRepository<Post, String> {
 
     fun findByIdNotNull(pageable: Pageable): Flow<Post>
     fun findAllByCreatedByIn(createdBy: MutableSet<String>?): Flow<Post>

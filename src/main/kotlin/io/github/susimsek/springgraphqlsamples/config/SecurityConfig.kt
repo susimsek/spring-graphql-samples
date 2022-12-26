@@ -15,6 +15,7 @@ import io.github.susimsek.springgraphqlsamples.security.cipher.SecurityCipher
 import io.github.susimsek.springgraphqlsamples.security.jwt.AUTHORITIES_KEY
 import io.github.susimsek.springgraphqlsamples.security.jwt.JwtDecoder
 import io.github.susimsek.springgraphqlsamples.security.jwt.TokenProperties
+import io.github.susimsek.springgraphqlsamples.security.jwt.TokenProvider
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -48,11 +49,8 @@ import java.security.interfaces.RSAPublicKey
 @EnableWebFluxSecurity
 // @EnableRSocketSecurity
 @EnableReactiveMethodSecurity
-@EnableConfigurationProperties(SecurityMatcherProperties::class)
-class SecurityConfig(
-    private val userDetailsService: ReactiveUserDetailsService,
-    private val securityMatcherProperties: SecurityMatcherProperties
-) {
+@EnableConfigurationProperties(SecurityMatcherProperties::class, TokenProperties::class)
+class SecurityConfig {
     @Bean
     fun passwordEncoder() = BCryptPasswordEncoder()
 
@@ -106,6 +104,14 @@ class SecurityConfig(
     }
 
     @Bean
+    fun tokenProvider(
+        tokenProperties: TokenProperties,
+        jwtEncoder: JwtEncoder
+    ): TokenProvider {
+        return TokenProvider(tokenProperties, jwtEncoder)
+    }
+
+    @Bean
     fun graphQlWsAuthenticationInterceptor(decoder: ReactiveJwtDecoder,
                                          jwtAuthenticationConverter: Converter<Jwt, Mono<AbstractAuthenticationToken>>
     ): GraphQlWsAuthenticationInterceptor {
@@ -125,7 +131,7 @@ class SecurityConfig(
     }
 
     @Bean
-    fun reactiveAuthenticationManager() =
+    fun reactiveAuthenticationManager(userDetailsService: ReactiveUserDetailsService) =
         UserDetailsRepositoryReactiveAuthenticationManager(userDetailsService).apply {
             setPasswordEncoder(passwordEncoder())
         }
@@ -133,6 +139,7 @@ class SecurityConfig(
     @Bean
     fun springSecurityFilterChain(
         http: ServerHttpSecurity,
+        securityMatcherProperties: SecurityMatcherProperties,
         jwtAuthenticationConverter: Converter<Jwt, Mono<AbstractAuthenticationToken>>): SecurityWebFilterChain {
         // @formatter:off
         http

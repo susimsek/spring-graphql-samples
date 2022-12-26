@@ -1,8 +1,5 @@
 package io.github.susimsek.springgraphqlsamples.graphql.input
 
-import com.querydsl.core.BooleanBuilder
-import com.querydsl.core.types.Predicate
-import io.github.susimsek.springgraphqlsamples.domain.QUser
 import org.springframework.data.mongodb.core.query.Criteria
 
 data class UserFilter(
@@ -35,6 +32,7 @@ data class UserFilter(
         return Criteria().andOperator(criteria)
     }
 
+    /*
     fun toPredicate(): Predicate? {
         val predicate = BooleanBuilder()
         val qUser = QUser("user")
@@ -56,4 +54,6 @@ data class UserFilter(
         }
         return predicate
     }
+
+     */
 }

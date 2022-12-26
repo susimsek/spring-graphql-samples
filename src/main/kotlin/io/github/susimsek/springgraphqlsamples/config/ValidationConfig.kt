@@ -4,12 +4,15 @@ package io.github.susimsek.springgraphqlsamples.config
 import jakarta.validation.ClockProvider
 import jakarta.validation.ParameterNameProvider
 import org.hibernate.validator.internal.engine.DefaultClockProvider
+import org.springframework.aot.hint.RuntimeHints
+import org.springframework.aot.hint.RuntimeHintsRegistrar
 import org.springframework.beans.factory.config.BeanDefinition
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication
 import org.springframework.boot.validation.MessageInterpolatorFactory
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.ImportRuntimeHints
 import org.springframework.context.annotation.Primary
 import org.springframework.context.annotation.Role
 import org.springframework.context.i18n.LocaleContextHolder
@@ -30,6 +33,7 @@ import kotlin.reflect.jvm.kotlinFunction
 
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
+@ImportRuntimeHints(ValidationConfig.GraphQlRuntimeHints::class)
 class ValidationConfig {
     @Primary
     @Bean
@@ -55,6 +59,12 @@ class ValidationConfig {
                 LocaleContextHolder.setLocaleContext(localeContext)
                 return serverWebExchange
             }
+        }
+    }
+
+    internal class GraphQlRuntimeHints : RuntimeHintsRegistrar {
+        override fun registerHints(hints: RuntimeHints, classLoader: ClassLoader?) {
+            hints.resources().registerResourceBundle("i18n.messages")
         }
     }
 }

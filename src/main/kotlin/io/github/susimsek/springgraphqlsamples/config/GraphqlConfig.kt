@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import graphql.scalars.ExtendedScalars
-import graphql.schema.DataFetchingEnvironmentImpl
-import graphql.schema.GraphQLAppliedDirective
 import graphql.schema.GraphQLScalarType
 import graphql.schema.idl.SchemaDirectiveWiring
 import graphql.validation.rules.OnValidationErrorStrategy
@@ -17,20 +15,13 @@ import io.github.susimsek.springgraphqlsamples.graphql.directive.SchemaDirective
 import io.github.susimsek.springgraphqlsamples.graphql.directive.TrimDirective
 import io.github.susimsek.springgraphqlsamples.graphql.directive.UppercaseDirective
 import io.github.susimsek.springgraphqlsamples.graphql.validation.EmailRule
-import org.springframework.aot.hint.MemberCategory
-import org.springframework.aot.hint.RuntimeHints
-import org.springframework.aot.hint.RuntimeHintsRegistrar
-import org.springframework.aot.hint.TypeReference
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.ImportRuntimeHints
 import org.springframework.graphql.execution.RuntimeWiringConfigurer
-import org.springframework.graphql.server.support.GraphQlWebSocketMessage
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
 
 @Configuration(proxyBeanMethods = false)
-@ImportRuntimeHints(GraphqlConfig.GraphQlRuntimeHints::class)
 class GraphqlConfig {
 
     @Bean
@@ -123,22 +114,4 @@ class GraphqlConfig {
             schemaDirectives.forEach{builder.directive(it.name, it.directive)}
         }
     }
-
-    internal class GraphQlRuntimeHints : RuntimeHintsRegistrar {
-        private val values: Array<MemberCategory> = MemberCategory.values()
-
-        @Suppress("SpreadOperator")
-        override fun registerHints(hints: RuntimeHints, classLoader: ClassLoader?) {
-            setOf(
-                GraphQLAppliedDirective::class.java,
-                DataFetchingEnvironmentImpl::class.java,
-                GraphQlWebSocketMessage::class.java
-            ).forEach{hints.reflection().registerType(it, *values)}
-            hints.proxies().registerJdkProxy(
-                TypeReference.of(
-                "graphql.validation.interpolation.ResourceBundleMessageInterpolator\$BridgeAnnotation"))
-            hints.resources().registerPattern("graphql/validation/ValidationMessages*.properties")
-        }
-    }
-
 }
