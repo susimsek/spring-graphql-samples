@@ -4,7 +4,10 @@ export function middleware(request: NextRequest){
     const cookie = request.cookies.get("token")?.value
     console.log('cookie -> ' + cookie)
     if (cookie === undefined) {
-        return NextResponse.redirect(new URL('/login', request.url))
+        const url = request.nextUrl.clone()
+        url.pathname = '/login'
+        url.searchParams.set("redirectUrl", request.nextUrl.pathname)
+        return NextResponse.redirect(url)
     }
     return NextResponse.next()
 }

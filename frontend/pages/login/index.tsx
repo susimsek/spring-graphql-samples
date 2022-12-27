@@ -29,6 +29,8 @@ const LoginPage = () => {
 
     const router = useRouter();
 
+    const redirectUrl = (router.query?.redirectUrl as string) ?? "/";
+
     const [login, { loading, error }] = useLoginMutation({
         errorPolicy: "all"
     });
@@ -53,8 +55,7 @@ const LoginPage = () => {
 
         if (result.data) {
             updateIsLoggedIn(true)
-            const returnUrl = router.query.returnUrl as string || '/';
-            await router.push(returnUrl)
+            await router.push(redirectUrl)
         }
     };
 
