@@ -206,6 +206,14 @@
                 <configuration>
                     <buildArgs>
                         <buildArg>-H:IncludeLocales=tr,en</buildArg>
+                        <buildArg>--enable-https</buildArg>
+                        <buildArg>--enable-http</buildArg>
+                        <buildArg>
+                            --initialize-at-build-time=sun.instrument.InstrumentationImpl
+                        </buildArg>
+                        <buildArg>
+                            --initialize-at-run-time=io.netty.handler.ssl.BouncyCastleAlpnSslUtils
+                        </buildArg>
                     </buildArgs>
                 </configuration>
             </plugin>
@@ -218,12 +226,20 @@
                         <publish>false</publish>
                         <pullPolicy>IF_NOT_PRESENT</pullPolicy>
                         <builder>paketobuildpacks/builder:tiny</builder>
+                        <buildpacks>
+                            <buildpack>gcr.io/paketo-buildpacks/java-native-image:7.43.0</buildpack>
+                        </buildpacks>
                         <env>
                             <BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
                             <BP_JVM_VERSION>17.*</BP_JVM_VERSION>
                             <BP_BINARY_COMPRESSION_METHOD>upx</BP_BINARY_COMPRESSION_METHOD>
                             <BP_NATIVE_IMAGE_BUILD_ARGUMENTS>
+                                -H:+ReportExceptionStackTraces
                                 -H:IncludeLocales=tr,en
+                                --enable-http
+                                --enable-https
+                                --initialize-at-build-time=sun.instrument.InstrumentationImpl
+                                --initialize-at-run-time=io.netty.handler.ssl.BouncyCastleAlpnSslUtils
                             </BP_NATIVE_IMAGE_BUILD_ARGUMENTS>
                         </env>
                     </image>
