@@ -5,6 +5,8 @@ import {faUser} from "@fortawesome/free-solid-svg-icons";
 import {Trans, useTranslation} from "next-i18next";
 import {useLogout} from "../hooks/use-logout";
 import {useCurrentUser} from "../hooks/use-current-user";
+import {SubmitHandler} from "react-hook-form";
+import {useRouter} from "next/router";
 
 
 const AccountMenu: React.FC = () => {
@@ -15,6 +17,15 @@ const AccountMenu: React.FC = () => {
 
     const handleSignOut = useLogout()
 
+    const router = useRouter()
+
+    const handleLogout = async () => {
+
+        await handleSignOut()
+
+        await router.push('/')
+    };
+
     const profileIcon = (<Navbar.Text><FontAwesomeIcon size="lg" className="text-info rounded-circle" icon={faUser} /></Navbar.Text>)
 
     return (
@@ -24,7 +35,7 @@ const AccountMenu: React.FC = () => {
                 values={{ name: user?.name}}
                 components={{ bold: <strong />}}
             /></NavDropdown.Item>
-            <NavDropdown.Item onClick={handleSignOut}>{t('logout')}</NavDropdown.Item>
+            <NavDropdown.Item onClick={handleLogout}>{t('logout')}</NavDropdown.Item>
         </NavDropdown>
     );
 }

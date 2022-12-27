@@ -10,7 +10,6 @@ import { CookiesProvider } from 'react-cookie';
 import { config } from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 import {AuthProvider} from "../contexts/AuthProvider";
-import Guard from "../components/Guard";
 
 
 config.autoAddCss = false
@@ -21,9 +20,7 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
         <CookiesProvider>
             <ApolloProvider client={ApolloClient}>
                 <AuthProvider>
-                    <Guard excludedRoutes={["/login", "/"]}>
-                        <Component {...pageProps} />
-                    </Guard>
+                    <Component {...pageProps} />
                 </AuthProvider>
             </ApolloProvider>
         </CookiesProvider>
