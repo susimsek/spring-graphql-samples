@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono
 
 
 class GraphQlTokenCookieInterceptor(
-    private val tokenCookieProvider: TokenCookieProvider
+    private val tokenProvider: TokenProvider
 ): WebGraphQlInterceptor {
 
     override fun intercept(request: WebGraphQlRequest,
@@ -17,7 +17,10 @@ class GraphQlTokenCookieInterceptor(
         return chain.next(request).doOnNext { response ->
             val token = response.executionInput.graphQLContext.get<Token>("token")
             if (token != null) {
-                val cookie = tokenCookieProvider.createTokenCookie(token)
+                val cookie = when(token.token.isBlank()) {
+                    true -> tokenProvider.deleteTokenCookie()
+                    else ->  tokenProvider.createTokenCookie(token)
+                }
                 response.responseHeaders.add(HttpHeaders.SET_COOKIE, cookie.toString())
             }
         }

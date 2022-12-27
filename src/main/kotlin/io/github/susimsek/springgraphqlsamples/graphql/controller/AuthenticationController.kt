@@ -7,6 +7,7 @@ import io.github.susimsek.springgraphqlsamples.service.AuthenticationService
 import org.slf4j.LoggerFactory
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.MutationMapping
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 import java.util.Locale
 
@@ -21,5 +22,16 @@ class AuthenticationController(private val authenticationService: Authentication
         val token = authenticationService.authorize(input)
         context.put("token", token)
         return token
+    }
+
+
+    @MutationMapping
+    @PreAuthorize("isAuthenticated()")
+    suspend fun logout(context: GraphQLContext): Boolean {
+        val result = authenticationService.logout()
+        if (result) {
+            context.put("token", Token(token = ""))
+        }
+        return result
     }
 }

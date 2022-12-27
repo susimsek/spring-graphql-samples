@@ -16,7 +16,6 @@ import io.github.susimsek.springgraphqlsamples.security.jwt.AUTHORITIES_KEY
 import io.github.susimsek.springgraphqlsamples.security.jwt.GraphQlTokenCookieInterceptor
 import io.github.susimsek.springgraphqlsamples.security.jwt.JwtDecoder
 import io.github.susimsek.springgraphqlsamples.security.jwt.TokenAuthenticationConverter
-import io.github.susimsek.springgraphqlsamples.security.jwt.TokenCookieProvider
 import io.github.susimsek.springgraphqlsamples.security.jwt.TokenProperties
 import io.github.susimsek.springgraphqlsamples.security.jwt.TokenProvider
 import org.springframework.boot.context.properties.EnableConfigurationProperties
@@ -116,12 +115,6 @@ class SecurityConfig {
     }
 
     @Bean
-    fun tokenCookieProvider(
-    ): TokenCookieProvider {
-        return TokenCookieProvider()
-    }
-
-    @Bean
     fun graphQlWsAuthenticationInterceptor(decoder: ReactiveJwtDecoder,
                                          jwtAuthenticationConverter: Converter<Jwt, Mono<AbstractAuthenticationToken>>
     ): GraphQlWsAuthenticationInterceptor {
@@ -131,8 +124,8 @@ class SecurityConfig {
     }
 
     @Bean
-    fun graphQlTokenCookieInterceptor(tokenCookieProvider: TokenCookieProvider): GraphQlTokenCookieInterceptor {
-        return GraphQlTokenCookieInterceptor(tokenCookieProvider)
+    fun graphQlTokenCookieInterceptor(tokenProvider: TokenProvider): GraphQlTokenCookieInterceptor {
+        return GraphQlTokenCookieInterceptor(tokenProvider)
     }
 
     @Bean

@@ -8,6 +8,7 @@ import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Mono
 
 @Service
 class AuthenticationService(
@@ -26,5 +27,11 @@ class AuthenticationService(
                 token.token = securityCipher.encrypt(token.token)
                 token
             }.awaitSingle()
+    }
+
+    suspend fun logout(): Boolean {
+        tokenProvider.deleteTokenCookie()
+        return Mono.just(true)
+            .awaitSingle()
     }
 }

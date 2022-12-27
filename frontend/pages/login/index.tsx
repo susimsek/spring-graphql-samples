@@ -9,7 +9,7 @@ import Card from 'react-bootstrap/Card';
 import {SubmitHandler, useForm} from "react-hook-form";
 import {useLoginMutation} from "../../generated/graphql-types";
 import {useRouter} from "next/router";
-import {useAuthToken} from "../../contexts/AuthTokenProvider";
+import {useAuth} from "../../contexts/AuthProvider";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 
@@ -25,7 +25,7 @@ const LoginPage = () => {
             .min(4, t("common:validation.minlength")).max(100, t("maxlength"))
     }).required();
 
-    const [, updateToken] = useAuthToken();
+    const [, updateIsLoggedIn] = useAuth();
 
     const router = useRouter();
 
@@ -52,7 +52,7 @@ const LoginPage = () => {
         });
 
         if (result.data) {
-            updateToken(result.data.login.token)
+            updateIsLoggedIn(true)
             const returnUrl = router.query.returnUrl as string || '/';
             await router.push(returnUrl)
         }

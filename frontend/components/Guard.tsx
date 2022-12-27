@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import {useAuthToken} from "../contexts/AuthTokenProvider";
+import {useAuth} from "../contexts/AuthProvider";
 import {useLogout} from "../hooks/use-logout";
 import * as React from "react";
 
@@ -10,27 +10,26 @@ interface GuardProps {
 }
 
 const Guard: React.FC<GuardProps> = ({children, excludedRoutes}) => {
-    const [token] = useAuthToken();
+    const [isLoggedIn] = useAuth();
     const router = useRouter();
 
     const handleSignOut = useLogout()
 
     useEffect(() => {
-        if (!token && !excludedRoutes?.includes(router.pathname)) {
-            handleSignOut()
+        if (!isLoggedIn && !excludedRoutes?.includes(router.pathname)) {
             router.push({
                 pathname: '/login',
                 query: { returnUrl: router.asPath }
             });
         }
-    }, [token, router, excludedRoutes, handleSignOut]);
+    }, [isLoggedIn, router, excludedRoutes, handleSignOut]);
 
     return (
         <>
             {excludedRoutes?.includes(router.pathname) ? (
                 children
             ) : (
-                <>{token && children}</>
+                <>{isLoggedIn && children}</>
             )}
         </>
     );

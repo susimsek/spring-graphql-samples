@@ -9,7 +9,7 @@ import { CookiesProvider } from 'react-cookie';
 
 import { config } from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css'
-import {AuthTokenProvider} from "../contexts/AuthTokenProvider";
+import {AuthProvider} from "../contexts/AuthProvider";
 import Guard from "../components/Guard";
 
 
@@ -20,11 +20,11 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
     return (
         <CookiesProvider>
             <ApolloProvider client={ApolloClient}>
-                <AuthTokenProvider>
+                <AuthProvider>
                     <Guard excludedRoutes={["/login", "/"]}>
                         <Component {...pageProps} />
                     </Guard>
-                </AuthTokenProvider>
+                </AuthProvider>
             </ApolloProvider>
         </CookiesProvider>
     )
