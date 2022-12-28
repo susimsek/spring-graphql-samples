@@ -24,7 +24,7 @@ class CorsConfig {
             config.maxAge = corsProperties.maxAge
 
             source.apply {
-                registerCorsConfiguration("/graphql", config)
+                registerCorsConfiguration("/**", config)
             }
         }
         return CorsWebFilter(source)
