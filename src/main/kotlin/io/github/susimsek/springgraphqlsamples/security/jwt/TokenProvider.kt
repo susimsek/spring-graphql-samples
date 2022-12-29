@@ -14,9 +14,9 @@ class TokenProvider(
     private val tokenProperties: TokenProperties,
     private val jwtEncoder: JwtEncoder
 ) {
+    private val tokenValidityInMilliseconds = 1000 * tokenProperties.tokenValidityInSeconds
 
     fun createToken(authentication: Authentication): Token {
-        val tokenValidityInMilliseconds = 1000 * tokenProperties.tokenValidityInSeconds
         val authorities = authentication.authorities
             .map { it.authority }
 

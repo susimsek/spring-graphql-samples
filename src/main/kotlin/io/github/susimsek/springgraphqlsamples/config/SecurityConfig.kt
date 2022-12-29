@@ -18,6 +18,7 @@ import io.github.susimsek.springgraphqlsamples.security.jwt.JwtDecoder
 import io.github.susimsek.springgraphqlsamples.security.jwt.TokenAuthenticationConverter
 import io.github.susimsek.springgraphqlsamples.security.jwt.TokenProperties
 import io.github.susimsek.springgraphqlsamples.security.jwt.TokenProvider
+import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaService
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -27,6 +28,7 @@ import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder
 import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -154,6 +156,7 @@ class SecurityConfig {
         http: ServerHttpSecurity,
         securityMatcherProperties: SecurityMatcherProperties,
         jwtAuthenticationConverter: Converter<Jwt, Mono<AbstractAuthenticationToken>>,
+        recaptchaService: RecaptchaService,
         bearerTokenConverter: ServerAuthenticationConverter): SecurityWebFilterChain {
         // @formatter:off
         http

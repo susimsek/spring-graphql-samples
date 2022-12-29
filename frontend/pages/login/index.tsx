@@ -12,6 +12,7 @@ import {useRouter} from "next/router";
 import {useAuth} from "../../contexts/AuthProvider";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
+import {useGoogleReCaptcha} from "react-google-recaptcha-v3";
 
 type LoginFormData = { username: string; password: string };
 
@@ -29,9 +30,11 @@ const LoginPage = () => {
 
     const router = useRouter();
 
+    const { executeRecaptcha } = useGoogleReCaptcha()
+
     const redirectUrl = (router.query?.redirectUrl as string) ?? "/";
 
-    const [login, { loading, error }] = useLoginMutation({
+    const [login, { loading, error }, ] = useLoginMutation({
         errorPolicy: "all"
     });
 
@@ -44,6 +47,14 @@ const LoginPage = () => {
 
     const handleLogin: SubmitHandler<LoginFormData> = async ({username, password}) => {
 
+        if (!executeRecaptcha) {
+            console.log('Execute recaptcha not yet available');
+            return;
+        }
+
+        const token = await executeRecaptcha('login');
+
+
         const result = await login({
             variables: {
                 input: {
@@ -51,6 +62,11 @@ const LoginPage = () => {
                     password
                 },
             },
+            context: {
+                headers: {
+                    "recaptcha": token
+                }
+            }
         });
 
         if (result.data) {

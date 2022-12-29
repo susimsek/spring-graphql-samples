@@ -39,3 +39,7 @@ security:
 
 dummy:
   message: hello
+
+recaptcha:
+  verifyUrl: https://www.google.com/recaptcha/api/siteverify
+  secretKey: 6Lca17IjAAAAAAEpjSTErRO4Rw6z9lHqVAohwWdW

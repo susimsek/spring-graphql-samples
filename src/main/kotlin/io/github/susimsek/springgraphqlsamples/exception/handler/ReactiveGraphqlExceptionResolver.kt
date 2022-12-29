@@ -3,6 +3,7 @@ package io.github.susimsek.springgraphqlsamples.exception.handler
 import graphql.GraphQLError
 import graphql.GraphqlErrorBuilder
 import graphql.schema.DataFetchingEnvironment
+import io.github.susimsek.springgraphqlsamples.exception.InvalidCaptchaException
 import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundException
 import io.github.susimsek.springgraphqlsamples.exception.ValidationException
 import jakarta.validation.ConstraintViolationException
@@ -62,12 +63,15 @@ class ReactiveGraphqlExceptionResolver(
 
             is ValidationException -> {
                 val errorMessage = messageSource.getMessage(ex.message, ex.args, locale)
-                return GraphqlErrorBuilder.newError(env)
-                    .message(errorMessage).errorType(ErrorType.BAD_REQUEST).build()
+                return badRequest(env, errorMessage)
             }
-
             else -> super.resolveToSingleError(ex, env)
         }
+    }
+
+    private fun badRequest(env: DataFetchingEnvironment, errorMessage: String): GraphQLError? {
+        return GraphqlErrorBuilder.newError(env)
+            .message(errorMessage).errorType(ErrorType.BAD_REQUEST).build()
     }
 
 }

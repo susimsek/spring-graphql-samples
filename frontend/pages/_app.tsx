@@ -10,6 +10,7 @@ import { CookiesProvider } from 'react-cookie';
 import { config } from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 import {AuthProvider} from "../contexts/AuthProvider";
+import {GoogleReCaptchaProvider} from "react-google-recaptcha-v3";
 
 
 config.autoAddCss = false
@@ -20,7 +21,16 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
         <CookiesProvider>
             <ApolloProvider client={ApolloClient}>
                 <AuthProvider>
+                    <GoogleReCaptchaProvider
+                        reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTHA_SITE_KEY as string}
+                        scriptProps={{
+                            async: false,
+                            defer: true,
+                            appendTo: "body",
+                            nonce: undefined,
+                        }}>
                     <Component {...pageProps} />
+                    </GoogleReCaptchaProvider>
                 </AuthProvider>
             </ApolloProvider>
         </CookiesProvider>
