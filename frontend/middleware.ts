@@ -1,10 +1,13 @@
 import {NextRequest, NextResponse} from "next/server";
 
 export function middleware(request: NextRequest){
-    const cookie = request.cookies.get("token")?.value
-    console.log('cookie -> ' + cookie)
-    if (cookie === undefined) {
-        const url = request.nextUrl.clone()
+    const token = request.cookies.get("token")?.value
+    const url = request.nextUrl.clone()
+
+    if (url.pathname == "/login" && token) {
+        url.pathname = '/'
+        return NextResponse.redirect(url)
+    } else if (url.pathname != "/login" && token === undefined) {
         url.pathname = '/login'
         url.searchParams.set("redirectUrl", request.nextUrl.pathname)
         return NextResponse.redirect(url)
@@ -20,6 +23,6 @@ export const config = {
          * - _next/static (static files)
          * - favicon.ico (favicon file)
          */
-        '/((?!api|_next/static|favicon.ico|login).*)',
+        '/((?!api|_next|favicon.ico).*)',
     ],
 }

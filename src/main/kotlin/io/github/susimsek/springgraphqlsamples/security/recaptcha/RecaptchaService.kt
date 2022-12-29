@@ -3,6 +3,7 @@ package io.github.susimsek.springgraphqlsamples.security.recaptcha
 import io.github.susimsek.springgraphqlsamples.exception.InvalidCaptchaException
 import io.github.susimsek.springgraphqlsamples.exception.RECAPTCHA_INVALID_MSG_CODE
 import kotlinx.coroutines.reactive.awaitSingle
+import org.slf4j.LoggerFactory
 
 
 class RecaptchaService(

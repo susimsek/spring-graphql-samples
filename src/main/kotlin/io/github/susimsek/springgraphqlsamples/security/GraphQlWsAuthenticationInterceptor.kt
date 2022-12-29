@@ -14,6 +14,7 @@ import org.springframework.security.core.context.ReactiveSecurityContextHolder
 import org.springframework.security.core.context.SecurityContextImpl
 import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthenticationToken
 import reactor.core.publisher.Mono
+import java.net.HttpCookie
 
 class GraphQlWsAuthenticationInterceptor(
     private val reactiveAuthenticationManager: ReactiveAuthenticationManager
@@ -50,7 +51,6 @@ class GraphQlWsAuthenticationInterceptor(
         sessionInfo: WebSocketSessionInfo,
         connectionInitPayload: MutableMap<String, Any>,
     ): Mono<Any> {
-
         val jwtToken = resolveToken(sessionInfo, connectionInitPayload) ?: return Mono.empty()
         val token = BearerTokenAuthenticationToken(jwtToken)
         sessionInfo.setAuthentication(token)
@@ -71,8 +71,11 @@ class GraphQlWsAuthenticationInterceptor(
     }
 
     private fun resolveTokenFromCookie(headers: HttpHeaders): String? {
-        return headers.getFirst(HttpHeaders.COOKIE)
-            ?.takeIf { it.startsWith("$WS_TOKEN_KEY_NAME=", ignoreCase = true) }
-            ?.substring("$WS_TOKEN_KEY_NAME=".length)
+        val cookie = headers.getFirst(HttpHeaders.COOKIE) ?: return null
+       val tokenCookie =  cookie.split(";")
+            .flatMap { HttpCookie.parse(it)  }
+            .find { it.name == WS_TOKEN_KEY_NAME }
+       return tokenCookie?.value
     }
+
 }

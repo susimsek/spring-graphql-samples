@@ -1,7 +1,5 @@
 package io.github.susimsek.springgraphqlsamples.config
 
-import io.github.susimsek.springgraphqlsamples.security.jwt.GraphQlTokenCookieInterceptor
-import io.github.susimsek.springgraphqlsamples.security.jwt.TokenProvider
 import io.github.susimsek.springgraphqlsamples.security.recaptcha.GraphQlRecaptchaHeaderInterceptor
 import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaClient
 import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaProperties
