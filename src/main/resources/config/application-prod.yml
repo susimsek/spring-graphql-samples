@@ -33,5 +33,5 @@ security:
     base64-secret: c2VjdXJlQ0RDS2V5
 
 recaptcha:
-  verifyUrl: https://www.google.com/recaptcha/api/siteverify
-  secretKey: 6Lca17IjAAAAAAEpjSTErRO4Rw6z9lHqVAohwWdW
+  verify-url: https://www.google.com/recaptcha/api/siteverify
+  secret-key: 6Lca17IjAAAAAAEpjSTErRO4Rw6z9lHqVAohwWdW

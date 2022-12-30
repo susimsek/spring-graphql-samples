@@ -18,13 +18,11 @@ class TokenAuthenticationConverter : ServerBearerTokenAuthenticationConverter() 
     private var tokenCookieName = TOKEN_COOKIE_NAME
 
     override fun convert(exchange: ServerWebExchange): Mono<Authentication> {
-        return Mono.fromCallable { token(exchange.request) }.flatMap { token ->
-            if (token.isNullOrBlank()) {
-                super.convert(exchange)
-            } else {
-                Mono.just(BearerTokenAuthenticationToken(token))
-            }
+        val token = token(exchange.request)
+        if (token.isNullOrBlank()) {
+            return super.convert(exchange)
         }
+        return Mono.just(BearerTokenAuthenticationToken(token))
     }
 
     private fun token(request: ServerHttpRequest): String? {

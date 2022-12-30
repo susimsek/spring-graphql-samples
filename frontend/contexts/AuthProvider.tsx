@@ -33,7 +33,7 @@ const AuthProvider: React.FC<AuthContextProviderProps> = ({ children }) => {
         setIsLoggedIn(isLoggedIn);
     }
 
-    return isLoggedIn === undefined ? false : (
+    return isLoggedIn === undefined ? null : (
         <AuthContext.Provider value={{ isLoggedIn, updateIsLoggedIn }}>
             {children}
         </AuthContext.Provider>

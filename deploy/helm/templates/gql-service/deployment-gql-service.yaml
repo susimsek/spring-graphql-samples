@@ -75,6 +75,8 @@ spec:
                 name: cipher-secret
             - secretRef:
                 name: token-secret
+            - secretRef:
+                name: recaptcha-secret
             - configMapRef:
                 name: spring-gql-service-config
           volumeMounts:

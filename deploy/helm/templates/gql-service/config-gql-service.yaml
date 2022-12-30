@@ -32,3 +32,6 @@ data:
       port: {{ .Values.springGraphqlService.containerPorts.http | quote}}
     dummy:
       message: this is new dummy message
+    recaptcha:
+      verify-url: https://www.google.com/recaptcha/api/siteverify
+      secret-key: ${RECAPTCHA_SECRET_KEY}
