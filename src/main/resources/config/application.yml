@@ -12,6 +12,10 @@ spring:
   graphql:
     websocket:
       path: /subscriptions
+    cors:
+      allowed-origins: http://localhost:3000
+      allow-credentials: true
+      allowed-headers: Origin, Accept, X-Requested-With, Authorization, Cache-Control, Content-Type, Accept-Language, Recaptcha
   main:
     allow-bean-definition-overriding: true
   web:
@@ -37,11 +41,3 @@ management:
       enabled: true
     readinessstate:
       enabled: true
-
-cors:
-  allowed-origins: http://localhost:3000, http://localhost:8080
-  allowed-methods: GET, PUT, POST, PATCH, DELETE, OPTIONS
-  allowed-headers: Origin, Accept, X-Requested-With, Authorization, Cache-Control, Content-Type, Accept-Language, Recaptcha
-  exposed-headers: Location
-  allow-credentials: true
-  max-age: 3600
