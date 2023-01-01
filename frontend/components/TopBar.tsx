@@ -8,7 +8,7 @@ import {useAuth} from "../contexts/AuthProvider";
 import AccountMenu from "./AccountMenu";
 import Link from "next/link";
 
-const Header: React.FC = () => {
+const TopBar: React.FC = () => {
     const { t } = useTranslation()
 
     const [isLoggedIn] = useAuth();
@@ -19,11 +19,11 @@ const Header: React.FC = () => {
                 <Navbar.Brand href="/">
                     <Image
                         src={logo}
-                        alt="I18N"
+                        alt="GraphQL"
                         width="30"
                         height="30"
                         className="d-inline-block align-top"
-                    />{' '}I18N</Navbar.Brand>
+                    />{' '}GraphQL</Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="me-auto">
@@ -44,4 +44,4 @@ const Header: React.FC = () => {
     );
 }
 
-export default Header;
+export default TopBar;

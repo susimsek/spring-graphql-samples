@@ -1,5 +1,5 @@
 import * as React from "react";
-import Header from "./Header";
+import TopBar from "./TopBar";
 import Footer from "./Footer";
 import {Container} from "react-bootstrap";
 
@@ -14,7 +14,7 @@ const Layout: React.FC<PageLayoutProps> =({
                                    }) => {
     return (
         <div>
-            <Header/>
+            <TopBar/>
             <main>
                     {children}
             </main>

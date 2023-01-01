@@ -1,11 +1,11 @@
 import React, {useState} from "react";
-import {Alert, Card, Modal, Spinner} from "react-bootstrap";
+import {Alert, Card, Col, Container, Modal, Row, Spinner} from "react-bootstrap";
 import {useTranslation} from "next-i18next";
 import Button from "react-bootstrap/Button";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlusSquare, faSave} from "@fortawesome/free-solid-svg-icons";
 import Form from "react-bootstrap/Form";
-import {useCreatePostMutation, useLoginMutation} from "../generated/graphql-types";
+import {useCreatePostMutation} from "../generated/graphql-types";
 import {SubmitHandler, useForm} from "react-hook-form";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
@@ -16,6 +16,8 @@ const NewPostFormDialog: React.FC = () => {
     const { t } = useTranslation('post')
 
     const [show, setShow] = useState<boolean>(false);
+
+    const [visibleCreatedAlert, setVisibleCreatedAlert] = useState<boolean>(false);
 
     const schema = yup.object({
         title: yup.string().required(t("common:validation.required"))
@@ -47,7 +49,11 @@ const NewPostFormDialog: React.FC = () => {
         });
 
         if (result.data) {
-            handleClose()
+            setVisibleCreatedAlert(true)
+            setTimeout(() => {
+                setVisibleCreatedAlert(false)
+                handleClose()
+            }, 2000);
         }
     };
 
@@ -65,6 +71,7 @@ const NewPostFormDialog: React.FC = () => {
                 </Modal.Header>
                 <Form onSubmit={handleSubmit(handleLogin)}>
                 <Modal.Body>
+                    <Container>
                     <Card>
                         <Card.Body>
                                 <Form.Group className="mb-3">
@@ -95,25 +102,43 @@ const NewPostFormDialog: React.FC = () => {
                                 </Form.Group>
                         </Card.Body>
                     </Card>
+                </Container>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                        {t('common:entity.action.cancel')}
-                    </Button>
-                    <Button variant="primary" type="submit" disabled={loading}>
-                        {loading && <Spinner
-                            as="span"
-                            animation="border"
-                            size="sm"
-                            role="status"
-                            aria-hidden="true"
-                        />} <FontAwesomeIcon icon={faSave} /> {t('common:entity.action.save')}
-                    </Button>
-                    {error && error.graphQLErrors.map(({ message }, i) => (
-                        <Alert key={i} variant="danger">
-                            {message}
-                        </Alert>
-                    ))}
+                    <Container>
+                        <Row>
+                            <Col>
+                                <Alert show={visibleCreatedAlert} variant="success">
+                                    {t('post.created')}
+                                </Alert>
+                            </Col>
+                        </Row>
+                        {error && error.graphQLErrors.map(({ message }, i) => (
+                            <Row key={i}>
+                                <Col>
+                                    <Alert variant="danger">
+                                        {message}
+                                    </Alert>
+                                </Col>
+                            </Row>
+                        ))}
+                        <Row>
+                            <Col>
+                                <Button variant="secondary" className="me-2" onClick={handleClose} disabled={loading}>
+                                    {t('common:entity.action.cancel')}
+                                </Button>
+                                <Button variant="primary" type="submit" disabled={loading}>
+                                    {loading && <Spinner
+                                        as="span"
+                                        animation="border"
+                                        size="sm"
+                                        role="status"
+                                        aria-hidden="true"
+                                    />} <FontAwesomeIcon icon={faSave} /> {t('common:entity.action.save')}
+                                </Button>
+                            </Col>
+                        </Row>
+                    </Container>
                 </Modal.Footer>
                 </Form>
             </Modal>
