@@ -11,6 +11,14 @@
     "minlength": "This field is required to be at least ${min} characters.",
     "maxlength": "This field cannot be longer than ${max} characters."
   },
+  "entity": {
+    "action": {
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "edit": "Edit",
+      "save": "Save"
+    }
+  },
   "login.info.text": "Signed in as <bold>{{name}}</bold>",
   "no.records.text": "There are no records to display",
   "language.label": "Language"

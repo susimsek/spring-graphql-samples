@@ -4,6 +4,13 @@
     "new": {
       "notFound": "No new post created",
       "title": "New Post"
-    }
+    },
+    "createLabel": "Create New Post",
+    "createTitle": "Create New Post",
+    "form": {
+      "title": "Title",
+      "content": "Post"
+    },
+    "created": "A new post has been successfully created"
   }
 }

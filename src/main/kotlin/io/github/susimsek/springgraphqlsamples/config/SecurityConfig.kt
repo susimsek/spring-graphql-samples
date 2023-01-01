@@ -156,7 +156,6 @@ class SecurityConfig {
         http: ServerHttpSecurity,
         securityMatcherProperties: SecurityMatcherProperties,
         jwtAuthenticationConverter: Converter<Jwt, Mono<AbstractAuthenticationToken>>,
-        recaptchaService: RecaptchaService,
         bearerTokenConverter: ServerAuthenticationConverter): SecurityWebFilterChain {
         // @formatter:off
         http

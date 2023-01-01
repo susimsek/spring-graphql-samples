@@ -4,6 +4,13 @@
     "new": {
       "notFound": "Yeni ileti oluşmadı",
       "title": "Yeni İleti"
-    }
+    },
+    "createLabel": "Yeni İleti Oluştur",
+    "createTitle": "Yeni İleti Oluştur",
+    "form": {
+      "title": "Başlık",
+      "content": "İleti"
+    },
+    "created": "Yeni ileti başarılı bir şekilde oluştu"
   }
 }

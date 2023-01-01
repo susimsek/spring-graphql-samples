@@ -11,6 +11,7 @@ import {
 import Post from "../../components/Post";
 import {IPost} from "../../types/post";
 import Layout from "../../components/Layout";
+import NewPostFormDialog from "../../components/NewPostFormDialog";
 
 const MyPostPage = () => {
 
@@ -40,6 +41,7 @@ const MyPostPage = () => {
     return (
         <Layout>
             <Container className="mt-3">
+                <NewPostFormDialog/>
                 <h3 className="h3">{t('post.new.title')}</h3>
                 { data ? data.postAdded && <Post post={data?.postAdded as IPost}/>:
                     <Alert variant='info'>{t('post.new.notFound')}</Alert>}

@@ -11,6 +11,14 @@
     "minlength": "Bu alan en az ${min} karakterden oluşabilir.",
     "maxlength": "Bu alan en fazla ${max} karakterden oluşabilir."
   },
+  "entity": {
+    "action": {
+      "cancel": "İptal",
+      "delete": "Sil",
+      "edit": "Düzenle",
+      "save": "Kaydet"
+    }
+  },
   "login.info.text": "<bold>{{name}}</bold> olarak oturum açıldı",
   "no.records.text": "Gösterilecek kayıt yok",
   "language.label": "Dil"
