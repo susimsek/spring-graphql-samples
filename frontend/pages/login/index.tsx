@@ -21,9 +21,9 @@ const LoginPage = () => {
 
     const schema = yup.object({
         username: yup.string().required(t("common:validation.required"))
-            .min(4, t("common:validation.minlength")).max(50, t("maxlength")),
+            .min(4, t("common:validation.minlength")).max(50, t("common:validation.maxlength")),
         password: yup.string().required(t("common:validation.required"))
-            .min(4, t("common:validation.minlength")).max(100, t("maxlength"))
+            .min(4, t("common:validation.minlength")).max(100, t("common:validation.maxlength"))
     }).required();
 
     const [, updateIsLoggedIn] = useAuth();

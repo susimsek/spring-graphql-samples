@@ -10,7 +10,7 @@ data class UpdatePostInput(
     var id: String,
 
     @field:NotBlank
-    @field:Size(min = 5, max = 100)
+    @field:Size(min = 3, max = 40)
     var title: String,
 
     @field:NotBlank

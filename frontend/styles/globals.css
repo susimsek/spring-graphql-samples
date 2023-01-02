@@ -5,3 +5,27 @@
 #account-menu-dropdown::after{
     display: none;
 }
+
+.ql-container {
+    border-bottom-left-radius: 0.5em;
+    border-bottom-right-radius: 0.5em;
+    background: #fefcfc;
+}
+
+.ql-snow.ql-toolbar {
+    display: block;
+    background: #eaecec;
+    border-top-left-radius: 0.5em;
+    border-top-right-radius: 0.5em;
+}
+
+.ql-editor {
+    min-height: 18em;
+}
+
+.error {
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: .875em;
+    color: #dc3545;
+}

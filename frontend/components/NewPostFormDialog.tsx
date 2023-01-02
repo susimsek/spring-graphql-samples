@@ -6,10 +6,12 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlusSquare, faSave} from "@fortawesome/free-solid-svg-icons";
 import Form from "react-bootstrap/Form";
 import {useCreatePostMutation} from "../generated/graphql-types";
-import {SubmitHandler, useForm} from "react-hook-form";
+import {Controller, SubmitHandler, useForm} from "react-hook-form";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
-
+import QuillNoSSRWrapper, {formats, modules} from "./QuillNoSSRWrapper";
+import dynamic from "next/dynamic";
+import {ref} from "yup";
 
 type NewPostFormData = { title: string; content: string };
 const NewPostFormDialog: React.FC = () => {
@@ -21,16 +23,16 @@ const NewPostFormDialog: React.FC = () => {
 
     const schema = yup.object({
         title: yup.string().required(t("common:validation.required"))
-            .min(5, t("common:validation.minlength")).max(100, t("maxlength")),
+            .min(3, t("common:validation.minlength")).max(40, t("common:validation.maxlength")),
         content: yup.string().required(t("common:validation.required"))
-            .min(5, t("common:validation.minlength")).max(1000, t("maxlength"))
+            .min(11, t("common:validation.minlength")).max(	1000 , t("common:validation.maxlength"))
     }).required();
 
     const [createPost, { loading, error }, ] = useCreatePostMutation({
         errorPolicy: "all"
     });
 
-    const { register, handleSubmit, formState: { errors } } = useForm<NewPostFormData>({
+    const { register, handleSubmit, control, formState: { errors } } = useForm<NewPostFormData>({
         resolver: yupResolver(schema)
     });
 
@@ -65,6 +67,7 @@ const NewPostFormDialog: React.FC = () => {
                 <FontAwesomeIcon icon={faPlusSquare} /> {t('post.createLabel')}
             </Button>
             <Modal show={show}
+                   size="lg"
                    onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>{t('post.createTitle')}</Modal.Title>
@@ -86,20 +89,22 @@ const NewPostFormDialog: React.FC = () => {
                                         {errors.title?.message}
                                     </Form.Control.Feedback>
                                 </Form.Group>
-                                <Form.Group className="mb-3">
-                                    <Form.Label>{t('post.form.content')}</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        as="textarea"
-                                        rows={3}
-                                        {...register('content')}
-                                        isInvalid={!!errors.content}
-                                        disabled={loading}
+                            <Controller
+                                control={control}
+                                name="content"
+                                render={({ field: { onChange, value}}) => (
+                                    <QuillNoSSRWrapper
+                                        theme="snow"
+                                        modules={modules}
+                                        formats={formats}
+                                        onChange={onChange}
+                                        value={value}
                                     />
-                                    <Form.Control.Feedback type="invalid">
-                                        {errors.content?.message}
-                                    </Form.Control.Feedback>
-                                </Form.Group>
+                                )}
+                            />
+                            <p className="error">
+                                {errors.content?.message}
+                            </p>
                         </Card.Body>
                     </Card>
                 </Container>
