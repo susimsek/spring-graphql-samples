@@ -41,3 +41,5 @@ management:
       enabled: true
     readinessstate:
       enabled: true
+
+instance-id: ${spring.application.name}:${random.uuid}

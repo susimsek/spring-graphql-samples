@@ -1,5 +1,6 @@
-const GRAPHQL_HTTP_URI = 'http://localhost:9091/graphql';
-const GRAPHQL_WS_URL = 'ws://localhost:9091/subscriptions';
+const prod = process.env.NODE_ENV === 'production'
+const GRAPHQL_HTTP_URI = prod ? 'http://api.springgqlmsweb.susimsek.github.io/graphql' : 'http://localhost:9091/graphql'
+const GRAPHQL_WS_URL = prod ? 'ws://api.springgqlmsweb.susimsek.github.io/subscriptions' : 'ws://localhost:9091/subscriptions'
 
 const LANGUAGES = [
     {

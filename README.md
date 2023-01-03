@@ -94,6 +94,64 @@ rsc --stream --route=subscriptions --dataMimeType="application/graphql+json" --d
 rsc --request --route=graphql --dataMimeType="application/graphql+json" --data='{"query":"{ post(id: \"632c8028feb9e053546a88f2\") { id, title } }" }' --debug tcp://localhost:8079  --authBearer ${TOKEN} 
 ```
 
+## Deployment with Docker Compose
+
+### Prerequisites for Docker Compose Deployment
+
+* Docker
+* Docker Compose
+
+You can deploy app by running the following bash command
+
+
+```sh
+ sudo chmod +x deploy.sh
+```
+
+```sh
+ ./deploy.sh -d
+```
+
+You can uninstall app the following bash command
+
+```sh
+ ./deploy.sh -d -r
+```
+
+The GraphQL App be accessed from the link below.  
+http://127.0.0.1:9091
+
+
+## Deployment Kubernetes with Helm
+
+### Prerequisites for Kubernetes Deployment
+
+* Kubernetes
+* Helm
+
+You can deploy app by running the following bash command
+
+```sh
+ sudo chmod +x deploy.sh
+```
+
+```sh
+ ./deploy.sh -k
+```
+
+You can uninstall app the following bash command
+
+```sh
+ ./deploy.sh -k -r
+```
+
+You can upgrade the App (if you have made any changes to the generated manifests) by running the
+following bash command
+
+```sh
+ ./deploy.sh -u
+```
+
 # Used Technologies
 ## Backend Side
 * Java 17
@@ -119,3 +177,6 @@ rsc --request --route=graphql --dataMimeType="application/graphql+json" --data='
 * Graphql Java Extended Scalars
 * Graphql Java Extended Validation
 * Mapstruct
+* Recaptcha
+* Jwt with Httponly Cookie
+* Internalization(I18N)

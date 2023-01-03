@@ -7,11 +7,14 @@ import org.springframework.validation.annotation.Validated
 @ConfigurationProperties("security.authentication.token")
 @Validated
 data class TokenProperties(
-    var tokenValidityInSeconds: Long = 1800L,
+    var validityInSeconds: Long = 1800L,
 
     @field:NotBlank
     var publicKey: String,
 
     @field:NotBlank
-    var privateKey: String
+    var privateKey: String,
+
+    @field:NotBlank
+    var cookieDomain: String
 )

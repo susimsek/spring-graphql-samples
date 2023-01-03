@@ -5,33 +5,15 @@ metadata:
   labels:
   {{- include "spring-gql-service.labels" . | nindent 4 }}
 data:
-  application.yml: |-
-    spring:
-      config:
-        activate:
-          on-profile: {{ .Values.spring.profiles.active }}
-      data:
-        mongodb:
-          uri: mongodb://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@mongodb:27017/demo
-    security:
-      authentication:
-        token:
-          public-key: ${TOKEN_PUBLIC_KEY}
-          private-key: ${TOKEN_PRIVATE_KEY}
-          token-validity-in-seconds: {{ .Values.token.tokenValidityInSeconds| quote }}
-        security-matcher:
-          ignore-patterns:
-            - /favicon.ico
-          permit-all-patterns:
-            - /actuator/**
-            - /graphql
-            - /subscriptions
-      cipher:
-        base64-secret: ${CIPHER_SECRET}
-    server:
-      port: {{ .Values.springGraphqlService.containerPorts.http | quote}}
-    dummy:
-      message: this is new dummy message
-    recaptcha:
-      verify-url: https://www.google.com/recaptcha/api/siteverify
-      secret-key: ${RECAPTCHA_SECRET_KEY}
+  PORT: {{ .Values.springGraphqlService.containerPorts.http | quote}}
+  SPRING_DATA_MONGODB_URI: mongodb://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@mongodb:27017/demo
+  SECURITY_AUTHENTICATION_TOKEN_PUBLIC_KEY: ${TOKEN_PUBLIC_KEY}
+  SECURITY_AUTHENTICATION_TOKEN_PRIVATE_KEY: ${TOKEN_PRIVATE_KEY}
+  SECURITY_AUTHENTICATION_TOKEN_VALIDITY_IN_SECONDS: {{ .Values.token.validityInSeconds| quote }}
+  SECURITY_AUTHENTICATION_TOKEN_COOKIE_DOMAIN: {{ .Values.token.cookieDomain }}
+  SECURITY_CIPHER_BASE64_SECRET: ${CIPHER_SECRET}
+  SECURITY_AUTHENTICATION_SECURITY_MATCHER_IGNORE_PATTERNS: /favicon.ico
+  SECURITY_AUTHENTICATION_SECURITY_MATCHER_PERMIT_ALL_PATTERNS: /actuator/**, /graphql, /subscriptions
+  RECAPTCHA_VERIFY_URL: https://www.google.com/recaptcha/api/siteverify
+  RECAPTCHA_SECRET_KEY: ${RECAPTCHA_SECRET}
+  SPRING_GRAPHQL_CORS_ALLOWED_ORIGINS: http://springgqlmsweb.susimsek.github.io

@@ -1,0 +1,41 @@
+{{- if .Values.springGraphqlService.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: spring-gql-service
+  labels:
+  {{- include "spring-gql-service.labels" . | nindent 4 }}
+  annotations:
+    {{- if .Values.springGraphqlService.ingress.certManager }}
+    kubernetes.io/tls-acme: "true"
+    {{- end }}
+    {{- if .Values.springGraphqlService.ingress.annotations }}
+    {{ toYaml .Values.springGraphqlService.ingress.annotations | indent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.springGraphqlService.ingress.tls }}
+  tls:
+    {{- range .Values.springGraphqlService.ingress.tls }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+  {{- end }}
+  rules:
+    {{- if .Values.springGraphqlService.ingress.hostName }}
+    - host: {{ tpl .Values.springGraphqlService.ingress.hostName . }}
+      http:
+    {{- else }}
+    - http:
+        {{- end }}
+        paths:
+          - path: {{ .Values.springGraphqlService.ingress.path }}
+            pathType: Prefix
+            backend:
+              service:
+                name: spring-gql-service
+                port:
+                  number: {{ .Values.springGraphqlService.service.port }}
+  {{- end }}

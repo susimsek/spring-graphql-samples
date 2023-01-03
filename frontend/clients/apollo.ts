@@ -14,11 +14,12 @@ const httpLink = createHttpLink({
 const cookies = new Cookies();
 const authLink = setContext((_, { headers }) => {
     // const token = localStorage.getItem("token")
+    const lang = cookies.get('NEXT_LOCALE')
     return {
         headers: {
             ...headers,
             // authorization: token ? `Bearer ${token}` : "",
-            'Accept-Language': cookies.get('NEXT_LOCALE'),
+            'Accept-Language':   lang ? lang : "en",
         }
     }
 });

@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.reactive.asPublisher
 import org.reactivestreams.Publisher
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.graphql.data.method.annotation.Argument
@@ -23,7 +24,6 @@ import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.graphql.data.method.annotation.SubscriptionMapping
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
-import java.security.Principal
 import java.util.Locale
 
 @Controller
@@ -34,9 +34,13 @@ class PostController(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
+    @Value("\${instance-id}")
+    lateinit var instanceId: String
+
     @MutationMapping
     @PreAuthorize("hasRole('USER')")
     suspend fun createPost(@Argument @Valid input: AddPostInput, locale: Locale): PostPayload {
+        log.info("called createPost with instance id: {}", instanceId)
         return postService.createPost(input, locale)
     }
 
@@ -84,7 +88,7 @@ class PostController(
     @SubscriptionMapping
     @PreAuthorize("hasRole('USER')")
     fun postAdded(locale: Locale): Publisher<PostPayload> {
-        log.info("called postAdded locale: {}", locale)
+        log.info("called postAdded with instance id: {}", instanceId)
         return postService.postAdded().asPublisher()
     }
 }

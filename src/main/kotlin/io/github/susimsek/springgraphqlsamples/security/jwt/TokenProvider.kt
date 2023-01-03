@@ -14,7 +14,7 @@ class TokenProvider(
     private val tokenProperties: TokenProperties,
     private val jwtEncoder: JwtEncoder
 ) {
-    private val tokenValidityInMilliseconds = 1000 * tokenProperties.tokenValidityInSeconds
+    private val tokenValidityInMilliseconds = 1000 * tokenProperties.validityInSeconds
 
     fun createToken(authentication: Authentication): Token {
         val authorities = authentication.authorities
@@ -35,7 +35,7 @@ class TokenProvider(
         val  tokenValue = jwtEncoder.encode(JwtEncoderParameters.from(claims)).tokenValue
         return Token(
             token = tokenValue,
-            expiresIn = tokenProperties.tokenValidityInSeconds
+            expiresIn = tokenProperties.validityInSeconds
         )
     }
 
@@ -44,6 +44,7 @@ class TokenProvider(
             .maxAge(token.expiresIn)
             .httpOnly(true)
             .path("/")
+            .domain(tokenProperties.cookieDomain)
             .build()
     }
 
@@ -52,6 +53,7 @@ class TokenProvider(
             .maxAge(0)
             .httpOnly(true)
             .path("/")
+            .domain(tokenProperties.cookieDomain)
             .build()
     }
 }
