@@ -16,7 +16,11 @@
   "validation": {
     "required": "This field is required.",
     "minlength": "This field is required to be at least ${min} characters.",
-    "maxlength": "This field cannot be longer than ${max} characters."
+    "maxlength": "This field cannot be longer than ${max} characters.",
+    "emailInvalid": "Email is invalid.",
+    "patternAlphanumeric": "This field can only contain letters or digits.",
+    "patternLetter": "This field can only contain letters.",
+    "passwordNotMatch": "The password and its confirmation do not match!"
   },
   "form": {
     "username.label": "Username",

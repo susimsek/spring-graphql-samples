@@ -16,7 +16,11 @@
   "validation": {
     "required": "Bu alan gerekli.",
     "minlength": "Bu alan en az ${min} karakterden oluşabilir.",
-    "maxlength": "Bu alan en fazla ${max} karakterden oluşabilir."
+    "maxlength": "Bu alan en fazla ${max} karakterden oluşabilir.",
+    "emailInvalid": "Geçersiz E-posta.",
+    "patternAlphanumeric": "Bu alan harf veya rakam içermeli",
+    "patternLetter": "Bu alan harf içermeli",
+    "passwordNotMatch": "Şifreler eşleşmedi!"
   },
   "form": {
     "username.label": "Kullanıcı Adı",

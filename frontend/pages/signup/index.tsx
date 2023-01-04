@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {Alert, Container, Spinner} from "react-bootstrap";
 import Layout from "../../components/Layout";
 import {useTranslation} from "next-i18next";
@@ -29,17 +29,31 @@ const SignupPage = () => {
 
     const schema = yup.object({
         username: yup.string().required(t("common:validation.required"))
-            .min(4, t("common:validation.minlength")).max(50, t("common:validation.maxlength")),
+            .min(4, t("common:validation.minlength")).max(50, t("common:validation.maxlength"))
+            .matches(
+                /^[A-Za-z][A-Za-z0-9_]+$/,
+                t("common:validation.patternAlphanumeric")
+            ),
         firstName: yup.string().required(t("common:validation.required"))
-            .min(1, t("common:validation.minlength")).max(50, t("common:validation.maxlength")),
+            .min(1, t("common:validation.minlength")).max(50, t("common:validation.maxlength"))
+            .matches(
+                /^[A-Za-z]+$/,
+                t("common:validation.patternLetter")
+            ),
         lastName: yup.string().required(t("common:validation.required"))
-            .min(1, t("common:validation.minlength")).max(50, t("common:validation.maxlength")),
+            .min(1, t("common:validation.minlength")).max(50, t("common:validation.maxlength"))
+            .matches(
+                /^[A-Za-z]+$/,
+                t("common:validation.patternLetter")
+            ),
         email: yup.string().required(t("common:validation.required"))
+            .email(t("common:validation.emailInvalid"))
             .min(5, t("common:validation.minlength")).max(254, t("common:validation.maxlength")),
         password: yup.string().required(t("common:validation.required"))
             .min(4, t("common:validation.minlength")).max(100, t("common:validation.maxlength")),
         confirmpassword: yup.string().required(t("common:validation.required"))
             .min(4, t("common:validation.minlength")).max(100, t("common:validation.maxlength"))
+            .oneOf([yup.ref("password")], t("common:validation.passwordNotMatch"))
     }).required();
 
     const router = useRouter();
