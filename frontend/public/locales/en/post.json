@@ -11,6 +11,9 @@
       "title": "Title",
       "content": "Post"
     },
+    "validation": {
+      "contentMinlength": "This field is required to be at least 5 characters."
+    },
     "created": "A new post has been successfully created"
   }
 }

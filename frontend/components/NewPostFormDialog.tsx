@@ -25,7 +25,7 @@ const NewPostFormDialog: React.FC = () => {
         title: yup.string().required(t("common:validation.required"))
             .min(3, t("common:validation.minlength")).max(40, t("common:validation.maxlength")),
         content: yup.string().required(t("common:validation.required"))
-            .min(11, t("common:validation.minlength")).max(	1000 , t("common:validation.maxlength"))
+            .min(12, t("post:post.validation.contentMinlength")).max(1000 , t("common:validation.maxlength"))
     }).required();
 
     const [createPost, { loading, error }, ] = useCreatePostMutation({

@@ -11,6 +11,9 @@
       "title": "Başlık",
       "content": "İleti"
     },
+    "validation": {
+      "contentMinlength": "Bu alan en az 5 karakterden oluşabilir."
+    },
     "created": "Yeni ileti başarılı bir şekilde oluştu"
   }
 }
