@@ -3,6 +3,7 @@
     "title": "Registration",
     "form": {
       "button": "Register"
-    }
+    },
+    "success": "Registration saved!."
   }
 }

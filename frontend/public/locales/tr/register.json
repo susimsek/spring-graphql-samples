@@ -3,6 +3,7 @@
     "title": "Kayıt",
     "form": {
       "button": "Kayıt Ol"
-    }
+    },
+    "success": "Kayıt işlemi yapıldı!."
   }
 }

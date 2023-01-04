@@ -7,9 +7,8 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import {SubmitHandler, useForm} from "react-hook-form";
-import {useCreateUserMutation, useLoginMutation} from "../../generated/graphql-types";
+import {useCreateUserMutation} from "../../generated/graphql-types";
 import {useRouter} from "next/router";
-import {useAuth} from "../../contexts/AuthProvider";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import {useGoogleReCaptcha} from "react-google-recaptcha-v3";
@@ -23,9 +22,9 @@ type SignupFormData = {
     confirmpassword: string};
 
 const SignupPage = () => {
-    const { t } = useTranslation('register')
+    const { t, i18n } = useTranslation('register')
 
-    const { i18n } = useTranslation()
+    const [visibleCreatedAlert, setVisibleCreatedAlert] = useState<boolean>(false);
 
     const schema = yup.object({
         username: yup.string().required(t("common:validation.required"))
@@ -104,7 +103,11 @@ const SignupPage = () => {
         });
 
         if (result.data) {
-            await router.push('/')
+            setVisibleCreatedAlert(true)
+            setTimeout(() => {
+                setVisibleCreatedAlert(false)
+                router.push('/')
+            }, 2000)
         }
     };
 
@@ -196,6 +199,9 @@ const SignupPage = () => {
                                     aria-hidden="true"
                                 />} {t('register.form.button')}
                             </Button>
+                            <Alert show={visibleCreatedAlert} variant="success">
+                                {t('register.success')}
+                            </Alert>
                             {error && error.graphQLErrors.map(({ message }, i) => (
                                 <Alert key={i} variant="danger">
                                     {message}
