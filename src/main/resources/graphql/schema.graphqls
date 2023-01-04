@@ -130,7 +130,7 @@ type PageInfo {
 
 type UserSearchResult {
     pageInfo: PageInfo!
-    users: [UserPayload!]!
+    content: [UserPayload!]!
 }
 
 type UserPayload {

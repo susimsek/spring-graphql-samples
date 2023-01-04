@@ -8,7 +8,7 @@ import io.github.susimsek.springgraphqlsamples.exception.ValidationException
 import io.github.susimsek.springgraphqlsamples.graphql.input.AddUserInput
 import io.github.susimsek.springgraphqlsamples.graphql.input.UserFilter
 import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
-import io.github.susimsek.springgraphqlsamples.graphql.type.UserSearchResult
+import io.github.susimsek.springgraphqlsamples.graphql.type.PagedEntityModel
 import io.github.susimsek.springgraphqlsamples.repository.UserRepository
 import io.github.susimsek.springgraphqlsamples.security.getCurrentUserLogin
 import io.github.susimsek.springgraphqlsamples.service.mapper.UserMapper
@@ -63,10 +63,10 @@ class UserService(
     }
 
 
-    suspend fun getUsers(pageRequest: Pageable, filter: UserFilter?): UserSearchResult {
+    suspend fun getUsers(pageRequest: Pageable, filter: UserFilter?): PagedEntityModel<UserPayload> {
         return userRepository.findAllByFilter(filter, pageRequest)
             .map{it.map(userMapper::toType)}
-            .map{UserSearchResult(it)}
+            .map{PagedEntityModel<UserPayload>(it)}
             .awaitSingle()
     }
 

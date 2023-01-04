@@ -7,7 +7,7 @@ import io.github.susimsek.springgraphqlsamples.graphql.input.AddUserInput
 import io.github.susimsek.springgraphqlsamples.graphql.input.UserFilter
 import io.github.susimsek.springgraphqlsamples.graphql.input.UserOrder
 import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
-import io.github.susimsek.springgraphqlsamples.graphql.type.UserSearchResult
+import io.github.susimsek.springgraphqlsamples.graphql.type.PagedEntityModel
 import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaService
 import io.github.susimsek.springgraphqlsamples.service.UserService
 import jakarta.validation.Valid
@@ -39,7 +39,7 @@ class UserController(private val userService: UserService,
         @Argument size: Int?,
         @Argument filter: UserFilter?,
         @Argument orders: MutableList<UserOrder>?
-    ): UserSearchResult {
+    ): PagedEntityModel<UserPayload> {
         val pageNo = page ?: DEFAULT_PAGE_NO
         val sizeNo = (size ?: DEFAULT_SIZE).coerceAtMost(MAX_SIZE)
         val sort = orders?.map(UserOrder::toOrder)?.let { Sort.by(it) } ?: Sort.unsorted()
