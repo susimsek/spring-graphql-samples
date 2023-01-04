@@ -24,7 +24,9 @@
   },
   "form": {
     "username.label": "Kullanıcı Adı",
-    "newpassword.label": "Mevcut Şifre",
+    "password.label": "Şifre",
+    "currentpassword.label": "Mevcut Şifre",
+    "newpassword.label": "Yeni Şifre",
     "confirmpassword.label": "Yeni Şifre Tekrar",
     "email.label": "E-posta",
     "firstName.label": "Ad",

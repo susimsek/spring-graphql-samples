@@ -2,9 +2,12 @@
   "login": {
     "title": "Sign in",
     "form": {
-      "username": "Username",
-      "password": "Password",
       "button": "Sign in"
+    },
+    "messages": {
+      "error": {
+        "authentication": "Incorrect username or password"
+      }
     }
   }
 }

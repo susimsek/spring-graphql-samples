@@ -24,6 +24,8 @@
   },
   "form": {
     "username.label": "Username",
+    "password.label": "Password",
+    "currentpassword.label": "Current password",
     "newpassword.label": "New password",
     "confirmpassword.label": "New password confirmation",
     "email.label": "Email",

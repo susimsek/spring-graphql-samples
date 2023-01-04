@@ -5,6 +5,11 @@
       "username": "Kullanıcı Adı",
       "password": "Şifre",
       "button": "Oturum Aç"
+    },
+    "messages": {
+      "error": {
+        "authentication": "Kullanıcı adı veya şifre hatalı"
+      }
     }
   }
 }

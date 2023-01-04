@@ -83,7 +83,7 @@ const LoginPage = () => {
                     <Card.Body>
                         <Form onSubmit={handleSubmit(handleLogin)}>
                             <Form.Group className="mb-3">
-                                <Form.Label>{t('login.form.username')}</Form.Label>
+                                <Form.Label>{t('common:form.username.label')}</Form.Label>
                                 <Form.Control
                                     type="text"
                                     {...register('username')}
@@ -95,7 +95,7 @@ const LoginPage = () => {
                                 </Form.Control.Feedback>
                             </Form.Group>
                             <Form.Group className="mb-3">
-                                <Form.Label>{t('login.form.password')}</Form.Label>
+                                <Form.Label>{t('common:form.password.label')}</Form.Label>
                                 <Form.Control
                                     type="password"
                                     {...register('password')}
@@ -115,11 +115,7 @@ const LoginPage = () => {
                                     aria-hidden="true"
                                 />} {t('login.form.button')}
                             </Button>
-                            {error && error.graphQLErrors.map(({ message }, i) => (
-                                <Alert key={i} variant="danger">
-                                    {message}
-                                </Alert>
-                            ))}
+                            {error && <Alert variant="danger">{t('login.messages.error.authentication')}</Alert>}
                         </Form>
                     </Card.Body>
                 </Card>
