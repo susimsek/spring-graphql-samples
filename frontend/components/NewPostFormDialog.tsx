@@ -69,10 +69,10 @@ const NewPostFormDialog: React.FC = () => {
             <Modal show={show}
                    size="lg"
                    onHide={handleClose}>
+                <Form onSubmit={handleSubmit(handleLogin)}>
                 <Modal.Header closeButton>
                     <Modal.Title>{t('post.createTitle')}</Modal.Title>
                 </Modal.Header>
-                <Form onSubmit={handleSubmit(handleLogin)}>
                 <Modal.Body>
                     <Container>
                     <Card>
