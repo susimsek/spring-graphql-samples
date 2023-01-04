@@ -34,7 +34,7 @@ const AccountMenu: React.FC = () => {
                 values={{ name: user?.name}}
                 components={{ bold: <strong />}}
             /></NavDropdown.Item>
-            <NavDropdown.Item onClick={handleLogout}>{t('logout')}</NavDropdown.Item>
+            <NavDropdown.Item onClick={handleLogout}>{t('account.logout')}</NavDropdown.Item>
         </NavDropdown>
     );
 }

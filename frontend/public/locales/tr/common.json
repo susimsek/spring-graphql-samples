@@ -3,13 +3,28 @@
     "home": "Ana Sayfa",
     "myPosts": "İletilerim"
   },
+  "account": {
+    "main": "Hesap",
+    "settings": "Ayarlar",
+    "password": "Şifre",
+    "sessions": "Oturumlar",
+    "login": "Oturum Aç",
+    "logout": "Oturumu Kapat",
+    "register": "Üye Ol"
+  },
   "copyright": "Tüm hakları Saklıdır",
-  "logout": "Oturumu Kapat",
-  "login": "Oturum Aç",
   "validation": {
     "required": "Bu alan gerekli.",
     "minlength": "Bu alan en az ${min} karakterden oluşabilir.",
     "maxlength": "Bu alan en fazla ${max} karakterden oluşabilir."
+  },
+  "form": {
+    "username.label": "Kullanıcı Adı",
+    "newpassword.label": "Mevcut Şifre",
+    "confirmpassword.label": "Yeni Şifre Tekrar",
+    "email.label": "E-posta",
+    "firstName.label": "Ad",
+    "lastName.label": "Soyad"
   },
   "entity": {
     "action": {

@@ -33,7 +33,10 @@ const TopBar: React.FC = () => {
                     <Nav>
                         {
                             isLoggedIn ? <AccountMenu/>
-                                : <Nav.Link as={Link} href="/login">{t('login')}</Nav.Link>
+                                : <>
+                                    <Nav.Link as={Link} href="/signup">{t('account.register')}</Nav.Link>
+                                    <Nav.Link as={Link} href="/login">{t('account.login')}</Nav.Link>
+                                </>
                         }
 
                         <LanguageBar/>

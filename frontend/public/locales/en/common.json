@@ -3,13 +3,28 @@
     "home": "Home",
     "myPosts": "My Posts"
   },
+  "account": {
+    "main": "Account",
+    "settings": "Settings",
+    "password": "Password",
+    "sessions": "Sessions",
+    "login": "Sign in",
+    "logout": "Sign out",
+    "register": "Sign Up"
+  },
   "copyright": "All Rights reserved",
-  "logout": "Sign Out",
-  "login": "Sign In",
   "validation": {
     "required": "This field is required.",
     "minlength": "This field is required to be at least ${min} characters.",
     "maxlength": "This field cannot be longer than ${max} characters."
+  },
+  "form": {
+    "username.label": "Username",
+    "newpassword.label": "New password",
+    "confirmpassword.label": "New password confirmation",
+    "email.label": "Email",
+    "firstName.label": "First Name",
+    "lastName.label": "Last Name"
   },
   "entity": {
     "action": {
