@@ -5,7 +5,6 @@ import {faUser} from "@fortawesome/free-solid-svg-icons";
 import {Trans, useTranslation} from "next-i18next";
 import {useLogout} from "../hooks/use-logout";
 import {useCurrentUser} from "../hooks/use-current-user";
-import {SubmitHandler} from "react-hook-form";
 import {useRouter} from "next/router";
 
 
@@ -15,13 +14,13 @@ const AccountMenu: React.FC = () => {
 
     const user = useCurrentUser()
 
-    const handleSignOut = useLogout()
+    const {logout} = useLogout()
 
     const router = useRouter()
 
     const handleLogout = async () => {
 
-        await handleSignOut()
+        await logout()
 
         await router.push('/')
     };

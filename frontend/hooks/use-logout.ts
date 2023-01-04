@@ -1,6 +1,7 @@
 import { useApolloClient } from "@apollo/client";
 import {useAuth} from "../contexts/AuthProvider";
 import {useLogoutMutation} from "../generated/graphql-types";
+import {useRouter} from "next/router";
 
 export function useLogout() {
     const client = useApolloClient();
@@ -8,9 +9,17 @@ export function useLogout() {
 
     const [signOut] = useLogoutMutation();
 
-    return async function logout() {
+    const router = useRouter();
+
+    async function logout() {
         await signOut()
+        await clearStore()
+    }
+
+    async function clearStore() {
         updateIsLoggedIn(false);
         await client.clearStore();
     };
+
+    return { logout, clearStore }
 }
