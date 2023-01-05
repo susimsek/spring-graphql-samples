@@ -17,3 +17,4 @@ data:
   RECAPTCHA_VERIFY_URL: https://www.google.com/recaptcha/api/siteverify
   RECAPTCHA_SECRET_KEY: ${RECAPTCHA_SECRET}
   SPRING_GRAPHQL_CORS_ALLOWED_ORIGINS: http://springgqlmsweb.susimsek.github.io
+  RECAPTCHA_THRESHOLD: "0.5"

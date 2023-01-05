@@ -19,7 +19,7 @@ class RecaptchaService(
         }
         return recaptchaClient.verifyResponse(recaptchaProperties.secretKey, recaptchaToken)
             .map {
-                when (it.success) {
+                when (it.success || it.score < recaptchaProperties.threshold) {
                     false -> throw InvalidCaptchaException(RECAPTCHA_INVALID_MSG_CODE)
                     else -> it
                 }

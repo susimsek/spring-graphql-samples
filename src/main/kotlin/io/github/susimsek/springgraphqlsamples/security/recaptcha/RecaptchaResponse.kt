@@ -20,7 +20,7 @@ import java.util.*
 )
 data class RecaptchaResponse(
     val success: Boolean,
-    val score: String?,
+    val score: Float = 0.0F,
     val action: String?,
     @get:JsonProperty("challenge_ts")
     val challengeTs: String?,
