@@ -83,6 +83,24 @@ to build native image
 mvn -Pnative spring-boot:build-image
 ```
 
+## Prerequisites for Frontend
+
+* Nodejs 16+
+
+### Run the app
+
+You can install the dependencies by typing the following command
+
+```sh
+npm run dev
+```
+
+You can run the react app(accessible on http://localhost:3000) by typing the following command
+
+```sh
+npm start
+```
+
 ## Rsocket
 
 
@@ -180,3 +198,21 @@ following bash command
 * Recaptcha
 * Jwt with Httponly Cookie
 * Internalization(I18N)
+
+## Frontend Side
+* React
+* Next.js
+* Typescript
+* Apollo Client
+* Graphql
+* Graphql Ws
+* Graphql Codegen
+* Next I18next
+* React Google Recaptcha v3
+* React Hook Form
+* React Bootstrap
+* Fontawesome
+* React Cookie
+* React Country Flag
+* React Quill
+* Yup
