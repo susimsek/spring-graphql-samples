@@ -1,10 +1,10 @@
-# Spring Graphql Samples
+# GraphQL Fullstack Samples using Spring GraphQL & React
 
-Spring Graphql Reactive Samples With Jwt Authentication
+GraphQL Fullstack Samples using Spring GraphQL & React
 
 <img src="https://github.com/susimsek/spring-graphql-samples/blob/main/images/introduction.png" alt="Spring Boot Graphql Samples" width="100%" height="100%"/> 
 
-# Graphql
+# GraphQL
 
 GraphQL is a query language and server-side runtime for application programming interfaces (APIs) that prioritizes
 giving clients exactly the data they request and no more.
