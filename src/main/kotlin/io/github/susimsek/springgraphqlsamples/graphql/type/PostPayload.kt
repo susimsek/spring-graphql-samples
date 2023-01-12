@@ -1,6 +1,7 @@
 package io.github.susimsek.springgraphqlsamples.graphql.type
 
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.PostStatus
+import java.io.Serializable
 import java.time.OffsetDateTime
 import java.util.*
 
@@ -13,7 +14,7 @@ data class PostPayload(
 
     var status: PostStatus? = null,
 
-    var createdAt: OffsetDateTime,
+    var createdAt: OffsetDateTime? = null,
 
     var author: UserPayload? = null,
 
@@ -22,4 +23,9 @@ data class PostPayload(
     var posts: MutableList<PostPayload>? = null,
 
     var locale: Locale? = null
-)
+): Serializable {
+
+    companion object {
+        private const val serialVersionUID = 1L
+    }
+}

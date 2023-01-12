@@ -1,0 +1,93 @@
+replicaCount: 1
+minBrokerId: 0
+autoCreateTopicsEnable: true
+deleteTopicEnable: false
+
+image:
+  repository: bitnami/kafka
+  tag: 3.3
+
+
+persistence:
+  size: 50M
+
+extraDeploy:
+  - |
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: kafka-custom-scripts
+      namespace: {{ .Release.Namespace | quote }}
+      labels: {{- include "common.labels.standard" . | nindent 4 }}
+    data:
+      kraft-setup.sh: |-
+        #!/bin/bash
+
+        ## Set value for `KAFKA_CFG_BROKER_ID`
+        if [[ -f "/bitnami/kafka/data/meta.properties" ]]; then
+          # Sub-sequences deployment AND Persistence enabled
+          BROKER_ID=$(grep "node.id" /bitnami/kafka/data/meta.properties | awk -F '=' '{print $2}')
+          BROKER_ID=$(echo $BROKER_ID | tr -d '"')
+          export KAFKA_CFG_BROKER_ID=$(echo $BROKER_ID)
+        else
+          # First deployment OR Persistence disabled
+          POD_NAME=$(grep "statefulset.kubernetes.io/pod-name" /etc/podinfo/labels | awk -F '=' '{print $2}')
+          POD_NAME=$(echo $POD_NAME | tr -d '"')
+          export KAFKA_CFG_BROKER_ID=$(echo $POD_NAME | rev | cut -d'-' -f 1 | rev)
+        fi
+
+        ## Set value for `KAFKA_CFG_CONTROLLER_QUORUM_VOTERS`
+        REPLICAS={{ .Values.replicaCount }}
+        CONTROLLER_QUORUM_VOTERS=""
+        for i in $( seq 0 $REPLICAS); do
+          if [[ $i != $REPLICAS ]]; then
+            BROKER_ID="$((i + 0))"
+            BROKER_URL="{{ include "common.names.fullname" . }}-$BROKER_ID.{{ include "common.names.fullname" . }}-headless.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}:{{ .Values.service.ports.internal }}"
+            CONTROLLER_QUORUM_VOTERS="$CONTROLLER_QUORUM_VOTERS$BROKER_ID@$BROKER_URL,"
+          else
+            CONTROLLER_QUORUM_VOTERS=${CONTROLLER_QUORUM_VOTERS::-1}
+          fi
+        done
+        export KAFKA_CFG_CONTROLLER_QUORUM_VOTERS="${CONTROLLER_QUORUM_VOTERS}"
+
+        ## Continue with default execution
+        exec /entrypoint.sh /run.sh
+
+listeners:
+  - PLAINTEXT://:9092
+  - CONTROLLER://:9093
+advertisedListeners:
+  - PLAINTEXT://:9092
+listenerSecurityProtocolMap: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,INTERNAL:PLAINTEXT"
+interBrokerListenerName: PLAINTEXT
+extraEnvVars:
+  - name: KAFKA_ENABLE_KRAFT
+    value: "yes"
+  - name: KAFKA_KRAFT_CLUSTER_ID
+    value: "s_vb8yLzRnyOVW3Ko2mUbg"
+  - name: KAFKA_CFG_PROCESS_ROLES
+    value: "broker,controller"
+  - name: KAFKA_CFG_CONTROLLER_LISTENER_NAMES
+    value: "CONTROLLER"
+extraVolumes:
+  - name: myscripts
+    configMap:
+      name: kafka-custom-scripts
+      defaultMode: 0755
+  - name: podinfo
+    downwardAPI:
+      items:
+        - path: "labels"
+          fieldRef:
+            fieldPath: metadata.labels
+extraVolumeMounts:
+  - name: myscripts
+    mountPath: /scripts/kraft-setup.sh
+    subPath: kraft-setup.sh
+  - name: podinfo
+    mountPath: /etc/podinfo
+command:
+  - "/scripts/kraft-setup.sh"
+
+zookeeper:
+  enabled: false

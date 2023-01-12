@@ -35,7 +35,6 @@ import kotlin.reflect.jvm.kotlinFunction
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
 @ImportRuntimeHints(ValidationConfig.GraphQlRuntimeHints::class)
 class ValidationConfig {
-    @Primary
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     fun defaultValidator(): LocalValidatorFactoryBean {

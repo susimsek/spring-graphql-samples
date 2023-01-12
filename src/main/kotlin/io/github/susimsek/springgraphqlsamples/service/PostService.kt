@@ -10,6 +10,7 @@ import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
 import io.github.susimsek.springgraphqlsamples.repository.PostRepository
 import io.github.susimsek.springgraphqlsamples.security.getCurrentUserLogin
 import io.github.susimsek.springgraphqlsamples.service.mapper.PostMapper
+import io.github.susimsek.springgraphqlsamples.service.producer.PostProducer
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -29,11 +30,10 @@ class PostService(
     private val postRepository: PostRepository,
     private val postMapper: PostMapper,
     private val userService: UserService,
-    private val messageSource: MessageSource
+    private val messageSource: MessageSource,
+    private val postProducer: PostProducer,
+    private val postFlow: MutableSharedFlow<PostPayload>
 ) {
-
-    // private val sink = Sinks.many().replay().latest<PostPayload>()
-    private val flow = MutableSharedFlow<PostPayload>(replay = 1)
 
     suspend fun createPost(input: AddPostInput, locale: Locale): PostPayload {
         val entity = postMapper.toEntity(input)
@@ -49,7 +49,7 @@ class PostService(
         event.title = localizedTitle
         event.locale = locale
 
-        flow.emit(event)
+        postProducer.produce(event)
         // sink.emitNext(payload, Sinks.EmitFailureHandler.FAIL_FAST)
         return payload
     }
@@ -121,6 +121,6 @@ class PostService(
 
     fun postAdded(): SharedFlow<PostPayload> {
         // return sink.asFlux()
-        return flow.asSharedFlow()
+        return postFlow.asSharedFlow()
     }
 }

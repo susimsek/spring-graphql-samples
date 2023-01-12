@@ -9,6 +9,15 @@ spring:
 #  graphql:
 #    rsocket:
 #      mapping: subscriptions
+  cloud:
+    stream:
+      function:
+        definition: postEventPublisher;postEventConsumer
+      bindings:
+        postEventPublisher-out-0:
+          destination: posts
+        postEventConsumer-in-0:
+          destination: posts
   graphql:
     websocket:
       path: /subscriptions
