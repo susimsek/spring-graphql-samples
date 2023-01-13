@@ -13,7 +13,10 @@ class RecaptchaService(
 ) {
 
     private val responsePattern = Pattern.compile("[A-Za-z0-9_-]+")
-    suspend fun validateToken(recaptchaToken: String): RecaptchaResponse {
+    suspend fun validateToken(recaptchaToken: String): Boolean {
+        if (!recaptchaProperties.enabled) {
+            return false
+        }
         if(!responseSanityCheck(recaptchaToken)) {
             throw InvalidCaptchaException(RECAPTCHA_INVALID_MSG_CODE)
         }
@@ -21,7 +24,7 @@ class RecaptchaService(
             .map {
                 when (it.success || it.score < recaptchaProperties.threshold) {
                     false -> throw InvalidCaptchaException(RECAPTCHA_INVALID_MSG_CODE)
-                    else -> it
+                    else -> true
                 }
             }.awaitSingle()
     }

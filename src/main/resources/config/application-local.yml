@@ -48,6 +48,7 @@ dummy:
   message: hello
 
 recaptcha:
+  enabled: false
   verify-url: https://www.google.com/recaptcha/api/siteverify
   secret-key: 6Lca17IjAAAAAAEpjSTErRO4Rw6z9lHqVAohwWdW
   threshold: 0.5

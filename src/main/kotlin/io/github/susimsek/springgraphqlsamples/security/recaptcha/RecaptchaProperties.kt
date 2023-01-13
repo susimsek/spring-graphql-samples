@@ -9,6 +9,8 @@ import org.springframework.validation.annotation.Validated
 @ConfigurationProperties("recaptcha")
 @Validated
 data class RecaptchaProperties(
+    var enabled: Boolean = true,
+
     @field:NotBlank
     var secretKey: String,
 

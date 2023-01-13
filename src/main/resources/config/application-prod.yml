@@ -40,6 +40,7 @@ security:
     base64-secret: c2VjdXJlQ0RDS2V5
 
 recaptcha:
+  enabled: true
   verify-url: https://www.google.com/recaptcha/api/siteverify
   secret-key: 6Lca17IjAAAAAAEpjSTErRO4Rw6z9lHqVAohwWdW
   threshold: 0.5
