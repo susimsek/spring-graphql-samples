@@ -7,15 +7,6 @@ spring:
 #  rsocket:
 #    server:
 #      port: 8079
-  data:
-    mongodb:
-      uri: mongodb://user:iXCjXb7e2yjJbjRu@localhost:27017/demo
-  cloud:
-    stream:
-      kafka:
-        binder:
-          brokers: localhost:29092
-          auto-create-topics: true
   devtools:
     restart:
       enabled: false

@@ -3,6 +3,7 @@ package io.github.susimsek.springgraphqlsamples.config
 import io.github.susimsek.springgraphqlsamples.graphql.type.PostPayload
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.reactor.mono
+import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -30,13 +31,9 @@ class SubscriptionConfig {
     @Bean
     fun postEventConsumer(
         postFlow: MutableSharedFlow<PostPayload>)
-            : Consumer<Flux<PostPayload>> = Consumer { stream ->
-        stream.concatMap { msg ->
-            logger.info("consumed payload: {}", msg)
-            mono { postFlow.emit(msg) }
-        }.onErrorContinue { e, _ ->
-            logger.error(e.message, e)
-        }.subscribe()
+            : Consumer<PostPayload> = Consumer { msg ->
+        logger.info("consumed payload: {}", msg)
+        runBlocking { postFlow.emit(msg) }
     }
 
     @Bean

@@ -10,9 +10,9 @@ spring:
 #    rsocket:
 #      mapping: subscriptions
   cloud:
+    function:
+      definition: postEventPublisher;postEventConsumer
     stream:
-      function:
-        definition: postEventPublisher;postEventConsumer
       bindings:
         postEventPublisher-out-0:
           destination: posts

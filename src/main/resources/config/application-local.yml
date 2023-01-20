@@ -4,12 +4,9 @@ spring:
 #  rsocket:
 #    server:
 #      port: 8079
-  cloud:
-    stream:
-      kafka:
-        binder:
-          brokers: localhost:29092
-          auto-create-topics: true
+  kafka:
+    bootstrap-servers: localhost:29092
+    consumer.auto-offset-reset: earliest
   data:
     mongodb:
       uri: mongodb+srv://test_user123456:4hRsOKoJxkHswunQ@cluster0.nbzfi.mongodb.net/demo
