@@ -1,9 +1,6 @@
 server:
   port: ${PORT:9091}
 spring:
-#  rsocket:
-#    server:
-#      port: 8079
   kafka:
     bootstrap-servers: localhost:29092
     consumer.auto-offset-reset: earliest

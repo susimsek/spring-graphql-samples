@@ -4,9 +4,6 @@ server:
   port: ${PORT:8080}
 
 spring:
-#  rsocket:
-#    server:
-#      port: 8079
   devtools:
     restart:
       enabled: false

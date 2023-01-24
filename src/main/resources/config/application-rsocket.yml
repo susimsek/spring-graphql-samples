@@ -1,0 +1,8 @@
+spring:
+  rsocket:
+    server:
+      port: 8079
+      transport: tcp
+  graphql:
+    rsocket:
+      mapping: subscriptions

@@ -2,13 +2,7 @@ spring:
   application:
     name: spring-gql-service
   profiles:
-    active: local
-#  rsocket:
-#    server:
-#      transport: tcp
-#  graphql:
-#    rsocket:
-#      mapping: subscriptions
+    active: local, websocket
   cloud:
     function:
       definition: postEventPublisher;postEventConsumer
@@ -19,8 +13,6 @@ spring:
         postEventConsumer-in-0:
           destination: posts
   graphql:
-    websocket:
-      path: /subscriptions
     cors:
       allowed-origins: http://localhost:3000
       allow-credentials: true

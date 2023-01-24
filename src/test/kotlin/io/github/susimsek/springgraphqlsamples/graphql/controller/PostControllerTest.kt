@@ -1,24 +1,20 @@
 package io.github.susimsek.springgraphqlsamples.graphql.controller
 
+import com.ninjasquad.springmockk.MockkBean
 import io.github.susimsek.springgraphqlsamples.config.GraphqlConfig
 import io.github.susimsek.springgraphqlsamples.config.ValidationConfig
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.PostStatus
 import io.github.susimsek.springgraphqlsamples.graphql.type.PostPayload
+import io.github.susimsek.springgraphqlsamples.security.USER
 import io.github.susimsek.springgraphqlsamples.service.PostService
-import kotlinx.coroutines.Dispatchers
+import io.mockk.coEvery
+import io.mockk.coVerify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.withContext
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers.anyString
-import org.mockito.Mockito
-import org.mockito.kotlin.doSuspendableAnswer
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.graphql.GraphQlTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.context.annotation.Import
 import org.springframework.graphql.test.tester.GraphQlTester
 import org.springframework.security.test.context.support.WithMockUser
@@ -30,18 +26,18 @@ private const val DEFAULT_ID = "632c8028feb9e053546a88f2"
 private const val DEFAULT_TITLE = "test"
 private const val DEFAULT_CONTENT = "test content"
 private val DEFAULT_STATUS = PostStatus.DRAFT
-private const val DEFAULT_CREATED_DATE = "2022-09-22T18:32:56+03:00"
+private const val DEFAULT_CREATED_DATE = "2023-01-21T22:40:12.710+03:00"
 
 @OptIn(ExperimentalCoroutinesApi::class)
+@WithMockUser(authorities = [USER])
 @GraphQlTest(controllers = [PostController::class])
-@Import(*[GraphqlConfig::class, ValidationConfig::class])
-@WithMockUser
+@Import(ValidationConfig::class, GraphqlConfig::class)
 class PostControllerTest {
 
     @Autowired
     private lateinit var graphQlTester: GraphQlTester
 
-    @MockBean
+    @MockkBean
     private lateinit var postService: PostService
 
     private lateinit var post: PostPayload
@@ -59,9 +55,7 @@ class PostControllerTest {
 
     @Test
     fun post_shouldReturnPost() = runTest {
-        whenever(postService.getPost(anyString())).doSuspendableAnswer {
-            withContext(Dispatchers.Default) { post }
-        }
+        coEvery { postService.getPost(any()) } returns post
         val id = post.id
 
         graphQlTester
@@ -74,6 +68,6 @@ class PostControllerTest {
                 else it.toString()})
             .path("data.post.content").entity(String::class.java).isEqualTo(DEFAULT_CONTENT.lowercase())
 
-        verify(postService, Mockito.times(1)).getPost(Mockito.anyString())
+        coVerify(exactly = 1) { postService.getPost(any()) }
     }
 }

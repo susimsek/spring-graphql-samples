@@ -1,11 +1,15 @@
+spring:
+  application:
+    name: spring-gql-service
+  web:
+    locale: en
+  graphql:
+    websocket:
+      path: /subscriptions
+  main:
+    allow-bean-definition-overriding: true
 server:
   port: 10344
   address: localhost
-spring:
-  cloud:
-    kubernetes:
-      enabled: false
-  web:
-    locale: en
-  messages:
-    basename: i18n/messages
+
+instance-id: ${spring.application.name}:${random.uuid}

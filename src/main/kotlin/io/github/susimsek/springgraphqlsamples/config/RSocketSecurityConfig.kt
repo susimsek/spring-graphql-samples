@@ -1,19 +1,13 @@
 package io.github.susimsek.springgraphqlsamples.config
 
-// import org.springframework.messaging.rsocket.RSocketStrategies
-// import org.springframework.messaging.rsocket.annotation.support.RSocketMessageHandler
-// import org.springframework.security.messaging.handler.invocation.reactive.AuthenticationPrincipalArgumentResolver
-// import org.springframework.security.rsocket.core.PayloadSocketAcceptorInterceptor
 import com.nimbusds.jose.jwk.JWKSet
 import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet
 import com.nimbusds.jose.jwk.source.JWKSource
 import com.nimbusds.jose.proc.SecurityContext
-import io.github.susimsek.springgraphqlsamples.security.GraphQlWsAuthenticationInterceptor
 import io.github.susimsek.springgraphqlsamples.security.cipher.RSAKeyUtils
 import io.github.susimsek.springgraphqlsamples.security.cipher.SecurityCipher
 import io.github.susimsek.springgraphqlsamples.security.jwt.AUTHORITIES_KEY
-import io.github.susimsek.springgraphqlsamples.security.jwt.GraphQlTokenCookieInterceptor
 import io.github.susimsek.springgraphqlsamples.security.jwt.JwtDecoder
 import io.github.susimsek.springgraphqlsamples.security.jwt.TokenAuthenticationConverter
 import io.github.susimsek.springgraphqlsamples.security.jwt.TokenProperties
@@ -21,15 +15,21 @@ import io.github.susimsek.springgraphqlsamples.security.jwt.TokenProvider
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import org.springframework.core.convert.converter.Converter
 import org.springframework.http.HttpMethod
+import org.springframework.messaging.rsocket.RSocketStrategies
+import org.springframework.messaging.rsocket.annotation.support.RSocketMessageHandler
 import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity
+import org.springframework.security.config.annotation.rsocket.EnableRSocketSecurity
+import org.springframework.security.config.annotation.rsocket.RSocketSecurity
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
 import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.messaging.handler.invocation.reactive.AuthenticationPrincipalArgumentResolver
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.jwt.JwtEncoder
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder
@@ -38,6 +38,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter
 import org.springframework.security.oauth2.server.resource.authentication.JwtReactiveAuthenticationManager
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter
+import org.springframework.security.rsocket.core.PayloadSocketAcceptorInterceptor
 import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.security.web.server.authentication.ServerAuthenticationConverter
 import org.springframework.security.web.server.header.ReferrerPolicyServerHttpHeadersWriter
@@ -50,14 +51,14 @@ import java.security.interfaces.RSAPublicKey
 
 @Configuration(proxyBeanMethods = false)
 @EnableWebFluxSecurity
-// @EnableRSocketSecurity
+@EnableRSocketSecurity
 @EnableReactiveMethodSecurity
 @EnableConfigurationProperties(SecurityMatcherProperties::class, TokenProperties::class)
-class SecurityConfig {
+@Profile("rsocket")
+class RSocketSecurityConfig {
     @Bean
     fun passwordEncoder() = BCryptPasswordEncoder()
 
-    /*
     @Bean
     fun messageHandler(strategies: RSocketStrategies): RSocketMessageHandler {
         val handler = RSocketMessageHandler()
@@ -69,18 +70,18 @@ class SecurityConfig {
     @Bean
     fun authorization(
         security: RSocketSecurity,
-                      jwtDecoder: ReactiveJwtDecoder
+        decoder: ReactiveJwtDecoder,
+        jwtAuthenticationConverter: Converter<Jwt, Mono<AbstractAuthenticationToken>>
     ): PayloadSocketAcceptorInterceptor {
+        val manager = JwtReactiveAuthenticationManager(decoder)
+        manager.setJwtAuthenticationConverter(jwtAuthenticationConverter)
         security.authorizePayload { authorize ->
             authorize
                     .anyRequest().authenticated()
                     .anyExchange().permitAll()
-                }.jwt { jwtSpec -> jwtSpec.authenticationManager(jwtReactiveAuthenticationManager(jwtDecoder)) }
+                }.jwt { jwtSpec -> jwtSpec.authenticationManager(manager) }
         return security.build()
     }
-
-     */
-
     @Bean
     fun keyPair(tokenProperties: TokenProperties): KeyPair {
         return KeyPair(
@@ -112,20 +113,6 @@ class SecurityConfig {
         jwtEncoder: JwtEncoder
     ): TokenProvider {
         return TokenProvider(tokenProperties, jwtEncoder)
-    }
-
-    @Bean
-    fun graphQlWsAuthenticationInterceptor(decoder: ReactiveJwtDecoder,
-                                         jwtAuthenticationConverter: Converter<Jwt, Mono<AbstractAuthenticationToken>>
-    ): GraphQlWsAuthenticationInterceptor {
-        val manager = JwtReactiveAuthenticationManager(decoder)
-        manager.setJwtAuthenticationConverter(jwtAuthenticationConverter)
-        return GraphQlWsAuthenticationInterceptor(manager)
-    }
-
-    @Bean
-    fun graphQlTokenCookieInterceptor(tokenProvider: TokenProvider): GraphQlTokenCookieInterceptor {
-        return GraphQlTokenCookieInterceptor(tokenProvider)
     }
 
     @Bean

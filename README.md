@@ -108,10 +108,6 @@ npm start
 rsc --stream --route=subscriptions --dataMimeType="application/graphql+json" --data='{"query":"subscription { postAdded { id, title, content } }" }' --debug tcp://localhost:8079 --authBearer ${TOKEN} 
 ```
 
-```sh
-rsc --request --route=graphql --dataMimeType="application/graphql+json" --data='{"query":"{ post(id: \"632c8028feb9e053546a88f2\") { id, title } }" }' --debug tcp://localhost:8079  --authBearer ${TOKEN} 
-```
-
 ## Deployment with Docker Compose
 
 ### Prerequisites for Docker Compose Deployment

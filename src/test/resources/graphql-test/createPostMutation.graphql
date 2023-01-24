@@ -1,5 +1,5 @@
 mutation CreatePost($input: AddPostInput!) {
-    createPost(input: $input) {
+    createPost(input: $input){
         id,
         title,
         content,
