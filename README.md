@@ -187,6 +187,7 @@ following bash command
 * Spring Boot Data Mongodb Reactive
 * Spring Boot Validation
 * Spring Boot Actuator
+* Spring Boot RSocket
 * Spring Boot Configuration Processor
 * Graphql Java Extended Scalars
 * Graphql Java Extended Validation
