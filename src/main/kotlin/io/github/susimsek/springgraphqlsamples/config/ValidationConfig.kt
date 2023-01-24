@@ -13,7 +13,6 @@ import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.ImportRuntimeHints
-import org.springframework.context.annotation.Primary
 import org.springframework.context.annotation.Role
 import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.core.KotlinReflectionParameterNameDiscoverer

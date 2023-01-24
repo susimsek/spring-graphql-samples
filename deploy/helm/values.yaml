@@ -15,7 +15,7 @@ token:
 
 spring:
   profiles:
-    active: prod
+    active: prod,websocket
 
 springGraphqlService:
   autoscaling:

@@ -37,7 +37,7 @@ services:
     networks:
       - backend
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=prod,websocket
       - PORT
       - SPRING_DATA_MONGODB_URI
       - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS
