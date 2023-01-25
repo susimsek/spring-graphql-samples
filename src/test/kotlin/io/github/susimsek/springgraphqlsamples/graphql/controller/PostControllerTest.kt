@@ -3,6 +3,8 @@ package io.github.susimsek.springgraphqlsamples.graphql.controller
 import com.ninjasquad.springmockk.MockkBean
 import io.github.susimsek.springgraphqlsamples.config.GraphqlConfig
 import io.github.susimsek.springgraphqlsamples.config.ValidationConfig
+import io.github.susimsek.springgraphqlsamples.exception.POST_NOT_FOUND_MSG_CODE
+import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundException
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.PostStatus
 import io.github.susimsek.springgraphqlsamples.graphql.type.PostPayload
 import io.github.susimsek.springgraphqlsamples.security.USER
@@ -14,11 +16,14 @@ import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration
 import org.springframework.boot.test.autoconfigure.graphql.GraphQlTest
 import org.springframework.context.annotation.Import
+import org.springframework.graphql.execution.ErrorType
 import org.springframework.graphql.test.tester.GraphQlTester
 import org.springframework.security.test.context.support.WithMockUser
 import reactor.test.StepVerifier
@@ -35,7 +40,7 @@ private const val DEFAULT_CREATED_DATE = "2023-01-21T22:40:12.710+03:00"
 @OptIn(ExperimentalCoroutinesApi::class)
 @WithMockUser(authorities = [USER])
 @GraphQlTest(controllers = [PostController::class])
-@Import(ValidationConfig::class, GraphqlConfig::class)
+@Import(ValidationConfig::class, GraphqlConfig::class, MessageSourceAutoConfiguration::class)
 class PostControllerTest {
 
     @Autowired
@@ -72,6 +77,32 @@ class PostControllerTest {
                 else it.toString()})
             .path("data.post.content").entity(String::class.java).isEqualTo(DEFAULT_CONTENT.lowercase())
 
+        coVerify(exactly = 1) { postService.getPost(any()) }
+    }
+
+    @Test
+    fun post_whenNotFound() = runTest {
+        coEvery {  postService.getPost(any()) } throws ResourceNotFoundException(
+        POST_NOT_FOUND_MSG_CODE, arrayOf(DEFAULT_ID))
+
+        val inputPlaceHolder = "\$id"
+        // language=GraphQL
+        val document = """
+        query Post($inputPlaceHolder: ID!) {
+            post(id: $inputPlaceHolder) {
+                id
+                title
+                content
+            }
+        }        
+        """.trim()
+        graphQlTester.document(document)
+            .variable("id", DEFAULT_ID)
+            .execute()
+            .errors()
+            .satisfy { errors ->
+                assertThat(errors).hasSize(1)
+               assertThat(errors[0].errorType).isEqualTo(ErrorType.NOT_FOUND)}
         coVerify(exactly = 1) { postService.getPost(any()) }
     }
 

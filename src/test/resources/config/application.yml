@@ -3,6 +3,8 @@ spring:
     name: spring-gql-service
   web:
     locale: en
+  messages:
+    basename: i18n/messages
   graphql:
     websocket:
       path: /subscriptions
