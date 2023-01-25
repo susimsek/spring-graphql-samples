@@ -1,0 +1,10 @@
+subscription OnPostAdded {
+    postAdded{
+        id,
+        title,
+        content,
+        status,
+        createdAt,
+        locale
+    }
+}

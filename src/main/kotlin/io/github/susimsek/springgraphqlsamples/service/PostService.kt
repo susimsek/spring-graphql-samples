@@ -13,7 +13,6 @@ import io.github.susimsek.springgraphqlsamples.service.mapper.PostMapper
 import io.github.susimsek.springgraphqlsamples.service.producer.PostProducer
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
@@ -119,7 +118,7 @@ class PostService(
         return mappedPosts
     }
 
-    fun postAdded(): SharedFlow<PostPayload> {
+    fun postAdded(): Flow<PostPayload> {
         // return sink.asFlux()
         return postFlow.asSharedFlow()
     }

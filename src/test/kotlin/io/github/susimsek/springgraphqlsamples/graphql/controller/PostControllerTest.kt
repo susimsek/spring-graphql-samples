@@ -9,7 +9,10 @@ import io.github.susimsek.springgraphqlsamples.security.USER
 import io.github.susimsek.springgraphqlsamples.service.PostService
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -18,6 +21,7 @@ import org.springframework.boot.test.autoconfigure.graphql.GraphQlTest
 import org.springframework.context.annotation.Import
 import org.springframework.graphql.test.tester.GraphQlTester
 import org.springframework.security.test.context.support.WithMockUser
+import reactor.test.StepVerifier
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -69,5 +73,44 @@ class PostControllerTest {
             .path("data.post.content").entity(String::class.java).isEqualTo(DEFAULT_CONTENT.lowercase())
 
         coVerify(exactly = 1) { postService.getPost(any()) }
+    }
+
+    @Test
+    fun createPost_shouldReturnPost() = runTest {
+        coEvery { postService.createPost(any(), any()) } returns post
+
+        val input = mapOf(
+            "title" to DEFAULT_TITLE,
+            "content" to DEFAULT_CONTENT
+        )
+
+        graphQlTester
+            .documentName("createPostMutation")
+            .variable("input", input)
+            .execute()
+            .path("data.createPost.id").entity(String::class.java).isEqualTo(DEFAULT_ID)
+            .path("data.createPost.title").entity(String::class.java).isEqualTo(DEFAULT_TITLE.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(Locale.getDefault())
+                else it.toString()})
+        coVerify(exactly = 1) {  postService.createPost(any(), any()) }
+    }
+
+    @Test
+    fun postAdded_shouldReceiveNewPost() = runTest {
+        post.title = DEFAULT_TITLE.replaceFirstChar {
+            if (it.isLowerCase()) it.titlecase(Locale.getDefault())
+            else it.toString()}
+        every { postService.postAdded() } returns flowOf(post)
+
+        graphQlTester
+            .documentName("postAddedSubscription")
+            .executeSubscription()
+            .toFlux("postAdded", PostPayload::class.java)
+            .`as` (StepVerifier::create)
+            .expectNext(post)
+            .expectNextCount(0)
+            .verifyComplete()
+
+        verify (exactly = 1) {  postService.postAdded() }
     }
 }
