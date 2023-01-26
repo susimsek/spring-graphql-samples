@@ -5,7 +5,10 @@ import io.github.susimsek.springgraphqlsamples.config.GraphqlConfig
 import io.github.susimsek.springgraphqlsamples.config.ValidationConfig
 import io.github.susimsek.springgraphqlsamples.exception.POST_NOT_FOUND_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundException
+import io.github.susimsek.springgraphqlsamples.graphql.enumerated.OrderType
+import io.github.susimsek.springgraphqlsamples.graphql.enumerated.PostOrderField
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.PostStatus
+import io.github.susimsek.springgraphqlsamples.graphql.input.PostOrder
 import io.github.susimsek.springgraphqlsamples.graphql.type.PostPayload
 import io.github.susimsek.springgraphqlsamples.security.USER
 import io.github.susimsek.springgraphqlsamples.service.PostService
@@ -31,9 +34,11 @@ import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-private const val DEFAULT_ID = "632c8028feb9e053546a88f2"
+private const val DEFAULT_ID = "2e50aab8-cc23-4658-9305-49044a2cb8d3"
 private const val DEFAULT_TITLE = "test"
 private const val DEFAULT_CONTENT = "test content"
+
+private const val UPDATED_TITLE = "updated test"
 private val DEFAULT_STATUS = PostStatus.DRAFT
 private const val DEFAULT_CREATED_DATE = "2023-01-21T22:40:12.710+03:00"
 
@@ -52,7 +57,7 @@ class PostControllerTest {
     private lateinit var post: PostPayload
 
     @BeforeEach
-    fun initTest() {
+    fun setUp() {
         post = PostPayload(
             id = DEFAULT_ID,
             title = DEFAULT_TITLE,
@@ -63,7 +68,28 @@ class PostControllerTest {
     }
 
     @Test
-    fun post_shouldReturnPost() = runTest {
+    fun `get all posts`() = runTest {
+        coEvery { postService.getPosts(any()) } returns flowOf(post)
+        graphQlTester.documentName("postsQuery")
+            .variable("page", 0)
+            .variable("size", 1)
+            .variable("orders", mapOf(
+                "field" to PostOrderField.createdAt,
+                "order" to OrderType.DESC
+            ))
+            .execute()
+            .path("data.posts[*]").entityList(Any::class.java).hasSize(1)
+            .path("data.posts[0].id").entity(String::class.java).isEqualTo(DEFAULT_ID)
+            .path("data.posts[0].title").entity(String::class.java).isEqualTo(DEFAULT_TITLE.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(Locale.getDefault())
+                else it.toString()})
+
+        coVerify(exactly = 1) { postService.getPosts(any()) }
+    }
+
+
+    @Test
+    fun `get post by id`() = runTest {
         coEvery { postService.getPost(any()) } returns post
         val id = post.id
 
@@ -81,7 +107,7 @@ class PostControllerTest {
     }
 
     @Test
-    fun post_whenNotFound() = runTest {
+    fun `get post by id when not found`() = runTest {
         coEvery {  postService.getPost(any()) } throws ResourceNotFoundException(
         POST_NOT_FOUND_MSG_CODE, arrayOf(DEFAULT_ID))
 
@@ -107,7 +133,7 @@ class PostControllerTest {
     }
 
     @Test
-    fun createPost_shouldReturnPost() = runTest {
+    fun `create post`() = runTest {
         coEvery { postService.createPost(any(), any()) } returns post
 
         val input = mapOf(
@@ -127,7 +153,41 @@ class PostControllerTest {
     }
 
     @Test
-    fun postAdded_shouldReceiveNewPost() = runTest {
+    fun `update post`() = runTest {
+        post.title = UPDATED_TITLE
+        coEvery { postService.updatePost(any()) } returns post
+
+        val input = mapOf(
+            "id" to DEFAULT_ID,
+            "title" to UPDATED_TITLE,
+            "content" to DEFAULT_CONTENT
+        )
+
+        graphQlTester
+            .documentName("updatePostMutation")
+            .variable("input", input)
+            .execute()
+            .path("data.updatePost.id").entity(String::class.java).isEqualTo(DEFAULT_ID)
+            .path("data.updatePost.title").entity(String::class.java).isEqualTo(UPDATED_TITLE.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(Locale.getDefault())
+                else it.toString()})
+        coVerify(exactly = 1) {  postService.updatePost(any()) }
+    }
+
+    @Test
+    fun `delete post`() = runTest {
+        coEvery { postService.deletePost(any()) } returns DEFAULT_ID
+
+        graphQlTester
+            .documentName("deletePostMutation")
+            .variable("id", DEFAULT_ID)
+            .execute()
+            .path("data.deletePost").entity(String::class.java).isEqualTo(DEFAULT_ID)
+        coVerify(exactly = 1) {  postService.deletePost(any()) }
+    }
+
+    @Test
+    fun `post added subscription`() = runTest {
         post.title = DEFAULT_TITLE.replaceFirstChar {
             if (it.isLowerCase()) it.titlecase(Locale.getDefault())
             else it.toString()}
