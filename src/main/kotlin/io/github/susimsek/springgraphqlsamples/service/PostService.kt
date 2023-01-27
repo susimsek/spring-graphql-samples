@@ -10,10 +10,8 @@ import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
 import io.github.susimsek.springgraphqlsamples.repository.PostRepository
 import io.github.susimsek.springgraphqlsamples.security.getCurrentUserLogin
 import io.github.susimsek.springgraphqlsamples.service.mapper.PostMapper
-import io.github.susimsek.springgraphqlsamples.service.producer.PostProducer
+import io.github.susimsek.springgraphqlsamples.service.pubsub.PostPubSubService
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.reactor.awaitSingleOrNull
@@ -30,8 +28,7 @@ class PostService(
     private val postMapper: PostMapper,
     private val userService: UserService,
     private val messageSource: MessageSource,
-    private val postProducer: PostProducer,
-    private val postFlow: MutableSharedFlow<PostPayload>
+    private val postPubSubService: PostPubSubService
 ) {
 
     suspend fun createPost(input: AddPostInput, locale: Locale): PostPayload {
@@ -43,12 +40,12 @@ class PostService(
         val post = postRepository.save(entity)
         val payload = postMapper.toType(post)
 
-        val event = payload
-        val localizedTitle = messageSource.getMessage("post.title", arrayOf(event.title), locale)
-        event.title = localizedTitle
-        event.locale = locale
+        val message = payload
+        val localizedTitle = messageSource.getMessage("post.title", arrayOf(message.title), locale)
+        message.title = localizedTitle
+        message.locale = locale
 
-        postProducer.produce(event)
+        postPubSubService.publish(message)
         // sink.emitNext(payload, Sinks.EmitFailureHandler.FAIL_FAST)
         return payload
     }
@@ -120,6 +117,6 @@ class PostService(
 
     fun postAdded(): Flow<PostPayload> {
         // return sink.asFlux()
-        return postFlow.asSharedFlow()
+        return postPubSubService.subscribe()
     }
 }

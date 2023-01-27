@@ -24,7 +24,7 @@ class SubscriptionConfig {
     }
 
     @Bean
-    fun postSink(): Sinks.Many<PostPayload> {
+    fun postKafkaSink(): Sinks.Many<PostPayload> {
         return  Sinks.many().multicast().onBackpressureBuffer()
     }
 
