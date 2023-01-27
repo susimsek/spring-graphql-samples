@@ -19,6 +19,7 @@ single API call.
 * GraalVM 22.3+
 * Kotlin
 * Maven 3.x
+* Kafka
 
 
 ## Build
@@ -179,6 +180,7 @@ following bash command
 * Sonarqube
 * Detekt
 * Mongodb
+* Kafka
 * Spring Boot 3.x
 * Spring Boot GraphQL
 * Spring Boot Webflux
