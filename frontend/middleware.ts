@@ -1,7 +1,7 @@
 import {NextRequest, NextResponse} from "next/server";
 
 export function middleware(request: NextRequest){
-    const token = request.cookies.get("token")?.value
+    const token = request.cookies.get("authToken")?.value
     const url = request.nextUrl.clone()
 
     if (url.pathname == "/login" && token) {

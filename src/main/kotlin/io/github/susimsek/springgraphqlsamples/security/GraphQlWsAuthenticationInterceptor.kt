@@ -1,5 +1,6 @@
 package io.github.susimsek.springgraphqlsamples.security
 
+import io.github.susimsek.springgraphqlsamples.security.jwt.TOKEN_COOKIE_NAME
 import io.github.susimsek.springgraphqlsamples.security.jwt.TOKEN_PREFIX
 import io.github.susimsek.springgraphqlsamples.security.jwt.WS_TOKEN_KEY_NAME
 import org.springframework.graphql.server.WebGraphQlInterceptor
@@ -74,7 +75,7 @@ class GraphQlWsAuthenticationInterceptor(
         val cookie = headers.getFirst(HttpHeaders.COOKIE) ?: return null
        val tokenCookie =  cookie.split(";")
             .flatMap { HttpCookie.parse(it)  }
-            .find { it.name == WS_TOKEN_KEY_NAME }
+            .find { it.name == TOKEN_COOKIE_NAME }
        return tokenCookie?.value
     }
 
