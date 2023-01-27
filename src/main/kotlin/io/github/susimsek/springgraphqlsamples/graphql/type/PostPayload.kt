@@ -6,7 +6,7 @@ import java.time.OffsetDateTime
 import java.util.*
 
 data class PostPayload(
-    var id: String? = null,
+    val id: String? = null,
 
     var title: String? = null,
 

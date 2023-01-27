@@ -64,10 +64,9 @@ class UserService(
 
 
     suspend fun getUsers(pageRequest: Pageable, filter: UserFilter?): PagedEntityModel<UserPayload> {
-        return userRepository.findAllByFilter(filter, pageRequest)
-            .map{it.map(userMapper::toType)}
-            .map{PagedEntityModel<UserPayload>(it)}
-            .awaitSingle()
+        val result = userRepository.findAllByFilter(filter, pageRequest)
+            .map(userMapper::toType)
+        return PagedEntityModel<UserPayload>(result)
     }
 
 

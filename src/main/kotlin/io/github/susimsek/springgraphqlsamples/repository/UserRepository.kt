@@ -1,8 +1,8 @@
 package io.github.susimsek.springgraphqlsamples.repository
 
 import io.github.susimsek.springgraphqlsamples.domain.User
+import io.github.susimsek.springgraphqlsamples.repository.custom.UserRepositoryOverride
 import kotlinx.coroutines.flow.Flow
-import org.springframework.data.querydsl.ReactiveQuerydslPredicateExecutor
 import org.springframework.data.repository.kotlin.CoroutineCrudRepository
 import org.springframework.data.repository.kotlin.CoroutineSortingRepository
 import org.springframework.graphql.data.GraphQlRepository
@@ -14,11 +14,9 @@ interface UserRepository :
     CoroutineSortingRepository<User, String>,
     // ReactiveQuerydslPredicateExecutor<User>,
     UserRepositoryOverride {
-    fun findOneByEmailIgnoreCase(email: String?): Mono<User>
+    fun findOneByEmailIgnoreCase(email: String): Mono<User>
 
     fun findOneByUsername(login: String): Mono<User>
-
-    override suspend fun count(): Long
 
     fun findAllByIdIn(id: MutableSet<String>?): Flow<User>
 }

@@ -4,7 +4,7 @@ import java.time.OffsetDateTime
 import java.util.Locale
 
 data class UserPayload(
-    var id: String? = null,
+    val id: String? = null,
 
     var username: String? = null,
 

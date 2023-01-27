@@ -6,9 +6,9 @@ import jakarta.validation.constraints.Size
 data class AddPostInput(
     @field:NotBlank
     @field:Size(min = 3, max = 40)
-    var title: String,
+    val title: String,
 
     @field:NotBlank
     @field:Size(min = 5, max = 1000)
-    var content: String
+    val content: String
 )
