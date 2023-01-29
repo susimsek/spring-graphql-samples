@@ -25,8 +25,7 @@ class JwtDecoder(
     private fun resolveToken(token: String): String? {
         if (token.isNotBlank()) {
             try {
-                val asd = securityCipher.decrypt(token)
-                return asd
+                return securityCipher.decrypt(token)
             } catch (e: IllegalStateException) {
                 throw BadJwtException("Invalid Jwt")
             }
