@@ -9,7 +9,6 @@ data class Post(
 
     var title: String = "",
 
-    @Indexed
     var content: String = "",
 
     @Indexed
