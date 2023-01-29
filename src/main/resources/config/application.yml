@@ -12,6 +12,9 @@ spring:
           destination: posts
         postEventConsumer-in-0:
           destination: posts
+  data:
+    mongodb:
+      auto-index-creation: true
   graphql:
     cors:
       allowed-origins: http://localhost:3000

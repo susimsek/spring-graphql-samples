@@ -25,6 +25,7 @@ import org.springframework.graphql.data.method.annotation.SubscriptionMapping
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 import java.util.Locale
+import java.util.concurrent.Phaser
 
 @Controller
 @PreAuthorize("isAuthenticated()")
@@ -77,6 +78,19 @@ class PostController(
         val sort = orders?.map(PostOrder::toOrder)?.let { Sort.by(it) } ?: Sort.unsorted()
         val pageRequest = PageRequest.of(pageNo, sizeNo, sort)
         return postService.getPosts(pageRequest).toList()
+    }
+
+    @QueryMapping
+    suspend fun searchPosts(
+        @Argument page: Int?,
+        @Argument size: Int?,
+        @Argument searchPhrase: String): List<PostPayload> {
+        val pageNo = page ?: DEFAULT_PAGE_NO
+        val sizeNo = (size ?: DEFAULT_SIZE).coerceAtMost(MAX_SIZE)
+        val sort = Sort.by(Sort.Direction.DESC, "score")
+        val pageRequest = PageRequest.of(pageNo, sizeNo, sort)
+        return postService.searchPosts(pageRequest, searchPhrase)
+            .toList()
     }
 
     @QueryMapping

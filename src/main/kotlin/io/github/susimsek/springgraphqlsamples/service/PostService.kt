@@ -1,5 +1,6 @@
 package io.github.susimsek.springgraphqlsamples.service
 
+import io.github.susimsek.springgraphqlsamples.domain.Post
 import io.github.susimsek.springgraphqlsamples.exception.POST_NOT_FOUND_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundException
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.PostStatus
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import org.springframework.context.MessageSource
 import org.springframework.data.domain.Pageable
+import org.springframework.data.mongodb.core.query.TextCriteria
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
@@ -118,5 +120,13 @@ class PostService(
     fun postAdded(): Flow<PostPayload> {
         // return sink.asFlux()
         return postPubSubService.subscribe()
+    }
+
+    fun searchPosts(pageRequest: Pageable, searchPhrase: String): Flow<PostPayload> {
+        val criteria = TextCriteria
+                .forDefaultLanguage()
+            .matchingPhrase(searchPhrase)
+        return postRepository.findBy(criteria, pageRequest)
+            .map(postMapper::toType)
     }
 }

@@ -2,17 +2,20 @@ package io.github.susimsek.springgraphqlsamples.domain
 
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.PostStatus
 import org.springframework.data.mongodb.core.index.Indexed
+import org.springframework.data.mongodb.core.index.TextIndexed
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document(collection = "post")
 data class Post(
 
+    @TextIndexed(weight = 3F)
     var title: String = "",
 
+    @TextIndexed(weight = 2F)
     var content: String = "",
 
     @Indexed
-    var status: PostStatus? = PostStatus.DRAFT,
+    var status: PostStatus? = PostStatus.DRAFT
 ) : BaseEntity() {
 
     override fun equals(other: Any?): Boolean {

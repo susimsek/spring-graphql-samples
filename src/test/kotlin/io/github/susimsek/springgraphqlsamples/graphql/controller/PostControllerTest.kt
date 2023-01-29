@@ -86,6 +86,23 @@ class PostControllerTest {
         coVerify(exactly = 1) { postService.getPosts(any()) }
     }
 
+    @Test
+    fun `search posts`() = runTest {
+        coEvery { postService.searchPosts(any(), any()) } returns flowOf(post)
+        graphQlTester.documentName("searchPostsQuery")
+            .variable("page", 0)
+            .variable("size", 1)
+            .variable("searchPhrase", "test")
+            .execute()
+            .path("data.searchPosts[*]").entityList(Any::class.java).hasSize(1)
+            .path("data.searchPosts[0].id").entity(String::class.java).isEqualTo(DEFAULT_ID)
+            .path("data.searchPosts[0].title").entity(String::class.java).isEqualTo(DEFAULT_TITLE.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(Locale.getDefault())
+                else it.toString()})
+
+        coVerify(exactly = 1) { postService.searchPosts(any(), any()) }
+    }
+
 
     @Test
     fun `get post by id`() = runTest {
