@@ -1,6 +1,9 @@
 package io.github.susimsek.springgraphqlsamples.graphql.input
 
+import io.github.susimsek.springgraphqlsamples.domain.User
 import org.springframework.data.mongodb.core.query.Criteria
+import org.springframework.data.mongodb.core.query.isEqualTo
+import org.springframework.data.mongodb.core.query.regex
 
 data class UserFilter(
     var username: String? = null,
@@ -15,16 +18,16 @@ data class UserFilter(
         val criteria = mutableListOf<Criteria>()
 
         if (!username.isNullOrBlank()) {
-            criteria.add(Criteria.where("username").`is`(username))
+            criteria.add(User::username isEqualTo username)
         }
         if (!firstName.isNullOrBlank()) {
-            criteria.add(Criteria.where("firstName").regex("^$firstName", "i"))
+            criteria.add(User::firstName regex "^$firstName.*")
         }
         if (!lastName.isNullOrBlank()) {
-            criteria.add(Criteria.where("lastName").regex("^$lastName", "i"))
+            criteria.add(User::lastName regex "^$lastName.*")
         }
         if (!email.isNullOrBlank()) {
-            criteria.add(Criteria.where("email").`is`(email))
+            criteria.add(User::email isEqualTo email)
         }
         if (criteria.isEmpty()) {
             return null
