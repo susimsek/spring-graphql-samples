@@ -1,7 +1,8 @@
 package io.github.susimsek.springgraphqlsamples.graphql.type
 
+import io.github.susimsek.springgraphqlsamples.domain.Role
 import java.time.OffsetDateTime
-import java.util.Locale
+import java.util.*
 
 data class UserPayload(
     val id: String? = null,
@@ -16,5 +17,7 @@ data class UserPayload(
 
     var createdAt: OffsetDateTime,
 
-    var lang: Locale
+    var lang: Locale,
+
+    var roles: MutableSet<Role> = mutableSetOf()
 )

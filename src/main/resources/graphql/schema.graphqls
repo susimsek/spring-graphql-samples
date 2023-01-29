@@ -72,6 +72,11 @@ enum OrderType {
     DESC
 }
 
+enum RoleName {
+    ROLE_USER
+    ROLE_ADMIN
+}
+
 input UserFilter {
     username: String
     firstName: String
@@ -143,6 +148,7 @@ type UserPayload {
     createdAt: DateTime!
     posts: [PostPayload!]!
     lang: Locale!
+    roles: [Role!]!
 }
 
 
@@ -155,6 +161,12 @@ type User {
     createdAt: DateTime!
     activated: Boolean!
     lang: Locale!
+    roles: [Role!]!
+}
+
+type Role {
+    id: String!
+    name: RoleName!
 }
 
 type PostPayload{

@@ -42,7 +42,8 @@ class DomainUserDetailsService(private val userRepository: UserRepository) : Rea
         if (!user.activated) {
             throw UserNotActivatedException("User $lowercaseLogin was not activated")
         }
-        val grantedAuthorities = mutableSetOf(SimpleGrantedAuthority(USER))
+        val grantedAuthorities = user.roles
+            .map {SimpleGrantedAuthority(it.name.name) }
         return org.springframework.security.core.userdetails.User(
             user.id,
             user.password,

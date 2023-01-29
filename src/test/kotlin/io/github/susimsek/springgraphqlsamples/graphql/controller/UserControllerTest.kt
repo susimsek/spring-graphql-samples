@@ -4,7 +4,6 @@ import com.ninjasquad.springmockk.MockkBean
 import io.github.susimsek.springgraphqlsamples.config.GraphqlConfig
 import io.github.susimsek.springgraphqlsamples.config.ValidationConfig
 import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
-import io.github.susimsek.springgraphqlsamples.security.USER
 import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaService
 import io.github.susimsek.springgraphqlsamples.service.UserService
 import io.mockk.coEvery
@@ -44,7 +43,7 @@ private const val RECAPTCHA_RESPONSE = "03AFY_a8XSt-psckZobB96CoI6txaEmyt82-kBP"
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@WithMockUser(authorities = [USER])
+@WithMockUser(authorities = ["ROLE_USER"])
 @GraphQlTest(controllers = [UserController::class])
 @Import(ValidationConfig::class, GraphqlConfig::class,
     MessageSourceAutoConfiguration::class)

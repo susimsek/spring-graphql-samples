@@ -10,7 +10,6 @@ import io.github.susimsek.springgraphqlsamples.graphql.enumerated.PostOrderField
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.PostStatus
 import io.github.susimsek.springgraphqlsamples.graphql.input.PostOrder
 import io.github.susimsek.springgraphqlsamples.graphql.type.PostPayload
-import io.github.susimsek.springgraphqlsamples.security.USER
 import io.github.susimsek.springgraphqlsamples.service.PostService
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -43,7 +42,7 @@ private val DEFAULT_STATUS = PostStatus.DRAFT
 private const val DEFAULT_CREATED_DATE = "2023-01-21T22:40:12.710+03:00"
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@WithMockUser(authorities = [USER])
+@WithMockUser(authorities = ["ROLE_USER"])
 @GraphQlTest(controllers = [PostController::class])
 @Import(ValidationConfig::class, GraphqlConfig::class, MessageSourceAutoConfiguration::class)
 class PostControllerTest {

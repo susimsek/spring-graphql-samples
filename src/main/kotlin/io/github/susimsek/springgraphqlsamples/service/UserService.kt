@@ -1,14 +1,17 @@
 package io.github.susimsek.springgraphqlsamples.service
 
 import io.github.susimsek.springgraphqlsamples.exception.EMAIL_ALREADY_EXISTS_MSG_CODE
+import io.github.susimsek.springgraphqlsamples.exception.ROLE_NAME_NOT_FOUND_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundException
 import io.github.susimsek.springgraphqlsamples.exception.USERNAME_ALREADY_EXISTS_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.exception.USER_NOT_FOUND_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.exception.ValidationException
+import io.github.susimsek.springgraphqlsamples.graphql.enumerated.RoleName
 import io.github.susimsek.springgraphqlsamples.graphql.input.AddUserInput
 import io.github.susimsek.springgraphqlsamples.graphql.input.UserFilter
 import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
 import io.github.susimsek.springgraphqlsamples.graphql.type.PagedEntityModel
+import io.github.susimsek.springgraphqlsamples.repository.RoleRepository
 import io.github.susimsek.springgraphqlsamples.repository.UserRepository
 import io.github.susimsek.springgraphqlsamples.security.getCurrentUserLogin
 import io.github.susimsek.springgraphqlsamples.service.mapper.UserMapper
@@ -27,7 +30,8 @@ import java.util.*
 class UserService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
-    private val userMapper: UserMapper
+    private val userMapper: UserMapper,
+    private val roleRepository: RoleRepository
 ) {
 
     suspend fun createUser(input: AddUserInput): UserPayload {
@@ -55,6 +59,10 @@ class UserService(
         input.email = input.email.lowercase(Locale.getDefault())
         input.password = encryptedPassword
         var user = userMapper.toEntity(input)
+
+        val role = roleRepository.findByName(RoleName.ROLE_USER)
+            ?: throw ResourceNotFoundException(ROLE_NAME_NOT_FOUND_MSG_CODE, arrayOf(RoleName.ROLE_USER))
+        user.roles = mutableSetOf(role)
         user.activated = true
 
         user = userRepository.save(user)

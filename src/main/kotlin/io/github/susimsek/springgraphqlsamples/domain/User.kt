@@ -1,11 +1,11 @@
 package io.github.susimsek.springgraphqlsamples.domain
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 // import com.querydsl.core.annotations.QueryEntity
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field
-import java.util.Locale
+import java.util.*
 
 // @QueryEntity
 @Document(collection = "user")
@@ -30,6 +30,8 @@ data class User(
 
     var activated: Boolean = false,
 
+    var roles: MutableSet<Role> = mutableSetOf()
+
     ) : BaseEntity() {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -47,6 +49,7 @@ data class User(
                 "password=$password, " +
                 "firstName=${firstName}, " +
                 "lastName=${lastName}, " +
+                "lang=${email}, " +
                 "email=${email}, " +
                 "activated=$activated)"
     }
