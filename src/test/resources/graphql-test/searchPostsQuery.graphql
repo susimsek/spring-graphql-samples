@@ -1,4 +1,4 @@
-query SearchPosts($page: Int, $size: Int, $searchPhrase: String) {
+query SearchPosts($page: Int, $size: Int, $searchPhrase: String!) {
     searchPosts(page: $page, size: $size, searchPhrase: $searchPhrase) {
         id
         title
