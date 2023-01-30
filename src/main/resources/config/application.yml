@@ -6,12 +6,6 @@ spring:
   cloud:
     function:
       definition: postEventPublisher;postEventConsumer
-    stream:
-      bindings:
-        postEventPublisher-out-0:
-          destination: posts
-        postEventConsumer-in-0:
-          destination: posts
   data:
     mongodb:
       auto-index-creation: true

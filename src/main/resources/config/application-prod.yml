@@ -9,6 +9,14 @@ spring:
       enabled: false
     livereload:
       enabled: false
+  cloud:
+    stream:
+      bindings:
+        postEventPublisher-out-0:
+          destination: posts
+        postEventConsumer-in-0:
+          destination: posts
+          group: posts-group-${random.uuid}
 
 security:
   authentication:

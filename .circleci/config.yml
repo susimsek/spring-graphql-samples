@@ -43,8 +43,6 @@ jobs:
       MAVEN_OPTS: -Xmx6400m
     steps:
       - checkout
-      - generate-maven-settings-file:
-          settings-file: *maven-settings-file
       - run:
           name: Print Java Version
           command: java -version
@@ -52,6 +50,8 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "pom.xml" }}
             - v1-dependencies-
+      - generate-maven-settings-file:
+          settings-file: *maven-settings-file
       - run:
           name: Download Dependencies
           command: mvn dependency:go-offline

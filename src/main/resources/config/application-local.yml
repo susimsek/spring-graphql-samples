@@ -1,9 +1,24 @@
 server:
   port: ${PORT:9091}
 spring:
+  cloud:
+    stream:
+      bindings:
+        postEventPublisher-out-0:
+          destination: xdiinweb-posts
+        postEventConsumer-in-0:
+          destination: xdiinweb-posts
+          group: xdiinweb-posts-group-${random.uuid}
   kafka:
-    bootstrap-servers: localhost:29092
+    bootstrap-servers: glider.srvs.cloudkafka.com:9094
     consumer.auto-offset-reset: earliest
+    properties:
+      security:
+        protocol: SASL_SSL
+      sasl:
+        mechanism: SCRAM-SHA-512
+        jaas:
+          config: org.apache.kafka.common.security.scram.ScramLoginModule required username="xdiinweb" password="2-WUg78AseKMdQgzvBCtZ73DjVSCaRvX";
   data:
     mongodb:
       uri: mongodb+srv://test_user123456:4hRsOKoJxkHswunQ@cluster0.nbzfi.mongodb.net/demo
