@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  snyk: snyk/snyk@1.2.3
+  snyk: snyk/snyk@1.4.0
 
 aliases:
   - &maven-settings-file
@@ -59,20 +59,20 @@ jobs:
           paths:
             - ~/.m2
           key: v1-dependencies-{{ checksum "pom.xml" }}
-#      - snyk/scan:
-#          fail-on-issues: false
-#          monitor-on-build: true
-#          severity-threshold: low
-#          token-variable: SNYK_TOKEN
+      - snyk/scan:
+          fail-on-issues: false
+          monitor-on-build: true
+          severity-threshold: low
+          token-variable: SNYK_TOKEN
 #      - run:
 #          name: Test
 #          command: mvn -ntp clean verify
 #      - run:
 #          name: Packaging
 #          command: mvn -ntp package -DskipTests
-#      - run:
-#          name: Quality Analysis
-#          command: mvn -ntp -Psonar initialize sonar:sonar -Dsonar.login=$SONAR_TOKEN
+      - run:
+          name: Quality Analysis
+          command: mvn -ntp -Psonar initialize sonar:sonar -Dsonar.login=$SONAR_TOKEN
       - run:
           name: Publish Docker
-          command: mvn -Pnative spring-boot:build-image -DskipTests
+          command: mvn -Pnative spring-boot:build-image -DskipTests -Dspring-boot.build-image.publish=true
