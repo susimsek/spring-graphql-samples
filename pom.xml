@@ -247,7 +247,6 @@
                 <configuration>
                     <image>
                         <name>${docker.image.name}</name>
-                        <publish>false</publish>
                         <pullPolicy>IF_NOT_PRESENT</pullPolicy>
                         <builder>paketobuildpacks/builder:tiny</builder>
                         <buildpacks>

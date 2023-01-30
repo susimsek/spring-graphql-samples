@@ -75,4 +75,4 @@ jobs:
           command: mvn -ntp -Psonar initialize sonar:sonar -Dsonar.login=$SONAR_TOKEN
       - run:
           name: Publish Docker
-          command: mvn -Pnative spring-boot:build-image -DskipTests -Dspring-boot.build-image.publish=true
+          command: mvn -Pnative spring-boot:build-image -Dspring-boot.build-image.publish=true -DskipTests
