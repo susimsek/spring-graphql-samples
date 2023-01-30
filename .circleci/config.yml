@@ -14,7 +14,7 @@ aliases:
                    <password>$GITHUB_PASSWORD</password>
               </server>
               <server>
-                    <id>registry-1.docker.io</id>
+                    <id>docker.io</id>
                     <username>$DOCKER_REGISTRY_USERNAME</username>
                     <password>$DOCKER_REGISTRY_PASSWORD</password>
               </server>
