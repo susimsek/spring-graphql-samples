@@ -3,12 +3,21 @@ version: 2.1
 orbs:
   snyk: snyk/snyk@1.4.0
 
-jobs:
-  build:
+
+executors:
+  node-executor:
+    docker:
+      - image: circleci/node:18-buster
+  java-executor:
     machine:
       image: ubuntu-2204:2022.10.2
       docker_layer_caching: true
       resource_class: medium
+
+jobs:
+### ---------------------- BACKEND ----------------------------
+  build-backend:
+    executor: java-executor
     working_directory: ~/repo
     environment:
       # Customize the JVM maximum heap limit
@@ -46,3 +55,57 @@ jobs:
       - run:
           name: Publish Docker
           command: mvn -Pnative spring-boot:build-image -Dspring-boot.build-image.publish=true -Ddocker.image.name=docker.io/suayb/spring-graphql-samples -Ddocker.credentials.username=$DOCKER_REGISTRY_USERNAME -Ddocker.credentials.password=$DOCKER_REGISTRY_PASSWORD -DskipTests
+
+### ---------------------- FRONTEND ----------------------------
+  build-frontend:
+    executor: node-executor
+    working_directory: ~/repo/frontend
+
+    steps:
+      - checkout:
+          path: ~/repo
+      - setup_remote_docker:
+          version: 20.10.14
+          docker_layer_caching: true
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package-lock.json" }}
+            - v1-dependencies-
+      - run:
+          name: Print Node Version
+          command: node -v
+      - run:
+          name: Print NPM Version
+          command: npm -v
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package-lock.json" }}
+      - run:
+          name: Install Dependencies
+          command: npm install
+      - snyk/scan:
+          fail-on-issues: false
+          monitor-on-build: true
+          severity-threshold: low
+          token-variable: SNYK_TOKEN
+      - run:
+          name: Quality Analysis
+          command: npm run sonar
+      - run:
+          name: Publish Docker
+          command: |
+            TAG=latest
+            IMAGE_NAME=suayb/spring-graphql-samples-web
+            docker build -t $IMAGE_NAME:$TAG .
+            echo $DOCKER_REGISTRY_PASSWORD | docker login -u $DOCKER_REGISTRY_USERNAME --password-stdin
+            docker push $IMAGE_NAME:$TAG
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build-backend
+      - build-frontend:
+          requires:
+            - build-backend
