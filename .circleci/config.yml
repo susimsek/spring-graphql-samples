@@ -3,34 +3,6 @@ version: 2.1
 orbs:
   snyk: snyk/snyk@1.4.0
 
-aliases:
-  - &maven-settings-file
-      "\"<settings xsi:schemaLocation='http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd' xmlns='http://maven.apache.org/SETTINGS/1.1.0'
-              xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
-            <servers>
-              <server>
-                   <id>github</id>
-                   <username>$GITHUB_USERNAME</username>
-                   <password>$GITHUB_PASSWORD</password>
-              </server>
-              <server>
-                    <id>docker.io</id>
-                    <username>$DOCKER_REGISTRY_USERNAME</username>
-                    <password>$DOCKER_REGISTRY_PASSWORD</password>
-              </server>
-            </servers>
-          </settings>\""
-commands:
-  generate-maven-settings-file:
-    parameters:
-      settings-file:
-        type: string
-    steps:
-      - run:
-          name: Generate Maven Settings File
-          command: |
-            mkdir -p ~/.m2
-            echo -e << parameters.settings-file >> > ~/.m2/settings.xml
 jobs:
   build:
     machine:
@@ -50,8 +22,6 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "pom.xml" }}
             - v1-dependencies-
-      - generate-maven-settings-file:
-          settings-file: *maven-settings-file
       - run:
           name: Download Dependencies
           command: mvn dependency:go-offline
@@ -75,4 +45,4 @@ jobs:
           command: mvn -ntp -Psonar initialize sonar:sonar -Dsonar.login=$SONAR_TOKEN
       - run:
           name: Publish Docker
-          command: mvn -Pnative spring-boot:build-image -Dspring-boot.build-image.publish=true -DskipTests
+          command: mvn -Pnative spring-boot:build-image -Dspring-boot.build-image.publish=true -Ddocker.builderRegistry.username=$DOCKER_REGISTRY_USERNAME -Ddocker.builderRegistry.password=$DOCKER_REGISTRY_PASSWORD -DskipTests
