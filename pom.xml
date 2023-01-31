@@ -267,13 +267,13 @@
                                 --initialize-at-run-time=io.netty.handler.ssl.BouncyCastleAlpnSslUtils
                             </BP_NATIVE_IMAGE_BUILD_ARGUMENTS>
                         </env>
-                        <docker>
-                            <publishRegistry>
-                                <username>${docker.credentials.username}</username>
-                                <password>${docker.credentials.password}</password>
-                            </publishRegistry>
-                        </docker>
                     </image>
+                    <docker>
+                        <publishRegistry>
+                            <username>${docker.credentials.username}</username>
+                            <password>${docker.credentials.password}</password>
+                        </publishRegistry>
+                    </docker>
                 </configuration>
             </plugin>
             <plugin>
