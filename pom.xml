@@ -23,6 +23,8 @@
         <maven.version>3.2</maven.version>
         <spring-cloud.version>2022.0.0</spring-cloud.version>
         <docker.image.name>docker.io/suayb/spring-graphql-samples</docker.image.name>
+        <docker.credentials.username/>
+        <docker.credentials.password/>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

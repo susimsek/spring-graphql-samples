@@ -45,4 +45,4 @@ jobs:
           command: mvn -ntp -Psonar initialize sonar:sonar -Dsonar.login=$SONAR_TOKEN
       - run:
           name: Publish Docker
-          command: mvn -Pnative spring-boot:build-image -Dspring-boot.build-image.publish=true -Ddocker.credentials.username=$DOCKER_REGISTRY_USERNAME -Ddocker.credentials.password=$DOCKER_REGISTRY_PASSWORD -DskipTests
+          command: mvn -Pnative spring-boot:build-image -Dspring-boot.build-image.publish=true -Ddocker.image.name=docker.io/suayb/spring-graphql-samples -Ddocker.credentials.username=$DOCKER_REGISTRY_USERNAME -Ddocker.credentials.password=$DOCKER_REGISTRY_PASSWORD -DskipTests
