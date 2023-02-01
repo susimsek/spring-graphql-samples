@@ -15,12 +15,10 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration
 import org.springframework.boot.test.autoconfigure.graphql.GraphQlTest
-import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
+import org.springframework.graphql.ExecutionGraphQlService
+import org.springframework.graphql.test.tester.ExecutionGraphQlServiceTester
 import org.springframework.graphql.test.tester.GraphQlTester
-import org.springframework.graphql.test.tester.HttpGraphQlTester
-import org.springframework.http.HttpHeaders
 import org.springframework.security.test.context.support.WithMockUser
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
@@ -47,14 +45,13 @@ private const val RECAPTCHA_RESPONSE = "03AFY_a8XSt-psckZobB96CoI6txaEmyt82-kBP"
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @WithMockUser(authorities = ["ROLE_USER"])
-@AutoConfigureHttpGraphQlTester
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@GraphQlTest(controllers = [UserController::class])
 @Import(ValidationConfig::class, GraphqlConfig::class,
     MessageSourceAutoConfiguration::class)
 class UserControllerTest {
 
-    @Autowired
-    private lateinit var graphQlTester: HttpGraphQlTester
+
+    private lateinit var graphQlTester: GraphQlTester
 
     @MockkBean
     private lateinit var userService: UserService
@@ -65,7 +62,7 @@ class UserControllerTest {
     private lateinit var user: UserPayload
 
     @BeforeEach
-    fun setUp() {
+    fun setUp(@Autowired delegateService: ExecutionGraphQlService) {
         user = UserPayload(
             id = DEFAULT_ID,
             username = DEFAULT_USERNAME,
@@ -75,6 +72,16 @@ class UserControllerTest {
             createdAt = OffsetDateTime.parse(DEFAULT_CREATED_DATE, DateTimeFormatter.ISO_DATE_TIME),
             lang = DEFAULT_LANG
         )
+
+        val graphQlService = ExecutionGraphQlService { request ->
+            request.configureExecutionInput { _, builder ->
+                builder.graphQLContext(mapOf("recaptcha" to RECAPTCHA_RESPONSE)).build()
+            }
+            delegateService.execute(request)
+        }
+
+        graphQlTester = ExecutionGraphQlServiceTester.create(graphQlService)
+
     }
 
     @Test
@@ -105,11 +112,7 @@ class UserControllerTest {
             "lang" to DEFAULT_LANG
         )
 
-        val myTester = graphQlTester.mutate()
-            .header("recaptcha", "123")
-            .build();
-
-        myTester
+        graphQlTester
             .documentName("createUserMutation")
             .variable("input", input)
             .execute()
@@ -119,9 +122,5 @@ class UserControllerTest {
 
         coVerify(exactly = 1) { userService.createUser(any()) }
         coEvery { recaptchaService.validateToken(any())} returns true
-    }
-
-    private fun withRecaptcha(headers: HttpHeaders) {
-        headers.set("recaptcha", RECAPTCHA_RESPONSE)
     }
 }
