@@ -15,8 +15,11 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration
 import org.springframework.boot.test.autoconfigure.graphql.GraphQlTest
+import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
 import org.springframework.graphql.test.tester.GraphQlTester
+import org.springframework.graphql.test.tester.HttpGraphQlTester
 import org.springframework.http.HttpHeaders
 import org.springframework.security.test.context.support.WithMockUser
 import java.time.OffsetDateTime
@@ -44,13 +47,14 @@ private const val RECAPTCHA_RESPONSE = "03AFY_a8XSt-psckZobB96CoI6txaEmyt82-kBP"
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @WithMockUser(authorities = ["ROLE_USER"])
-@GraphQlTest(controllers = [UserController::class])
+@AutoConfigureHttpGraphQlTester
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @Import(ValidationConfig::class, GraphqlConfig::class,
     MessageSourceAutoConfiguration::class)
 class UserControllerTest {
 
     @Autowired
-    private lateinit var graphQlTester: GraphQlTester
+    private lateinit var graphQlTester: HttpGraphQlTester
 
     @MockkBean
     private lateinit var userService: UserService
@@ -101,7 +105,11 @@ class UserControllerTest {
             "lang" to DEFAULT_LANG
         )
 
-        graphQlTester
+        val myTester = graphQlTester.mutate()
+            .header("recaptcha", "123")
+            .build();
+
+        myTester
             .documentName("createUserMutation")
             .variable("input", input)
             .execute()

@@ -1,6 +1,5 @@
 package io.github.susimsek.springgraphqlsamples.service
 
-import io.github.susimsek.springgraphqlsamples.domain.Post
 import io.github.susimsek.springgraphqlsamples.exception.POST_NOT_FOUND_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundException
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.PostStatus
