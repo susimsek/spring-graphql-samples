@@ -33,14 +33,6 @@ private const val DEFAULT_LAST_NAME = "doe"
 private const val DEFAULT_EMAIL = "johndoe@localhost"
 private val DEFAULT_LANG = Locale.ENGLISH
 private const val DEFAULT_CREATED_DATE = "2023-01-21T22:40:12.710+03:00"
-private const val RECAPTCHA_RESPONSE = "03AFY_a8XSt-psckZobB96CoI6txaEmyt82-kBP" +
-        "Vzsn6mbcDCKZro9TxmRF6kCRC5OznYTZfYUOl6CO9kqj2Y0dYN9jDk1JRHBBi9t7ZdVD5FKI" +
-        "pbM1WYxUISCLf9hGjWz-BKhuLAWMPvhdGr3eO63NHGOzUk-w4Dig5-zNxtddHoKu7AT3DOObUp" +
-        "Qe61to6LAiH6757Q-pQDR_rme_ApPrOpbytVe80zeGfJ2d1KmNsrLuZ1EpmXVpxOcJ2t675ZNvh1w" +
-        "mXq8TS69Szt-qi07Bhk3RCJ7EX4V8Ao_UHo9MFR61msQhfdY0nlRecrpVTz5Hq5eqsNYfR1X5TZXo6h" +
-        "G09fvHtPw3I2kO2LUYvt7K3RIFi6lzqa4ZQdyLObOyvwhHboSoH22WtMqTluPLz_Ln_D66yrmZuo3H" +
-        "_OyuPYwBiN0lMdkZcHRDkKXXqJwhKg6g0OgE2dELt5Xl1al7bswKvghPgAxMaED8MYqllkvoBve3dO" +
-        "YtlWgLUZz6pdETvWsO3fH0-6d7xb7"
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
