@@ -16,22 +16,25 @@ import java.util.Locale
 @Controller
 class AuthenticationController(
     private val authenticationService: AuthenticationService,
-    private val recaptchaService: RecaptchaService) {
+    private val recaptchaService: RecaptchaService
+) {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
     @MutationMapping
-    suspend fun login(@Argument input: LoginInput,
-                      @ContextValue recaptcha: String,
-                      locale: Locale, context:
-                      GraphQLContext): Token {
+    suspend fun login(
+        @Argument input: LoginInput,
+        @ContextValue recaptcha: String,
+        locale: Locale,
+        context:
+            GraphQLContext
+    ): Token {
         recaptchaService.validateToken(recaptcha)
         log.info("locale: {}", locale.toLanguageTag())
         val token = authenticationService.authorize(input)
         context.put("token", token)
         return token
     }
-
 
     @MutationMapping
     @PreAuthorize("isAuthenticated()")

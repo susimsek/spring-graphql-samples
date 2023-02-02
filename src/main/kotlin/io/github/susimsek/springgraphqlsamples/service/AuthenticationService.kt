@@ -19,7 +19,8 @@ class AuthenticationService(
     suspend fun authorize(credentials: LoginInput): Token {
         return authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(
-            credentials.login, credentials.password
+                credentials.login,
+                credentials.password
             )
         )
             .map {

@@ -6,8 +6,8 @@ import io.github.susimsek.springgraphqlsamples.graphql.MAX_SIZE
 import io.github.susimsek.springgraphqlsamples.graphql.input.AddUserInput
 import io.github.susimsek.springgraphqlsamples.graphql.input.UserFilter
 import io.github.susimsek.springgraphqlsamples.graphql.input.UserOrder
-import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
 import io.github.susimsek.springgraphqlsamples.graphql.type.PagedEntityModel
+import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
 import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaService
 import io.github.susimsek.springgraphqlsamples.service.UserService
 import jakarta.validation.Valid
@@ -21,13 +21,17 @@ import org.springframework.graphql.data.method.annotation.SchemaMapping
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 
-
 @Controller
-class UserController(private val userService: UserService,
-                     private val recaptchaService: RecaptchaService) {
+class UserController(
+    private val userService: UserService,
+    private val recaptchaService: RecaptchaService
+) {
     @MutationMapping
-    suspend fun createUser(@Argument @Valid input: AddUserInput,
-                           @ContextValue recaptcha: String): UserPayload {
+    suspend fun createUser(
+        @Argument @Valid
+        input: AddUserInput,
+        @ContextValue recaptcha: String
+    ): UserPayload {
         recaptchaService.validateToken(recaptcha)
         return userService.createUser(input)
     }

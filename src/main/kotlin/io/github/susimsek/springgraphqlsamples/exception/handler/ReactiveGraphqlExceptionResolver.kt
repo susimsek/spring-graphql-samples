@@ -3,7 +3,6 @@ package io.github.susimsek.springgraphqlsamples.exception.handler
 import graphql.GraphQLError
 import graphql.GraphqlErrorBuilder
 import graphql.schema.DataFetchingEnvironment
-import io.github.susimsek.springgraphqlsamples.exception.InvalidCaptchaException
 import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundException
 import io.github.susimsek.springgraphqlsamples.exception.ValidationException
 import jakarta.validation.ConstraintViolationException
@@ -25,12 +24,14 @@ class ReactiveGraphqlExceptionResolver(
         return when (ex) {
             is ConstraintViolationException -> {
                 return ex.constraintViolations.map {
-                    val validatedPath = it.propertyPath.map { node ->  node.name}
+                    val validatedPath = it.propertyPath.map { node -> node.name }
                     GraphqlErrorBuilder.newError(env)
                         .message("${it.propertyPath}: ${it.message}")
                         .errorType(graphql.ErrorType.ValidationError)
-                        .extensions(mapOf(
-                            "validatedPath" to validatedPath)
+                        .extensions(
+                            mapOf(
+                                "validatedPath" to validatedPath
+                            )
                         )
                         .build()
                 }
@@ -56,13 +57,13 @@ class ReactiveGraphqlExceptionResolver(
             }
 
             is ResourceNotFoundException -> {
-                val errorMessage = messageSource.getMessage(ex.message, ex.args, locale)
+                val errorMessage = messageSource.getMessage(ex.message!!, ex.args, locale)
                 GraphqlErrorBuilder.newError(env)
                     .message(errorMessage).errorType(ErrorType.NOT_FOUND).build()
             }
 
             is ValidationException -> {
-                val errorMessage = messageSource.getMessage(ex.message, ex.args, locale)
+                val errorMessage = messageSource.getMessage(ex.message!!, ex.args, locale)
                 badRequest(env, errorMessage)
             }
             else -> super.resolveToSingleError(ex, env)
@@ -73,5 +74,4 @@ class ReactiveGraphqlExceptionResolver(
         return GraphqlErrorBuilder.newError(env)
             .message(errorMessage).errorType(ErrorType.BAD_REQUEST).build()
     }
-
 }

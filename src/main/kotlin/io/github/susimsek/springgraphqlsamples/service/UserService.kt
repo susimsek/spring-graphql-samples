@@ -9,8 +9,8 @@ import io.github.susimsek.springgraphqlsamples.exception.ValidationException
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.RoleName
 import io.github.susimsek.springgraphqlsamples.graphql.input.AddUserInput
 import io.github.susimsek.springgraphqlsamples.graphql.input.UserFilter
-import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
 import io.github.susimsek.springgraphqlsamples.graphql.type.PagedEntityModel
+import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
 import io.github.susimsek.springgraphqlsamples.repository.RoleRepository
 import io.github.susimsek.springgraphqlsamples.repository.UserRepository
 import io.github.susimsek.springgraphqlsamples.security.getCurrentUserLogin
@@ -37,11 +37,11 @@ class UserService(
     suspend fun createUser(input: AddUserInput): UserPayload {
         var existingUser = userRepository.findOneByUsername(input.username).awaitSingleOrNull()
         existingUser?.let {
-           if (!it.activated) {
-               userRepository.delete(it)
-           } else {
-               throw ValidationException(USERNAME_ALREADY_EXISTS_MSG_CODE)
-           }
+            if (!it.activated) {
+                userRepository.delete(it)
+            } else {
+                throw ValidationException(USERNAME_ALREADY_EXISTS_MSG_CODE)
+            }
         }
 
         existingUser = userRepository.findOneByEmailIgnoreCase(input.email).awaitSingleOrNull()
@@ -70,14 +70,11 @@ class UserService(
         return userMapper.toType(user)
     }
 
-
     suspend fun getUsers(pageRequest: Pageable, filter: UserFilter?): PagedEntityModel<UserPayload> {
         val result = userRepository.findAllByFilter(filter, pageRequest)
             .map(userMapper::toType)
         return PagedEntityModel<UserPayload>(result)
     }
-
-
 
     /*
     suspend fun getUsers(pageRequest: Pageable, filter: UserFilter?): UserSearchResult {
@@ -96,7 +93,7 @@ class UserService(
 
     suspend fun getCurrentUser(): UserPayload {
         val currentUserId = getCurrentUserLogin().awaitSingleOrNull()
-        ?: throw UsernameNotFoundException("User was not found")
+            ?: throw UsernameNotFoundException("User was not found")
         val user = userRepository.findById(currentUserId) ?: throw UsernameNotFoundException("User was not found")
         return userMapper.toType(user)
     }
