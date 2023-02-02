@@ -1,91 +1,21 @@
 package io.github.susimsek.springgraphqlsamples.config
 
-import com.nimbusds.jose.jwk.JWKSet
-import com.nimbusds.jose.jwk.RSAKey
-import com.nimbusds.jose.jwk.source.ImmutableJWKSet
-import com.nimbusds.jose.jwk.source.JWKSource
-import com.nimbusds.jose.proc.SecurityContext
 import io.github.susimsek.springgraphqlsamples.security.GraphQlWsAuthenticationInterceptor
-import io.github.susimsek.springgraphqlsamples.security.cipher.RSAKeyUtils
-import io.github.susimsek.springgraphqlsamples.security.cipher.SecurityCipher
-import io.github.susimsek.springgraphqlsamples.security.jwt.AUTHORITIES_KEY
 import io.github.susimsek.springgraphqlsamples.security.jwt.GraphQlTokenCookieInterceptor
-import io.github.susimsek.springgraphqlsamples.security.jwt.JwtDecoder
-import io.github.susimsek.springgraphqlsamples.security.jwt.TokenAuthenticationConverter
-import io.github.susimsek.springgraphqlsamples.security.jwt.TokenProperties
 import io.github.susimsek.springgraphqlsamples.security.jwt.TokenProvider
-import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import org.springframework.core.convert.converter.Converter
-import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AbstractAuthenticationToken
-import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager
-import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity
-import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
-import org.springframework.security.config.web.server.ServerHttpSecurity
-import org.springframework.security.core.userdetails.ReactiveUserDetailsService
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.oauth2.jwt.Jwt
-import org.springframework.security.oauth2.jwt.JwtEncoder
-import org.springframework.security.oauth2.jwt.NimbusJwtEncoder
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter
 import org.springframework.security.oauth2.server.resource.authentication.JwtReactiveAuthenticationManager
-import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter
-import org.springframework.security.web.server.SecurityWebFilterChain
-import org.springframework.security.web.server.authentication.ServerAuthenticationConverter
-import org.springframework.security.web.server.header.ReferrerPolicyServerHttpHeadersWriter
-import org.springframework.security.web.server.util.matcher.NegatedServerWebExchangeMatcher
-import org.springframework.security.web.server.util.matcher.OrServerWebExchangeMatcher
-import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers.pathMatchers
 import reactor.core.publisher.Mono
-import java.security.KeyPair
-import java.security.interfaces.RSAPublicKey
 
 @Configuration(proxyBeanMethods = false)
-@EnableWebFluxSecurity
-@EnableReactiveMethodSecurity
-@EnableConfigurationProperties(SecurityMatcherProperties::class, TokenProperties::class)
 @Profile("websocket")
 class WebsocketSecurityConfig {
-    @Bean
-    fun passwordEncoder() = BCryptPasswordEncoder()
-
-    @Bean
-    fun keyPair(tokenProperties: TokenProperties): KeyPair {
-        return KeyPair(
-            RSAKeyUtils.generatePublicKey(tokenProperties.publicKey),
-            RSAKeyUtils.generatePrivateKey(tokenProperties.privateKey)
-        )
-    }
-
-    @Bean
-    fun jwtDecoder(
-        keyPair: KeyPair,
-        securityCipher: SecurityCipher
-    ): ReactiveJwtDecoder {
-        return JwtDecoder(keyPair.public as RSAPublicKey, securityCipher)
-    }
-
-    @Bean
-    fun jwtEncoder(keyPair: KeyPair): JwtEncoder {
-        val jwk = RSAKey.Builder(keyPair.public as RSAPublicKey)
-            .privateKey(keyPair.private)
-            .build()
-        val jwks: JWKSource<SecurityContext> = ImmutableJWKSet(JWKSet(jwk))
-        return NimbusJwtEncoder(jwks)
-    }
-
-    @Bean
-    fun tokenProvider(
-        tokenProperties: TokenProperties,
-        jwtEncoder: JwtEncoder
-    ): TokenProvider {
-        return TokenProvider(tokenProperties, jwtEncoder)
-    }
 
     @Bean
     fun graphQlWsAuthenticationInterceptor(
@@ -100,64 +30,5 @@ class WebsocketSecurityConfig {
     @Bean
     fun graphQlTokenCookieInterceptor(tokenProvider: TokenProvider): GraphQlTokenCookieInterceptor {
         return GraphQlTokenCookieInterceptor(tokenProvider)
-    }
-
-    @Bean
-    fun jwtAuthenticationConverter(): Converter<Jwt, Mono<AbstractAuthenticationToken>> {
-        val authoritiesConverter = JwtGrantedAuthoritiesConverter()
-        authoritiesConverter.setAuthoritiesClaimName(AUTHORITIES_KEY)
-        authoritiesConverter.setAuthorityPrefix("")
-        val converter = JwtAuthenticationConverter()
-        converter.setJwtGrantedAuthoritiesConverter(authoritiesConverter)
-        return ReactiveJwtAuthenticationConverterAdapter(converter)
-    }
-
-    @Bean
-    fun bearerTokenConverter(): ServerAuthenticationConverter {
-        return TokenAuthenticationConverter()
-    }
-
-    @Bean
-    fun reactiveAuthenticationManager(userDetailsService: ReactiveUserDetailsService) =
-        UserDetailsRepositoryReactiveAuthenticationManager(userDetailsService).apply {
-            setPasswordEncoder(passwordEncoder())
-        }
-
-    @Bean
-    fun springSecurityFilterChain(
-        http: ServerHttpSecurity,
-        securityMatcherProperties: SecurityMatcherProperties,
-        jwtAuthenticationConverter: Converter<Jwt, Mono<AbstractAuthenticationToken>>,
-        bearerTokenConverter: ServerAuthenticationConverter
-    ): SecurityWebFilterChain {
-        // @formatter:off
-        http
-            .securityMatcher(
-                NegatedServerWebExchangeMatcher(
-                    OrServerWebExchangeMatcher(
-                        pathMatchers(*securityMatcherProperties.ignorePatterns.toTypedArray()),
-                        pathMatchers(HttpMethod.OPTIONS, "/**")
-                    )
-                )
-            )
-            .cors().and()
-            .csrf(ServerHttpSecurity.CsrfSpec::disable)
-            .httpBasic().disable()
-            .logout().disable()
-            .headers()
-            .referrerPolicy(ReferrerPolicyServerHttpHeadersWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)
-            .and()
-            .frameOptions().disable()
-            .and()
-            .authorizeExchange()
-            .pathMatchers(*securityMatcherProperties.permitAllPatterns.toTypedArray()).permitAll()
-            .and()
-            .oauth2ResourceServer()
-            .jwt()
-            .jwtAuthenticationConverter(jwtAuthenticationConverter)
-            .and()
-            .bearerTokenConverter(bearerTokenConverter)
-        // @formatter:on
-        return http.build()
     }
 }
