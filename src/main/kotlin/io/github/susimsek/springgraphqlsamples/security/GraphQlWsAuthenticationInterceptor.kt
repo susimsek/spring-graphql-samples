@@ -66,16 +66,16 @@ class GraphQlWsAuthenticationInterceptor(
     }
 
     private fun resolveTokenFromPayload(connectionInitPayload: MutableMap<String, Any>): String? {
-       return (connectionInitPayload[WS_TOKEN_KEY_NAME] as? String)
+        return (connectionInitPayload[WS_TOKEN_KEY_NAME] as? String)
             ?.takeIf { it.startsWith(TOKEN_PREFIX, ignoreCase = true) }
             ?.substring(TOKEN_PREFIX.length)
     }
 
     private fun resolveTokenFromCookie(headers: HttpHeaders): String? {
         val cookie = headers.getFirst(HttpHeaders.COOKIE) ?: return null
-       val tokenCookie = cookie.split(";")
+        val tokenCookie = cookie.split(";")
             .flatMap { HttpCookie.parse(it) }
             .find { it.name == TOKEN_COOKIE_NAME }
-       return tokenCookie?.value
+        return tokenCookie?.value
     }
 }

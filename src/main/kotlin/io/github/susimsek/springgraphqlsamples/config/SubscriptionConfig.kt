@@ -30,10 +30,10 @@ class SubscriptionConfig {
     fun postEventConsumer(
         postFlow: MutableSharedFlow<PostPayload>
     ): Consumer<PostPayload> =
-            Consumer { msg ->
-        logger.info("consumed payload: {}", msg)
-        runBlocking { postFlow.emit(msg) }
-    }
+        Consumer { msg ->
+            logger.info("consumed payload: {}", msg)
+            runBlocking { postFlow.emit(msg) }
+        }
 
     @Bean
     fun postEventPublisher(postSink: Sinks.Many<PostPayload>): Supplier<Flux<PostPayload>> = Supplier {

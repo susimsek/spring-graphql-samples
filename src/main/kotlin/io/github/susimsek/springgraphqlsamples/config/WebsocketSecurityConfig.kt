@@ -90,7 +90,7 @@ class WebsocketSecurityConfig {
     @Bean
     fun graphQlWsAuthenticationInterceptor(
         decoder: ReactiveJwtDecoder,
-                                         jwtAuthenticationConverter: Converter<Jwt, Mono<AbstractAuthenticationToken>>
+        jwtAuthenticationConverter: Converter<Jwt, Mono<AbstractAuthenticationToken>>
     ): GraphQlWsAuthenticationInterceptor {
         val manager = JwtReactiveAuthenticationManager(decoder)
         manager.setJwtAuthenticationConverter(jwtAuthenticationConverter)

@@ -13,7 +13,7 @@ class GraphQlTokenCookieInterceptor(
 
     override fun intercept(
         request: WebGraphQlRequest,
-                           chain: WebGraphQlInterceptor.Chain
+        chain: WebGraphQlInterceptor.Chain
     ): Mono<WebGraphQlResponse> {
         return chain.next(request).doOnNext { response ->
             val token = response.executionInput.graphQLContext.get<Token>("token")

@@ -32,7 +32,7 @@ data class User(
 
     var roles: MutableSet<Role> = mutableSetOf()
 
-    ) : BaseEntity() {
+) : BaseEntity() {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is User) return false
@@ -45,12 +45,12 @@ data class User(
 
     override fun toString(): String {
         return "User(id=$id, " +
-                "username=$username}, " +
-                "password=$password, " +
-                "firstName=${firstName}, " +
-                "lastName=${lastName}, " +
-                "lang=${email}, " +
-                "email=${email}, " +
-                "activated=$activated)"
+            "username=$username}, " +
+            "password=$password, " +
+            "firstName=$firstName, " +
+            "lastName=$lastName, " +
+            "lang=$email, " +
+            "email=$email, " +
+            "activated=$activated)"
     }
 }

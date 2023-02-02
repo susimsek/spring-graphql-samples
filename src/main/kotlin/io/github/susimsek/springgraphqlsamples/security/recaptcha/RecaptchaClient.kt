@@ -10,6 +10,6 @@ interface RecaptchaClient {
     @PostExchange
     fun verifyResponse(
         @RequestParam secret: String,
-                      @RequestParam("response") recaptchaToken: String
+        @RequestParam("response") recaptchaToken: String
     ): Mono<RecaptchaResponse>
 }

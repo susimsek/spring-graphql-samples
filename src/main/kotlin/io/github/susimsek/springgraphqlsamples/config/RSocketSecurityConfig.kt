@@ -77,9 +77,9 @@ class RSocketSecurityConfig {
         manager.setJwtAuthenticationConverter(jwtAuthenticationConverter)
         security.authorizePayload { authorize ->
             authorize
-                    .anyRequest().authenticated()
-                    .anyExchange().permitAll()
-                }.jwt { jwtSpec -> jwtSpec.authenticationManager(manager) }
+                .anyRequest().authenticated()
+                .anyExchange().permitAll()
+        }.jwt { jwtSpec -> jwtSpec.authenticationManager(manager) }
         return security.build()
     }
 

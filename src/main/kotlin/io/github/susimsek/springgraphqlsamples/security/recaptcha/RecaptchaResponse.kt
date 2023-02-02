@@ -33,9 +33,9 @@ data class RecaptchaResponse(
         val errors = errorCodes ?: return false
         return errors.any {
             when (it) {
-            ErrorCode.INVALID_RESPONSE, ErrorCode.MISSING_RESPONSE -> true
-            else -> false
-        }
+                ErrorCode.INVALID_RESPONSE, ErrorCode.MISSING_RESPONSE -> true
+                else -> false
+            }
         }
     }
 
@@ -50,7 +50,8 @@ data class RecaptchaResponse(
         companion object {
             private val codes = ErrorCode.values().associateBy(ErrorCode::code)
 
-            @JvmStatic @JsonCreator fun from(value: String) = codes[value]
+            @JvmStatic @JsonCreator
+            fun from(value: String) = codes[value]
         }
     }
 }

@@ -32,7 +32,7 @@ class TokenAuthenticationConverter : ServerBearerTokenAuthenticationConverter() 
         var token: String? = null
         if (!CollectionUtils.isEmpty(cookiesMap)) {
             val cookies = cookiesMap[tokenCookieName] ?: return null
-             if (cookies.size == 1) {
+            if (cookies.size == 1) {
                 token = cookies.first().value
             } else {
                 val error = BearerTokenErrors.invalidRequest("Found multiple bearer tokens in the request")
