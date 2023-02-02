@@ -16,9 +16,13 @@ class PageInfo(private val result: Page<*>) {
     val nextPage: Int?
         get() = if (result.hasNext()) {
             result.number + 1
-        } else null
+        } else {
+            null
+        }
     val prevPage: Int?
         get() = if (result.hasPrevious()) {
             result.number - 1
-        } else null
+        } else {
+            null
+        }
 }

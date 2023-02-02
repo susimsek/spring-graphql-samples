@@ -32,7 +32,7 @@ class TokenProvider(
             .claim(AUTHORITIES_KEY, authorities)
             .build()
 
-        val  tokenValue = jwtEncoder.encode(JwtEncoderParameters.from(claims)).tokenValue
+        val tokenValue = jwtEncoder.encode(JwtEncoderParameters.from(claims)).tokenValue
         return Token(
             token = tokenValue,
             expiresIn = tokenProperties.validityInSeconds

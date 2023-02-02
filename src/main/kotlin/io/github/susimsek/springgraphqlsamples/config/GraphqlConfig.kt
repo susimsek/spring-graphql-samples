@@ -105,13 +105,13 @@ class GraphqlConfig {
     @Bean
     fun graphqlConfigurer(
         graphQLScalarTypes: List<GraphQLScalarType>,
-        validationSchemaDirective :SchemaDirectiveWiring,
-        schemaDirectives :List<SchemaDirective>
+        validationSchemaDirective: SchemaDirectiveWiring,
+        schemaDirectives: List<SchemaDirective>
     ): RuntimeWiringConfigurer {
         return RuntimeWiringConfigurer { builder ->
-            graphQLScalarTypes.forEach{builder.scalar(it)}
+            graphQLScalarTypes.forEach { builder.scalar(it) }
             builder.directiveWiring(validationSchemaDirective)
-            schemaDirectives.forEach{builder.directive(it.name, it.directive)}
+            schemaDirectives.forEach { builder.directive(it.name, it.directive) }
         }
     }
 }

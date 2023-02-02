@@ -88,7 +88,8 @@ class WebsocketSecurityConfig {
     }
 
     @Bean
-    fun graphQlWsAuthenticationInterceptor(decoder: ReactiveJwtDecoder,
+    fun graphQlWsAuthenticationInterceptor(
+        decoder: ReactiveJwtDecoder,
                                          jwtAuthenticationConverter: Converter<Jwt, Mono<AbstractAuthenticationToken>>
     ): GraphQlWsAuthenticationInterceptor {
         val manager = JwtReactiveAuthenticationManager(decoder)
@@ -127,7 +128,8 @@ class WebsocketSecurityConfig {
         http: ServerHttpSecurity,
         securityMatcherProperties: SecurityMatcherProperties,
         jwtAuthenticationConverter: Converter<Jwt, Mono<AbstractAuthenticationToken>>,
-        bearerTokenConverter: ServerAuthenticationConverter): SecurityWebFilterChain {
+        bearerTokenConverter: ServerAuthenticationConverter
+    ): SecurityWebFilterChain {
         // @formatter:off
         http
             .securityMatcher(

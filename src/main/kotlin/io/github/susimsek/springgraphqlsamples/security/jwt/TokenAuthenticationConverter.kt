@@ -12,7 +12,6 @@ import org.springframework.util.MultiValueMap
 import org.springframework.web.server.ServerWebExchange
 import reactor.core.publisher.Mono
 
-
 class TokenAuthenticationConverter : ServerBearerTokenAuthenticationConverter() {
 
     private var tokenCookieName = TOKEN_COOKIE_NAME

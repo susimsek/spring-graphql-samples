@@ -9,7 +9,6 @@ import org.springframework.graphql.data.GraphQlRepository
 @GraphQlRepository
 interface RoleRepository :
     CoroutineCrudRepository<Role, String>,
-    CoroutineSortingRepository<Role, String>
-{
+    CoroutineSortingRepository<Role, String> {
     suspend fun findByName(name: RoleName): Role?
 }

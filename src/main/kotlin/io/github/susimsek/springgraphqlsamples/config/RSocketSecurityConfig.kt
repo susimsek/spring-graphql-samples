@@ -82,6 +82,7 @@ class RSocketSecurityConfig {
                 }.jwt { jwtSpec -> jwtSpec.authenticationManager(manager) }
         return security.build()
     }
+
     @Bean
     fun keyPair(tokenProperties: TokenProperties): KeyPair {
         return KeyPair(
@@ -141,7 +142,8 @@ class RSocketSecurityConfig {
         http: ServerHttpSecurity,
         securityMatcherProperties: SecurityMatcherProperties,
         jwtAuthenticationConverter: Converter<Jwt, Mono<AbstractAuthenticationToken>>,
-        bearerTokenConverter: ServerAuthenticationConverter): SecurityWebFilterChain {
+        bearerTokenConverter: ServerAuthenticationConverter
+    ): SecurityWebFilterChain {
         // @formatter:off
         http
             .securityMatcher(

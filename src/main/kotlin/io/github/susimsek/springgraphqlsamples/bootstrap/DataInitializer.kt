@@ -11,7 +11,6 @@ import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
 
-
 @Component
 @ConditionalOnProperty(
     value = ["command.line.runner.enabled"],
@@ -20,15 +19,13 @@ import org.springframework.stereotype.Component
 )
 class DataInitializer(
     private val roleRepository: RoleRepository
-): CommandLineRunner {
+) : CommandLineRunner {
 
     companion object {
         private val log = LoggerFactory.getLogger(DataInitializer::class.java)
     }
 
-
     override fun run(vararg args: String?) {
-
         val data = listOf(
             Role(name = RoleName.ROLE_USER),
             Role(name = RoleName.ROLE_ADMIN)
@@ -43,5 +40,4 @@ class DataInitializer(
             }
         }
     }
-
 }

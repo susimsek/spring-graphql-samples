@@ -11,7 +11,6 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.support.WebClientAdapter
 import org.springframework.web.service.invoker.HttpServiceProxyFactory
 
-
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(RecaptchaProperties::class)
 class RecaptchaConfig {
@@ -19,7 +18,8 @@ class RecaptchaConfig {
     @Bean
     fun recaptchaClient(
         webClientBuilder: WebClient.Builder,
-        recaptchaProperties: RecaptchaProperties): RecaptchaClient {
+        recaptchaProperties: RecaptchaProperties
+    ): RecaptchaClient {
         val webClient = webClientBuilder.baseUrl(recaptchaProperties.verifyUrl)
             .build()
         val httpServiceProxyFactory = HttpServiceProxyFactory.builder(WebClientAdapter.forClient(webClient))
@@ -30,7 +30,8 @@ class RecaptchaConfig {
     @Bean
     fun recaptchaService(
         recaptchaClient: RecaptchaClient,
-        recaptchaProperties: RecaptchaProperties): RecaptchaService {
+        recaptchaProperties: RecaptchaProperties
+    ): RecaptchaService {
         return RecaptchaService(recaptchaClient, recaptchaProperties)
     }
 

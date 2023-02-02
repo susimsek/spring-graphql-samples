@@ -31,10 +31,12 @@ data class RecaptchaResponse(
     @JsonIgnore
     fun hasClientError(): Boolean {
         val errors = errorCodes ?: return false
-        return errors.any { when (it) {
+        return errors.any {
+            when (it) {
             ErrorCode.INVALID_RESPONSE, ErrorCode.MISSING_RESPONSE -> true
             else -> false
-        } }
+        }
+        }
     }
 
     enum class ErrorCode(private val code: String) {
@@ -47,6 +49,7 @@ data class RecaptchaResponse(
 
         companion object {
             private val codes = ErrorCode.values().associateBy(ErrorCode::code)
+
             @JvmStatic @JsonCreator fun from(value: String) = codes[value]
         }
     }

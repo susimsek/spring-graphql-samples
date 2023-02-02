@@ -14,7 +14,6 @@ import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.server.adapter.HttpWebHandlerAdapter
 import org.springframework.web.server.adapter.WebHttpHandlerBuilder
 
-
 @Configuration(proxyBeanMethods = false)
 @ImportRuntimeHints(MessageSourceConfig.GraphQlRuntimeHints::class)
 class MessageSourceConfig {

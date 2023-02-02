@@ -43,7 +43,7 @@ class DomainUserDetailsService(private val userRepository: UserRepository) : Rea
             throw UserNotActivatedException("User $lowercaseLogin was not activated")
         }
         val grantedAuthorities = user.roles
-            .map {SimpleGrantedAuthority(it.name.name) }
+            .map { SimpleGrantedAuthority(it.name.name) }
         return org.springframework.security.core.userdetails.User(
             user.id,
             user.password,

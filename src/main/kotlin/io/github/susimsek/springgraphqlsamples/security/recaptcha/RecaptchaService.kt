@@ -6,7 +6,6 @@ import kotlinx.coroutines.reactive.awaitSingle
 import org.springframework.util.StringUtils
 import java.util.regex.Pattern
 
-
 class RecaptchaService(
     private val recaptchaClient: RecaptchaClient,
     private val recaptchaProperties: RecaptchaProperties
@@ -17,7 +16,7 @@ class RecaptchaService(
         if (!recaptchaProperties.enabled) {
             return false
         }
-        if(!responseSanityCheck(recaptchaToken)) {
+        if (!responseSanityCheck(recaptchaToken)) {
             throw InvalidCaptchaException(RECAPTCHA_INVALID_MSG_CODE)
         }
         return recaptchaClient.verifyResponse(recaptchaProperties.secretKey, recaptchaToken)

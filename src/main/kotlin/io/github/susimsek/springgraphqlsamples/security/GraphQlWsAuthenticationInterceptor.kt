@@ -34,7 +34,6 @@ class GraphQlWsAuthenticationInterceptor(
     }
 
     override fun intercept(request: WebGraphQlRequest, chain: WebGraphQlInterceptor.Chain): Mono<WebGraphQlResponse> {
-
         if (request !is WebSocketGraphQlRequest) {
             return chain.next(request)
         }
@@ -60,7 +59,8 @@ class GraphQlWsAuthenticationInterceptor(
 
     private fun resolveToken(
         sessionInfo: WebSocketSessionInfo,
-        connectionInitPayload: MutableMap<String, Any>): String? {
+        connectionInitPayload: MutableMap<String, Any>
+    ): String? {
         return resolveTokenFromCookie(sessionInfo.headers)
             ?: resolveTokenFromPayload(connectionInitPayload)
     }
@@ -73,10 +73,9 @@ class GraphQlWsAuthenticationInterceptor(
 
     private fun resolveTokenFromCookie(headers: HttpHeaders): String? {
         val cookie = headers.getFirst(HttpHeaders.COOKIE) ?: return null
-       val tokenCookie =  cookie.split(";")
-            .flatMap { HttpCookie.parse(it)  }
+       val tokenCookie = cookie.split(";")
+            .flatMap { HttpCookie.parse(it) }
             .find { it.name == TOKEN_COOKIE_NAME }
        return tokenCookie?.value
     }
-
 }

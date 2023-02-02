@@ -5,10 +5,11 @@ import org.springframework.web.service.annotation.HttpExchange
 import org.springframework.web.service.annotation.PostExchange
 import reactor.core.publisher.Mono
 
-
 @HttpExchange
-interface RecaptchaClient{
+interface RecaptchaClient {
     @PostExchange
-    fun verifyResponse(@RequestParam secret :String,
-                      @RequestParam("response") recaptchaToken :String): Mono<RecaptchaResponse>
+    fun verifyResponse(
+        @RequestParam secret: String,
+                      @RequestParam("response") recaptchaToken: String
+    ): Mono<RecaptchaResponse>
 }

@@ -11,7 +11,7 @@ import reactor.core.publisher.Sinks
 class PostPubSubService(
     private val kafkaSink: Sinks.Many<PostPayload>,
     private val postFlow: MutableSharedFlow<PostPayload>
-): PubSubService<PostPayload> {
+) : PubSubService<PostPayload> {
     override suspend fun publish(message: PostPayload) {
         kafkaSink.emitNext(message, Sinks.EmitFailureHandler.FAIL_FAST)
     }

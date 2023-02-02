@@ -21,9 +21,7 @@ fun getCurrentUserLogin(): Mono<String> =
         .map(SecurityContext::getAuthentication)
         .flatMap { Mono.justOrEmpty(extractPrincipal(it)) }
 
-
 fun extractPrincipal(authentication: Authentication?): String? {
-
     if (authentication == null) {
         return null
     }
@@ -99,5 +97,3 @@ fun hasCurrentUserNoneOfAuthorities(vararg authorities: String): Mono<Boolean> {
 fun hasCurrentUserThisAuthority(authority: String): Mono<Boolean> {
     return hasCurrentUserAnyOfAuthorities(authority)
 }
-
-

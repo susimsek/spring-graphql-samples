@@ -7,19 +7,20 @@ import org.springframework.graphql.server.WebGraphQlResponse
 import org.springframework.http.HttpHeaders
 import reactor.core.publisher.Mono
 
-
 class GraphQlTokenCookieInterceptor(
     private val tokenProvider: TokenProvider
-): WebGraphQlInterceptor {
+) : WebGraphQlInterceptor {
 
-    override fun intercept(request: WebGraphQlRequest,
-                           chain: WebGraphQlInterceptor.Chain): Mono<WebGraphQlResponse> {
+    override fun intercept(
+        request: WebGraphQlRequest,
+                           chain: WebGraphQlInterceptor.Chain
+    ): Mono<WebGraphQlResponse> {
         return chain.next(request).doOnNext { response ->
             val token = response.executionInput.graphQLContext.get<Token>("token")
             if (token != null) {
-                val cookie = when(token.token.isBlank()) {
+                val cookie = when (token.token.isBlank()) {
                     true -> tokenProvider.deleteTokenCookie()
-                    else ->  tokenProvider.createTokenCookie(token)
+                    else -> tokenProvider.createTokenCookie(token)
                 }
                 response.responseHeaders.add(HttpHeaders.SET_COOKIE, cookie.toString())
             }

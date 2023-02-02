@@ -1,6 +1,5 @@
 package io.github.susimsek.springgraphqlsamples.config
 
-
 import jakarta.validation.ClockProvider
 import jakarta.validation.ParameterNameProvider
 import org.hibernate.validator.internal.engine.DefaultClockProvider
@@ -66,6 +65,8 @@ class SuspendAwareKotlinParameterNameDiscoverer : ParameterNameDiscoverer {
         val function = method.kotlinFunction
         return if (function != null && function.isSuspend) {
             defaultNames + ""
-        } else defaultNames
+        } else {
+            defaultNames
+        }
     }
 }

@@ -27,8 +27,9 @@ class UserRepositoryOverrideImpl(
         return mongoTemplate.find(Query.of(query).with(pageable), User::class.java)
             .collectList()
             .zipWith(
-                mongoTemplate.count(query, User::class.java))
-            .map { PageImpl(it.t1, pageable, it.t2)  }
+                mongoTemplate.count(query, User::class.java)
+            )
+            .map { PageImpl(it.t1, pageable, it.t2) }
             .awaitSingle()
     }
 }
