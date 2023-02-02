@@ -44,7 +44,9 @@ private const val DEFAULT_CREATED_DATE = "2023-01-21T22:40:12.710+03:00"
 @OptIn(ExperimentalCoroutinesApi::class)
 @WithMockUser(authorities = ["ROLE_USER"])
 @GraphQlTest(controllers = [PostController::class])
-@Import(ValidationConfig::class, GraphqlConfig::class, MessageSourceAutoConfiguration::class)
+@Import(ValidationConfig::class,
+    GraphqlConfig::class,
+    MessageSourceAutoConfiguration::class)
 class PostControllerTest {
 
     @Autowired

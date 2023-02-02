@@ -43,12 +43,9 @@ jobs:
           monitor-on-build: true
           severity-threshold: low
           token-variable: SNYK_TOKEN
-#      - run:
-#          name: Test
-#          command: mvn -ntp clean verify
-#      - run:
-#          name: Packaging
-#          command: mvn -ntp package -DskipTests
+      - run:
+          name: Test
+          command: mvn -ntp clean verify
       - run:
           name: Quality Analysis
           command: mvn -ntp -Psonar initialize sonar:sonar -Dsonar.login=$SONAR_TOKEN

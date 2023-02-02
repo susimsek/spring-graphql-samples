@@ -97,7 +97,7 @@ class AuthControllerTest {
             .path("data.login.token").entity(String::class.java).isEqualTo(DEFAULT_TOKEN)
 
         coVerify(exactly = 1) { authenticationService.authorize(any()) }
-        coEvery { recaptchaService.validateToken(any()) } returns true
+        coVerify(exactly = 1) { recaptchaService.validateToken(any()) }
     }
 
     @Test
@@ -120,7 +120,7 @@ class AuthControllerTest {
                 Assertions.assertThat(errors[0].errorType).isEqualTo(ErrorType.UNAUTHORIZED)}
 
         coVerify(exactly = 1) { authenticationService.authorize(any()) }
-        coEvery { recaptchaService.validateToken(any()) } returns true
+        coVerify(exactly = 1) { recaptchaService.validateToken(any()) }
     }
 
     @Test
@@ -142,6 +142,6 @@ class AuthControllerTest {
                 Assertions.assertThat(errors[0].errorType).isEqualTo(ErrorType.BAD_REQUEST)}
 
         coVerify(exactly = 0) { authenticationService.authorize(any()) }
-        coEvery { recaptchaService.validateToken(any()) } returns true
+        coVerify(exactly = 1) { recaptchaService.validateToken(any()) }
     }
 }
