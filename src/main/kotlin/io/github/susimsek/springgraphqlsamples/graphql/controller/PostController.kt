@@ -39,13 +39,20 @@ class PostController(
 
     @MutationMapping
     @PreAuthorize("hasRole('USER')")
-    suspend fun createPost(@Argument @Valid input: AddPostInput, locale: Locale): PostPayload {
+    suspend fun createPost(
+        @Argument @Valid
+        input: AddPostInput,
+        locale: Locale
+    ): PostPayload {
         log.info("called createPost with instance id: {}", instanceId)
         return postService.createPost(input, locale)
     }
 
     @MutationMapping
-    suspend fun updatePost(@Argument @Valid input: UpdatePostInput): PostPayload {
+    suspend fun updatePost(
+        @Argument @Valid
+        input: UpdatePostInput
+    ): PostPayload {
         return postService.updatePost(input)
     }
 
@@ -83,7 +90,8 @@ class PostController(
     suspend fun searchPosts(
         @Argument page: Int?,
         @Argument size: Int?,
-        @Argument searchPhrase: String): List<PostPayload> {
+        @Argument searchPhrase: String
+    ): List<PostPayload> {
         val pageNo = page ?: DEFAULT_PAGE_NO
         val sizeNo = (size ?: DEFAULT_SIZE).coerceAtMost(MAX_SIZE)
         val sort = Sort.by(Sort.Direction.DESC, "score")
@@ -93,14 +101,14 @@ class PostController(
     }
 
     @QueryMapping
-    @PreAuthorize("isAnonymous()")
+    @PreAuthorize("permitAll()")
     suspend fun post(@Argument id: String): PostPayload {
         return postService.getPost(id)
     }
 
     @SubscriptionMapping
     @PreAuthorize("hasRole('USER')")
-    fun postAdded(locale: Locale): Publisher<PostPayload> {
+    fun postAdded(): Publisher<PostPayload> {
         log.info("called postAdded with instance id: {}", instanceId)
         return postService.postAdded().asPublisher()
     }

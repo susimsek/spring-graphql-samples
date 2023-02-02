@@ -22,6 +22,7 @@
         <kotlin.version>1.7.22</kotlin.version>
         <maven.version>3.2</maven.version>
         <spring-cloud.version>2022.0.0</spring-cloud.version>
+        <java-native-image.version>7.44.3</java-native-image.version>
         <docker.image.name>docker.io/suayb/spring-graphql-samples</docker.image.name>
         <docker.credentials.username/>
         <docker.credentials.password/>
@@ -41,13 +42,13 @@
         <maven-resources-plugin.version>3.3.0</maven-resources-plugin.version>
         <maven-deploy-plugin.version>3.0.0</maven-deploy-plugin.version>
         <maven-enforcer-plugin.version>3.1.0</maven-enforcer-plugin.version>
-        <maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version>
-        <maven-failsafe-plugin.version>3.0.0-M7</maven-failsafe-plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M8</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.0.0-M8</maven-failsafe-plugin.version>
         <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
         <sonar-maven-plugin.version>3.9.1.2184</sonar-maven-plugin.version>
         <properties-maven-plugin.version>1.1.0</properties-maven-plugin.version>
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
-        <detekt.version>1.19.0</detekt.version>
+        <detekt.version>1.22.0</detekt.version>
         <detekt.configFile>${project.basedir}/detekt-config.yml</detekt.configFile>
         <detekt.xmlReportFile>${project.build.directory}/detekt-reports/detekt.xml</detekt.xmlReportFile>
         <sonar.kotlin.detekt.reportPaths>${detekt.xmlReportFile}</sonar.kotlin.detekt.reportPaths>
@@ -252,7 +253,7 @@
                         <pullPolicy>IF_NOT_PRESENT</pullPolicy>
                         <builder>paketobuildpacks/builder:tiny</builder>
                         <buildpacks>
-                            <buildpack>gcr.io/paketo-buildpacks/java-native-image:7.44.3</buildpack>
+                            <buildpack>gcr.io/paketo-buildpacks/java-native-image:${java-native-image.version}</buildpack>
                         </buildpacks>
                         <env>
                             <BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>

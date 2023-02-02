@@ -51,19 +51,19 @@ class ReactiveGraphqlExceptionResolver(
                 val classification = extensions["classification"]
                 val errorType = ErrorType.values()
                     .firstOrNull { it.name == classification } ?: ErrorType.INTERNAL_ERROR
-                return GraphqlErrorBuilder.newError(env)
+                GraphqlErrorBuilder.newError(env)
                     .message(responseError.message).errorType(errorType).build()
             }
 
             is ResourceNotFoundException -> {
                 val errorMessage = messageSource.getMessage(ex.message, ex.args, locale)
-                return GraphqlErrorBuilder.newError(env)
+                GraphqlErrorBuilder.newError(env)
                     .message(errorMessage).errorType(ErrorType.NOT_FOUND).build()
             }
 
             is ValidationException -> {
                 val errorMessage = messageSource.getMessage(ex.message, ex.args, locale)
-                return badRequest(env, errorMessage)
+                badRequest(env, errorMessage)
             }
             else -> super.resolveToSingleError(ex, env)
         }

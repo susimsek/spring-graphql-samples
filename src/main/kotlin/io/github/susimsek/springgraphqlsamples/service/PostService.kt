@@ -55,12 +55,14 @@ class PostService(
         val currentUserId = getCurrentUserLogin().awaitSingleOrNull()
             ?: throw UsernameNotFoundException("User was not found")
         var post = postRepository.findById(input.id) ?: throw ResourceNotFoundException(
-            POST_NOT_FOUND_MSG_CODE, arrayOf(input.id))
-       if (post.createdBy != currentUserId) {
-           throw AccessDeniedException(
-               "User with id $currentUserId not authorized to access this post ${post.id}"
-           )
-       }
+            POST_NOT_FOUND_MSG_CODE,
+            arrayOf(input.id)
+        )
+        if (post.createdBy != currentUserId) {
+            throw AccessDeniedException(
+                "User with id $currentUserId not authorized to access this post ${post.id}"
+            )
+        }
         postMapper.partialUpdate(post, input)
         post = postRepository.save(post)
         return postMapper.toType(post)
@@ -70,7 +72,9 @@ class PostService(
         val currentUserId = getCurrentUserLogin().awaitSingleOrNull()
             ?: throw UsernameNotFoundException("User was not found")
         val post = postRepository.findById(id) ?: throw ResourceNotFoundException(
-            POST_NOT_FOUND_MSG_CODE, arrayOf(id))
+            POST_NOT_FOUND_MSG_CODE,
+            arrayOf(id)
+        )
         if (post.createdBy != currentUserId) {
             throw AccessDeniedException(
                 "User with id $currentUserId not authorized to access this post ${post.id}"
@@ -87,7 +91,9 @@ class PostService(
 
     suspend fun getPost(id: String): PostPayload {
         val post = postRepository.findById(id) ?: throw ResourceNotFoundException(
-            POST_NOT_FOUND_MSG_CODE, arrayOf(id))
+            POST_NOT_FOUND_MSG_CODE,
+            arrayOf(id)
+        )
         return postMapper.toType(post)
     }
 
@@ -123,7 +129,7 @@ class PostService(
 
     fun searchPosts(pageRequest: Pageable, searchPhrase: String): Flow<PostPayload> {
         val criteria = TextCriteria
-                .forDefaultLanguage()
+            .forDefaultLanguage()
             .matchingPhrase(searchPhrase)
         return postRepository.findBy(criteria, pageRequest)
             .map(postMapper::toType)
