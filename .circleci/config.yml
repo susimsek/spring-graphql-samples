@@ -21,7 +21,7 @@ jobs:
     working_directory: ~/repo
     environment:
       # Customize the JVM maximum heap limit
-      MAVEN_OPTS: -Xmx6400m
+      MAVEN_OPTS: -Xmx7500m
     steps:
       - checkout
       - run:
