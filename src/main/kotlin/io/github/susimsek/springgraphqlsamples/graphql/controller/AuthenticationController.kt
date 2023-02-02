@@ -9,9 +9,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.ContextValue
 import org.springframework.graphql.data.method.annotation.MutationMapping
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
-import java.util.Locale
+import java.util.*
 
 @Controller
 class AuthenticationController(
@@ -37,7 +36,6 @@ class AuthenticationController(
     }
 
     @MutationMapping
-    @PreAuthorize("isAuthenticated()")
     suspend fun logout(context: GraphQLContext): Boolean {
         val result = authenticationService.logout()
         if (result) {

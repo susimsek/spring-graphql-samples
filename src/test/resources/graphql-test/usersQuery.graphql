@@ -1,0 +1,22 @@
+query Users($page: Int, $size: Int, $orders: [UserOrder!], $filter: UserFilter) {
+    users(page: $page, size: $size, orders:$orders, filter: $filter){
+        pageInfo{
+            pageNumber
+            totalCount
+            totalPages
+            hasNext
+            hasPrev
+            nextPage
+            prevPage
+        },
+        content{
+            id
+            email
+            username
+            firstName
+            lastName
+            createdAt
+            lang
+        }
+    }
+}

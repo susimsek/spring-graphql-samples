@@ -1,0 +1,9 @@
+query Hello{
+    hello{
+        id
+        url
+        content
+        sentDate
+        price
+    }
+}

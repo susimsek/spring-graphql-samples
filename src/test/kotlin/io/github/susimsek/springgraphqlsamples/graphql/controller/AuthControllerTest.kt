@@ -144,4 +144,16 @@ class AuthControllerTest {
         coVerify(exactly = 0) { authenticationService.authorize(any()) }
         coVerify(exactly = 1) { recaptchaService.validateToken(any()) }
     }
+
+    @Test
+    fun logout() = runTest {
+        coEvery { authenticationService.logout() } returns true
+
+        graphQlTester
+            .documentName("logoutMutation")
+            .execute()
+            .path("data.logout").entity(Boolean::class.java).isEqualTo(true)
+
+        coVerify(exactly = 1) { authenticationService.logout() }
+    }
 }

@@ -8,8 +8,8 @@ import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundExcepti
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.OrderType
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.PostOrderField
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.PostStatus
-import io.github.susimsek.springgraphqlsamples.graphql.input.PostOrder
 import io.github.susimsek.springgraphqlsamples.graphql.type.PostPayload
+import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
 import io.github.susimsek.springgraphqlsamples.service.PostService
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -41,12 +41,22 @@ private const val UPDATED_TITLE = "updated test"
 private val DEFAULT_STATUS = PostStatus.DRAFT
 private const val DEFAULT_CREATED_DATE = "2023-01-21T22:40:12.710+03:00"
 
+val DEFAULT_POST = PostPayload(
+    id = DEFAULT_ID,
+    title = DEFAULT_TITLE,
+    content = DEFAULT_CONTENT,
+    status = DEFAULT_STATUS,
+    createdAt = OffsetDateTime.parse(DEFAULT_CREATED_DATE, DateTimeFormatter.ISO_DATE_TIME)
+)
+
 @OptIn(ExperimentalCoroutinesApi::class)
 @WithMockUser(authorities = ["ROLE_USER"])
 @GraphQlTest(controllers = [PostController::class])
-@Import(ValidationConfig::class,
+@Import(
+    ValidationConfig::class,
     GraphqlConfig::class,
-    MessageSourceAutoConfiguration::class)
+    MessageSourceAutoConfiguration::class
+)
 class PostControllerTest {
 
     @Autowired
@@ -57,6 +67,8 @@ class PostControllerTest {
 
     private lateinit var post: PostPayload
 
+    private lateinit var author: UserPayload
+
     @BeforeEach
     fun setUp() {
         post = PostPayload(
@@ -66,6 +78,7 @@ class PostControllerTest {
             status = DEFAULT_STATUS,
             createdAt = OffsetDateTime.parse(DEFAULT_CREATED_DATE, DateTimeFormatter.ISO_DATE_TIME)
         )
+        author = DEFAULT_USER
     }
 
     @Test
@@ -74,16 +87,25 @@ class PostControllerTest {
         graphQlTester.documentName("postsQuery")
             .variable("page", 0)
             .variable("size", 1)
-            .variable("orders", mapOf(
-                "field" to PostOrderField.createdAt,
-                "order" to OrderType.DESC
-            ))
+            .variable(
+                "orders",
+                mapOf(
+                    "field" to PostOrderField.createdAt,
+                    "order" to OrderType.DESC
+                )
+            )
             .execute()
             .path("data.posts[*]").entityList(Any::class.java).hasSize(1)
             .path("data.posts[0].id").entity(String::class.java).isEqualTo(DEFAULT_ID)
-            .path("data.posts[0].title").entity(String::class.java).isEqualTo(DEFAULT_TITLE.replaceFirstChar {
-                if (it.isLowerCase()) it.titlecase(Locale.getDefault())
-                else it.toString()})
+            .path("data.posts[0].title").entity(String::class.java).isEqualTo(
+                DEFAULT_TITLE.replaceFirstChar {
+                    if (it.isLowerCase()) {
+                        it.titlecase(Locale.getDefault())
+                    } else {
+                        it.toString()
+                    }
+                }
+            )
 
         coVerify(exactly = 1) { postService.getPosts(any()) }
     }
@@ -98,13 +120,18 @@ class PostControllerTest {
             .execute()
             .path("data.searchPosts[*]").entityList(Any::class.java).hasSize(1)
             .path("data.searchPosts[0].id").entity(String::class.java).isEqualTo(DEFAULT_ID)
-            .path("data.searchPosts[0].title").entity(String::class.java).isEqualTo(DEFAULT_TITLE.replaceFirstChar {
-                if (it.isLowerCase()) it.titlecase(Locale.getDefault())
-                else it.toString()})
+            .path("data.searchPosts[0].title").entity(String::class.java).isEqualTo(
+                DEFAULT_TITLE.replaceFirstChar {
+                    if (it.isLowerCase()) {
+                        it.titlecase(Locale.getDefault())
+                    } else {
+                        it.toString()
+                    }
+                }
+            )
 
         coVerify(exactly = 1) { postService.searchPosts(any(), any()) }
     }
-
 
     @Test
     fun `get post by id`() = runTest {
@@ -116,18 +143,57 @@ class PostControllerTest {
             .variable("id", id)
             .execute()
             .path("data.post.id").entity(String::class.java).isEqualTo(DEFAULT_ID)
-            .path("data.post.title").entity(String::class.java).isEqualTo(DEFAULT_TITLE.replaceFirstChar {
-                if (it.isLowerCase()) it.titlecase(Locale.getDefault())
-                else it.toString()})
+            .path("data.post.title").entity(String::class.java).isEqualTo(
+                DEFAULT_TITLE.replaceFirstChar {
+                    if (it.isLowerCase()) {
+                        it.titlecase(Locale.getDefault())
+                    } else {
+                        it.toString()
+                    }
+                }
+            )
             .path("data.post.content").entity(String::class.java).isEqualTo(DEFAULT_CONTENT.lowercase())
 
         coVerify(exactly = 1) { postService.getPost(any()) }
     }
 
     @Test
+    fun `get post with author`() = runTest {
+        coEvery { postService.getPost(any()) } returns post
+        coEvery { postService.getPostsWithAuthors(any()) } returns mapOf(post to author)
+
+        val inputPlaceHolder = "\$id"
+        // language=GraphQL
+        val document = """
+        query Post($inputPlaceHolder: ID!) {
+            post(id: $inputPlaceHolder) {
+                id
+                author { 
+                  id
+                  username
+                }
+            }
+        }        
+        """.trim()
+
+        graphQlTester
+            .document(document)
+            .variable("id", DEFAULT_ID)
+            .execute()
+            .path("data.post.id").entity(String::class.java).isEqualTo(DEFAULT_ID)
+            .path("data.post.author.id").entity(String::class.java).isEqualTo(author.id!!)
+            .path("data.post.author.username").entity(String::class.java).isEqualTo(author.username!!)
+
+        coVerify(exactly = 1) { postService.getPost(any()) }
+        coVerify(exactly = 1) { postService.getPostsWithAuthors(any()) }
+    }
+
+    @Test
     fun `get post by id when not found`() = runTest {
-        coEvery {  postService.getPost(any()) } throws ResourceNotFoundException(
-        POST_NOT_FOUND_MSG_CODE, arrayOf(DEFAULT_ID))
+        coEvery { postService.getPost(any()) } throws ResourceNotFoundException(
+            POST_NOT_FOUND_MSG_CODE,
+            arrayOf(DEFAULT_ID)
+        )
 
         val inputPlaceHolder = "\$id"
         // language=GraphQL
@@ -146,7 +212,8 @@ class PostControllerTest {
             .errors()
             .satisfy { errors ->
                 assertThat(errors).hasSize(1)
-               assertThat(errors[0].errorType).isEqualTo(ErrorType.NOT_FOUND)}
+                assertThat(errors[0].errorType).isEqualTo(ErrorType.NOT_FOUND)
+            }
         coVerify(exactly = 1) { postService.getPost(any()) }
     }
 
@@ -164,10 +231,16 @@ class PostControllerTest {
             .variable("input", input)
             .execute()
             .path("data.createPost.id").entity(String::class.java).isEqualTo(DEFAULT_ID)
-            .path("data.createPost.title").entity(String::class.java).isEqualTo(DEFAULT_TITLE.replaceFirstChar {
-                if (it.isLowerCase()) it.titlecase(Locale.getDefault())
-                else it.toString()})
-        coVerify(exactly = 1) {  postService.createPost(any(), any()) }
+            .path("data.createPost.title").entity(String::class.java).isEqualTo(
+                DEFAULT_TITLE.replaceFirstChar {
+                    if (it.isLowerCase()) {
+                        it.titlecase(Locale.getDefault())
+                    } else {
+                        it.toString()
+                    }
+                }
+            )
+        coVerify(exactly = 1) { postService.createPost(any(), any()) }
     }
 
     @Test
@@ -186,10 +259,16 @@ class PostControllerTest {
             .variable("input", input)
             .execute()
             .path("data.updatePost.id").entity(String::class.java).isEqualTo(DEFAULT_ID)
-            .path("data.updatePost.title").entity(String::class.java).isEqualTo(UPDATED_TITLE.replaceFirstChar {
-                if (it.isLowerCase()) it.titlecase(Locale.getDefault())
-                else it.toString()})
-        coVerify(exactly = 1) {  postService.updatePost(any()) }
+            .path("data.updatePost.title").entity(String::class.java).isEqualTo(
+                UPDATED_TITLE.replaceFirstChar {
+                    if (it.isLowerCase()) {
+                        it.titlecase(Locale.getDefault())
+                    } else {
+                        it.toString()
+                    }
+                }
+            )
+        coVerify(exactly = 1) { postService.updatePost(any()) }
     }
 
     @Test
@@ -201,25 +280,29 @@ class PostControllerTest {
             .variable("id", DEFAULT_ID)
             .execute()
             .path("data.deletePost").entity(String::class.java).isEqualTo(DEFAULT_ID)
-        coVerify(exactly = 1) {  postService.deletePost(any()) }
+        coVerify(exactly = 1) { postService.deletePost(any()) }
     }
 
     @Test
     fun `post added subscription`() = runTest {
         post.title = DEFAULT_TITLE.replaceFirstChar {
-            if (it.isLowerCase()) it.titlecase(Locale.getDefault())
-            else it.toString()}
+            if (it.isLowerCase()) {
+                it.titlecase(Locale.getDefault())
+            } else {
+                it.toString()
+            }
+        }
         every { postService.postAdded() } returns flowOf(post)
 
         graphQlTester
             .documentName("postAddedSubscription")
             .executeSubscription()
             .toFlux("postAdded", PostPayload::class.java)
-            .`as` (StepVerifier::create)
+            .`as`(StepVerifier::create)
             .expectNext(post)
             .expectNextCount(0)
             .verifyComplete()
 
-        verify (exactly = 1) {  postService.postAdded() }
+        verify(exactly = 1) { postService.postAdded() }
     }
 }
