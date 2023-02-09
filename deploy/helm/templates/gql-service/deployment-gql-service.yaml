@@ -77,6 +77,8 @@ spec:
                 name: token-secret
             - secretRef:
                 name: recaptcha-secret
+            - secretRef:
+                name: chatgpt-secret
             - configMapRef:
                 name: spring-gql-service-config
           volumeMounts:

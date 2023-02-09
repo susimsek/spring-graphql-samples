@@ -52,6 +52,11 @@ services:
       - RECAPTCHA_VERIFY_URL
       - RECAPTCHA_SECRET_KEY
       - RECAPTCHA_THRESHOLD
+      - CHATGPT_BASE_URL
+      - CHATGPT_SECRET_KEY
+      - CHATGPT_MODEL
+      - CHATGPT_TEMPERATURE
+      - CHATGPT_MAX_TOKENS
     ports:
       - "9091:9091"
   web:

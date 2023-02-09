@@ -61,3 +61,11 @@ recaptcha:
   verify-url: https://www.google.com/recaptcha/api/siteverify
   secret-key: 6Lca17IjAAAAAAEpjSTErRO4Rw6z9lHqVAohwWdW
   threshold: 0.5
+
+
+chatgpt:
+  base-url: https://api.openai.com/v1
+  secret-key: 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
+  model: text-davinci-003
+  temperature: 1.0
+  maxTokens: 300

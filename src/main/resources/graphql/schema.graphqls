@@ -39,6 +39,7 @@ type Mutation {
     createPost(input: AddPostInput!): PostPayload!
     updatePost(input: UpdatePostInput!): PostPayload!
     deletePost(id: ID!): ID!
+    textCompletion(input: TextCompletionInput!): TextCompletion!
 }
 
 type Subscription{
@@ -116,6 +117,14 @@ input PostOrder {
     order: OrderType
 }
 
+input TextCompletionInput {
+    prompt: String! @NotBlank @Size(min: 3)
+}
+
+type MessagePayload {
+    content: String!
+}
+
 type Message {
     id: UUID!
     url: Url!
@@ -188,4 +197,26 @@ type Token {
 
 type FileUploadPayload {
     id: String!
+}
+
+type CompletionChoice {
+    finishReason: String
+    index: Int
+    logprobs: JSON
+    text: String
+}
+
+type TextCompletion {
+    choices: [CompletionChoice]
+    created: Int
+    id: String
+    model: String
+    object: String
+    usage: Usage
+}
+
+type Usage {
+    completionTokens: Int
+    promptTokens: Int
+    totalTokens: Int
 }
