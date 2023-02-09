@@ -22,11 +22,11 @@ data class RecaptchaResponse(
     val success: Boolean,
     val score: Float = 0.0F,
     val action: String?,
-    @get:JsonProperty("challenge_ts")
+    @field:JsonProperty("challenge_ts")
     val challengeTs: String?,
     val hostname: String?,
-    @get:JsonProperty("error-codes")
-    val errorCodes: MutableList<ErrorCode>?
+    @field:JsonProperty("error-codes")
+    val errorCodes: List<ErrorCode>?
 ) {
     @JsonIgnore
     fun hasClientError(): Boolean {
