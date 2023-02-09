@@ -1,8 +1,5 @@
 package io.github.susimsek.springgraphqlsamples.config
 
-import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaClient
-import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaProperties
-import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaService
 import io.github.susimsek.springgraphqlsamples.service.chatgpt.ChatGptClient
 import io.github.susimsek.springgraphqlsamples.service.chatgpt.ChatGptProperties
 import io.github.susimsek.springgraphqlsamples.service.chatgpt.ChatGptService
