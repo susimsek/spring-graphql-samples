@@ -195,6 +195,7 @@ following bash command
 * Graphql Java Extended Validation
 * Mapstruct
 * Recaptcha
+* ChatGPT
 * Jwt with Httponly Cookie
 * Internalization(I18N)
 
