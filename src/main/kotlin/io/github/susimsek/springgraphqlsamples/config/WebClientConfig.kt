@@ -18,15 +18,9 @@ class WebClientConfig {
 
     fun errorHandler(): ExchangeFilterFunction {
         return ExchangeFilterFunction.ofResponseProcessor { clientResponse ->
-            if (clientResponse.statusCode().value() == HttpStatus.TOO_MANY_REQUESTS.value()) {
-                clientResponse.bodyToMono(String::class.java)
-                    .flatMap {
-                        Mono.error(RateLimitingException())
-                    }
-            } else {
-                Mono.just(
-                    clientResponse
-                )
+            when (clientResponse.statusCode().value()) {
+                HttpStatus.TOO_MANY_REQUESTS.value() -> Mono.error(RateLimitingException())
+                else -> Mono.just(clientResponse)
             }
         }
     }
