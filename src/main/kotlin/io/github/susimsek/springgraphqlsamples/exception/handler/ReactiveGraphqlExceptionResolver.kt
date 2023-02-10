@@ -3,6 +3,8 @@ package io.github.susimsek.springgraphqlsamples.exception.handler
 import graphql.GraphQLError
 import graphql.GraphqlErrorBuilder
 import graphql.schema.DataFetchingEnvironment
+import io.github.susimsek.springgraphqlsamples.exception.ExtendedErrorType
+import io.github.susimsek.springgraphqlsamples.exception.RateLimitingException
 import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundException
 import io.github.susimsek.springgraphqlsamples.exception.ValidationException
 import jakarta.validation.ConstraintViolationException
@@ -27,7 +29,7 @@ class ReactiveGraphqlExceptionResolver(
                     val validatedPath = it.propertyPath.map { node -> node.name }
                     GraphqlErrorBuilder.newError(env)
                         .message("${it.propertyPath}: ${it.message}")
-                        .errorType(graphql.ErrorType.ValidationError)
+                        .errorType(ErrorType.BAD_REQUEST)
                         .extensions(
                             mapOf(
                                 "validatedPath" to validatedPath
@@ -65,6 +67,11 @@ class ReactiveGraphqlExceptionResolver(
             is ValidationException -> {
                 val errorMessage = messageSource.getMessage(ex.message!!, ex.args, locale)
                 badRequest(env, errorMessage)
+            }
+
+            is RateLimitingException -> {
+                GraphqlErrorBuilder.newError(env)
+                    .message("Throttled").errorType(ExtendedErrorType.THROTTLED).build()
             }
             else -> super.resolveToSingleError(ex, env)
         }

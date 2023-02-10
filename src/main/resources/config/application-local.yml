@@ -65,7 +65,7 @@ recaptcha:
 
 chatgpt:
   base-url: https://api.openai.com/v1
-  secret-key: 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
+  secret-key: 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
   model: text-davinci-003
   temperature: 1.0
   maxTokens: 300

@@ -1,3 +1,5 @@
 package io.github.susimsek.springgraphqlsamples.exception
 
-open class GraphqlException(message: String?, var args: Array<Any>? = null) : RuntimeException(message)
+open class GraphqlException(message: String?, var args: Array<Any>? = null) : RuntimeException(message) {
+    constructor() : this(null, null)
+}
