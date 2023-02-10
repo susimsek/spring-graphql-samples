@@ -178,6 +178,8 @@ following bash command
 * Kubernetes
 * Helm
 * Sonarqube
+* Snyk
+* CircleCI
 * Detekt
 * Mongodb
 * Kafka
