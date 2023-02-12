@@ -1,10 +1,10 @@
 import React from "react";
-import {Direction} from "../types/chat";
+import {Direction, IMessage} from "../types/chat";
 import {Spinner} from "react-bootstrap";
 
 interface MessageProps {
 
-    message?: string | null | undefined;
+    message?: IMessage | undefined;
     icon: React.ReactNode;
 
     spinnerText?: string;
@@ -13,7 +13,7 @@ interface MessageProps {
 
     multiRowEnabled?: boolean;
 
-    messages?: string[];
+    messages?: IMessage[];
 
     direction: Direction;
 
@@ -31,7 +31,7 @@ const Message: React.FC<MessageProps> = ({
       direction === Direction.RIGHT ? <div className="d-flex flex-row justify-content-end mb-4 pt-1">
           <div>
               <p className="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">
-                  {message}
+                  {message?.message}
               </p>
           </div>
           {icon}
@@ -39,26 +39,26 @@ const Message: React.FC<MessageProps> = ({
           <div className="d-flex flex-row justify-content-start">
               {icon}
               <div>
-                  {multiRowEnabled ? messages?.map((message: string, index) => (
+                  {multiRowEnabled ? messages?.map((message: IMessage) => (
                       <p
-                          key={index}
+                          key={message.id}
                           className="small p-2 ms-3 mb-1 rounded-3"
                           style={{ backgroundColor: "#f5f6f7" }}
                       >
-                          {(!message && loading) ? <span><Spinner size="sm"
+                          {loading ? <span><Spinner size="sm"
                                                                   variant="secondary"
                                                                   className="me-1"
-                                                                  animation="grow"/>{spinnerText}</span> : message}
+                                                                  animation="grow"/>{spinnerText}</span> : message.message}
                       </p>
-                  )): <p
+                  )): <div
                       className="small p-2 ms-3 mb-1 rounded-3"
                       style={{ backgroundColor: "#f5f6f7" }}
                   >
-                      {(!message && loading) ? <span><Spinner size="sm"
-                                                              variant="secondary"
-                                                              className="me-1"
-                                                              animation="grow"/>{spinnerText}</span> : message}
-                  </p>}
+                      {loading ? <span><Spinner size="sm"
+                                                                                         variant="secondary"
+                                                                                         className="me-1"
+                                                                                         animation="grow"/>{spinnerText}</span> : message?.message}
+                  </div>}
               </div>
           </div>
     );

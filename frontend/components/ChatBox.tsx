@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useTranslation} from "next-i18next";
-import {Card, Col, Container, Form, Row, Spinner} from "react-bootstrap";
+import {Card, Col, Form, Row, Spinner} from "react-bootstrap";
 import {useTextCompletionMutation} from "../generated/graphql-types";
 import {SubmitHandler, useForm} from "react-hook-form";
 import * as yup from "yup";
@@ -11,8 +11,9 @@ import Button from "react-bootstrap/Button";
 
 import chatBotPic from '../public/assets/chatbot.png'
 import Image from "next/image";
-import {Direction, IChat} from "../types/chat";
+import {Direction, IMessage, IQuestion} from "../types/chat";
 import Message from "./Message";
+import {v4 as uuidv4} from 'uuid';
 
 type ChatFormData = { question: string };
 const ChatBox: React.FC = () => {
@@ -21,7 +22,7 @@ const ChatBox: React.FC = () => {
 
     const { t } = useTranslation('chat')
 
-    const [chats, setChats] = useState<IChat[]>([]);
+    const [messages, setMessages] = useState<IQuestion[]>([]);
 
     const schema = yup.object({
         question: yup.string().required(t("common:validation.required"))
@@ -37,12 +38,16 @@ const ChatBox: React.FC = () => {
     });
 
     const handleQuestion: SubmitHandler<ChatFormData> = async ({question}) => {
-        chats.push({
-            question,
-            answer: undefined,
-            id: undefined
+        messages.push({
+            id: uuidv4(),
+            question: {
+                id: uuidv4(),
+                message: question,
+                isChatBoot: false
+            },
+            answer: undefined
         })
-        setChats([...chats])
+        setMessages([...messages])
         const response = await textCompletion({
             variables: {
                 input: {
@@ -52,19 +57,22 @@ const ChatBox: React.FC = () => {
         });
 
         if (response.data?.textCompletion?.choices?.length) {
-            chats[chats.length - 1] = {
-                question,
-                answer: response.data.textCompletion.choices[0]?.text,
-                id: response.data?.textCompletion.id
+            messages[messages.length - 1] = {
+                ... messages[messages.length - 1],
+                answer: {
+                    id: uuidv4(),
+                    message:  response.data.textCompletion.choices[0]?.text || "",
+                    isChatBoot: true
             }
-            setChats([...chats])
+        }
+            setMessages([...messages])
         }
     };
 
     useEffect(() => {
         // 👇️ scroll to bottom every time messages change
         bottomRef.current?.scrollIntoView({behavior: 'smooth'});
-    }, [chats]);
+    }, [messages]);
 
     return (
             <Row className="d-flex justify-content-center">
@@ -80,32 +88,39 @@ const ChatBox: React.FC = () => {
                                                        className='img-thumbnail'
                                          />}
                                          direction={Direction.LEFT}
-                                         messages={[t('chat.chatbot.greeting'), t('chat.chatbot.helpQuestion')]}
+                                         messages={[
+                                             {
+                                                 id: uuidv4(),
+                                                 message: t('chat.chatbot.greeting'),
+                                                 isChatBoot: true
+                                             },
+                                             {
+                                                 id: uuidv4(),
+                                                 message: t('chat.chatbot.helpQuestion'),
+                                                 isChatBoot: true
+                                             }
+                                         ]}
                                         multiRowEnabled={true}/>
 
-                                {chats.map((chat: IChat, index) => (
-                                        <>
-                                            {chat.question &&  <Message key={index}
-                                                                        icon={<FontAwesomeIcon className="text-primary rounded-circle" icon={faUser}  style={{ width: "30px", height: "100%" }}/>}
-                                                                        direction={Direction.RIGHT}
-                                                                        message={chat.question}/>}
-
-                                            {
-                                                (chat.answer || (!chat.answer && loading)) &&
-
-                                                <Message key={index}
-                                                         icon={ <Image src={chatBotPic}
-                                                                       style={{ width: "45px", height: "100%" }}
-                                                                       alt="avatar 1"
-                                                                       className='img-thumbnail'
-                                                         />}
-                                                         direction={Direction.LEFT}
-                                                         message={chat.answer}
-                                                loading={loading}
-                                                spinnerText={t('chat.chatbot.answerLoadingText')}/>}
-                                        </>
-                                    ))
-                                }
+                                {messages.map((question: IQuestion) => (
+                                    <>
+                                        <Message key={question.question.id}
+                                                 icon={<FontAwesomeIcon key={question.question.id} className="text-primary rounded-circle" icon={faUser}  style={{ width: "30px", height: "100%" }}/>}
+                                                 direction={Direction.RIGHT}
+                                                 message={question.question}/>
+                                        <Message key={question.answer?.id}
+                                                 icon={ <Image
+                                                     key={question.question.id}
+                                                     src={chatBotPic}
+                                                     style={{ width: "45px", height: "100%" }}
+                                                     alt="avatar 1"
+                                                     className='img-thumbnail'
+                                                 />}
+                                                 direction={Direction.LEFT}
+                                                 message={question.answer}
+                                                 loading={!question.answer && loading}
+                                                 spinnerText={t('chat.chatbot.answerLoadingText')}/>
+                                    </>))}
                                 <div ref={bottomRef} />
                             </Card.Body>
                         <Card.Footer className="text-muted justify-content-start align-items-center p-3">
