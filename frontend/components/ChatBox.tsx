@@ -11,7 +11,8 @@ import Button from "react-bootstrap/Button";
 
 import chatBotPic from '../public/assets/chatbot.png'
 import Image from "next/image";
-import {IChat} from "../types/chat";
+import {Direction, IChat} from "../types/chat";
+import Message from "./Message";
 
 type ChatFormData = { question: string };
 const ChatBox: React.FC = () => {
@@ -38,7 +39,8 @@ const ChatBox: React.FC = () => {
     const handleQuestion: SubmitHandler<ChatFormData> = async ({question}) => {
         chats.push({
             question,
-            answer: undefined
+            answer: undefined,
+            id: undefined
         })
         setChats([...chats])
         const response = await textCompletion({
@@ -52,7 +54,8 @@ const ChatBox: React.FC = () => {
         if (response.data?.textCompletion?.choices?.length) {
             chats[chats.length - 1] = {
                 question,
-                answer: response.data.textCompletion.choices[0]?.text
+                answer: response.data.textCompletion.choices[0]?.text,
+                id: response.data?.textCompletion.id
             }
             setChats([...chats])
         }
@@ -71,59 +74,35 @@ const ChatBox: React.FC = () => {
                             <h5 className="mb-0">{t('chat.title')}</h5>
                         </Card.Header>
                             <Card.Body style={{ position: "relative", height: "400px", overflowY: "scroll" }}>
-                                <div className="d-flex flex-row justify-content-start">
-                                    <Image src={chatBotPic}
-                                           style={{ width: "45px", height: "100%" }}
-                                           alt="avatar 1"
-                                           className='img-thumbnail'
-                                          />
-                                    <div>
-                                        <p
-                                            className="small p-2 ms-3 mb-1 rounded-3"
-                                            style={{ backgroundColor: "#f5f6f7" }}
-                                        >
-                                            {t('chat.chatbot.greeting')}
-                                        </p>
-                                        <p
-                                            className="small p-2 ms-3 mb-1 rounded-3"
-                                            style={{ backgroundColor: "#f5f6f7" }}
-                                        >
-                                            {t('chat.chatbot.helpQuestion')}
-                                        </p>
-                                    </div>
-                                </div>
-
-                                {chats.map((chat: IChat) => (
-                                        <>
-                                            {chat.question &&  <div key={chat.question} className="d-flex flex-row justify-content-end mb-4 pt-1">
-                                                <div>
-                                                    <p className="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">
-                                                        {chat.question}
-                                                    </p>
-                                                </div>
-                                                <FontAwesomeIcon className="text-primary rounded-circle" icon={faUser}  style={{ width: "30px", height: "100%" }}/>
-                                            </div>}
-
-
-                                            {
-                                                (chat.answer || (!chat.answer && loading)) &&   <div key={chat.answer} className="d-flex flex-row justify-content-start">
-                                                <Image src={chatBotPic}
+                                <Message icon={ <Image src={chatBotPic}
                                                        style={{ width: "45px", height: "100%" }}
                                                        alt="avatar 1"
                                                        className='img-thumbnail'
-                                                />
-                                                <div>
-                                                    <p
-                                                        className="small p-2 ms-3 mb-1 rounded-3"
-                                                        style={{ backgroundColor: "#f5f6f7" }}
-                                                    >
-                                                        {(!chat.answer && loading) ? <span><Spinner size="sm"
-                                                                                                    variant="secondary"
-                                                                                                    className="me-1"
-                                                                                                    animation="grow"/>{t('chat.chatbot.answerLoadingText')}</span> : chat.answer}
-                                                    </p>
-                                                </div>
-                                            </div>}
+                                         />}
+                                         direction={Direction.LEFT}
+                                         messages={[t('chat.chatbot.greeting'), t('chat.chatbot.helpQuestion')]}
+                                        multiRowEnabled={true}/>
+
+                                {chats.map((chat: IChat, index) => (
+                                        <>
+                                            {chat.question &&  <Message key={index}
+                                                                        icon={<FontAwesomeIcon className="text-primary rounded-circle" icon={faUser}  style={{ width: "30px", height: "100%" }}/>}
+                                                                        direction={Direction.RIGHT}
+                                                                        message={chat.question}/>}
+
+                                            {
+                                                (chat.answer || (!chat.answer && loading)) &&
+
+                                                <Message key={index}
+                                                         icon={ <Image src={chatBotPic}
+                                                                       style={{ width: "45px", height: "100%" }}
+                                                                       alt="avatar 1"
+                                                                       className='img-thumbnail'
+                                                         />}
+                                                         direction={Direction.LEFT}
+                                                         message={chat.answer}
+                                                loading={loading}
+                                                spinnerText={t('chat.chatbot.answerLoadingText')}/>}
                                         </>
                                     ))
                                 }
