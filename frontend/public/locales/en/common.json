@@ -1,7 +1,8 @@
 {
   "menu": {
     "home": "Home",
-    "myPosts": "My Posts"
+    "myPosts": "My Posts",
+    "chat": "Chat"
   },
   "account": {
     "main": "Account",

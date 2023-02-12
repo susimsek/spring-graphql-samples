@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {Alert, Container, Spinner} from "react-bootstrap";
 import Layout from "../../components/Layout";
 import {useTranslation} from "next-i18next";

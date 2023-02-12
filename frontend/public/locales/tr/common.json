@@ -1,7 +1,8 @@
 {
   "menu": {
     "home": "Ana Sayfa",
-    "myPosts": "İletilerim"
+    "myPosts": "İletilerim",
+    "chat": "Sohbet"
   },
   "account": {
     "main": "Hesap",

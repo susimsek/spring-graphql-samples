@@ -10,8 +10,6 @@ import {Controller, SubmitHandler, useForm} from "react-hook-form";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import QuillNoSSRWrapper, {formats, modules} from "./QuillNoSSRWrapper";
-import dynamic from "next/dynamic";
-import {ref} from "yup";
 
 type NewPostFormData = { title: string; content: string };
 const NewPostFormDialog: React.FC = () => {

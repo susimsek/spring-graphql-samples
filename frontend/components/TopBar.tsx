@@ -28,7 +28,11 @@ const TopBar: React.FC = () => {
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="me-auto">
                         <Nav.Link as={Link} href="/">{t('menu.home')}</Nav.Link>
-                        {isLoggedIn && <Nav.Link as={Link} href="/my-posts">{t('menu.myPosts')}</Nav.Link>}
+                        {isLoggedIn &&
+                            <>
+                                <Nav.Link as={Link} href="/chatroom">{t('menu.chat')}</Nav.Link>
+                                <Nav.Link as={Link} href="/my-posts">{t('menu.myPosts')}</Nav.Link>
+                            </>}
                     </Nav>
                     <Nav>
                         {

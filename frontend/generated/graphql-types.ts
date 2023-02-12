@@ -63,6 +63,15 @@ export enum PostStatus {
   Published = 'PUBLISHED'
 }
 
+export enum RoleName {
+  RoleAdmin = 'ROLE_ADMIN',
+  RoleUser = 'ROLE_USER'
+}
+
+export interface TextCompletionInput {
+  prompt: Scalars['String'];
+}
+
 export interface UpdatePostInput {
   content: Scalars['String'];
   id: Scalars['ID'];
@@ -134,6 +143,13 @@ export type OnPostAddedSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
 export type OnPostAddedSubscription = { postAdded: { id: string, title: string, content: string, status: PostStatus, createdAt: any, locale?: any | null } };
+
+export type TextCompletionMutationVariables = Exact<{
+  input: TextCompletionInput;
+}>;
+
+
+export type TextCompletionMutation = { textCompletion: { id?: string | null, object?: string | null, created?: number | null, choices?: Array<{ text?: string | null, index?: number | null, logprobs?: any | null, finishReason?: string | null } | null> | null, usage?: { promptTokens?: number | null, completionTokens?: number | null, totalTokens?: number | null } | null } };
 
 
 export const CreatePostDocument = gql`
@@ -385,3 +401,49 @@ export function useOnPostAddedSubscription(baseOptions?: Apollo.SubscriptionHook
       }
 export type OnPostAddedSubscriptionHookResult = ReturnType<typeof useOnPostAddedSubscription>;
 export type OnPostAddedSubscriptionResult = Apollo.SubscriptionResult<OnPostAddedSubscription>;
+export const TextCompletionDocument = gql`
+    mutation TextCompletion($input: TextCompletionInput!) {
+  textCompletion(input: $input) {
+    id
+    object
+    created
+    choices {
+      text
+      index
+      logprobs
+      finishReason
+    }
+    usage {
+      promptTokens
+      completionTokens
+      totalTokens
+    }
+  }
+}
+    `;
+export type TextCompletionMutationFn = Apollo.MutationFunction<TextCompletionMutation, TextCompletionMutationVariables>;
+
+/**
+ * __useTextCompletionMutation__
+ *
+ * To run a mutation, you first call `useTextCompletionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useTextCompletionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [textCompletionMutation, { data, loading, error }] = useTextCompletionMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useTextCompletionMutation(baseOptions?: Apollo.MutationHookOptions<TextCompletionMutation, TextCompletionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<TextCompletionMutation, TextCompletionMutationVariables>(TextCompletionDocument, options);
+      }
+export type TextCompletionMutationHookResult = ReturnType<typeof useTextCompletionMutation>;
+export type TextCompletionMutationResult = Apollo.MutationResult<TextCompletionMutation>;
+export type TextCompletionMutationOptions = Apollo.BaseMutationOptions<TextCompletionMutation, TextCompletionMutationVariables>;

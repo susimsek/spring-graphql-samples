@@ -1,0 +1,13 @@
+{
+  "chat": {
+    "title": "Chat",
+    "form": {
+      "buttonPlaceholder": "Type message"
+    },
+    "chatbot": {
+      "greeting": "Hi, I'm chatgpt bot - great to meet you.",
+      "helpQuestion": " What can I help you today?",
+      "answerLoadingText": "ChatGPT is thinking.."
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "chat": {
+    "title": "Sohbet",
+    "form": {
+      "buttonPlaceholder": "Mesaj yaz"
+    },
+    "chatbot": {
+      "greeting": "Merhaba, ben chatgpt bot - tanıştığımıza memnun oldum.",
+      "helpQuestion": "Bugün size nasıl yardımcı olabilirim?",
+      "answerLoadingText": "ChatGPT düşünüyor.."
+    }
+  }
+}

@@ -12,9 +12,9 @@
   },
   "dependencies": {
     "@apollo/client": "^3.7.5",
-    "@fortawesome/fontawesome-svg-core": "^6.2.1",
-    "@fortawesome/free-brands-svg-icons": "^6.2.1",
-    "@fortawesome/free-solid-svg-icons": "^6.2.1",
+    "@fortawesome/fontawesome-svg-core": "^6.3.0",
+    "@fortawesome/free-brands-svg-icons": "^6.3.0",
+    "@fortawesome/free-solid-svg-icons": "^6.3.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@hookform/resolvers": "^2.9.10",
     "bootstrap": "^5.2.3",
@@ -36,16 +36,16 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
-    "@types/node": "18.11.15",
-    "@types/react": "18.0.26",
-    "@types/react-dom": "18.0.9",
-    "eslint-config-next": "13.0.7",
-    "typescript": "4.9.4",
     "@graphql-codegen/cli": "^2.16.4",
     "@graphql-codegen/introspection": "^2.2.3",
     "@graphql-codegen/typescript": "^2.8.7",
     "@graphql-codegen/typescript-operations": "^2.5.12",
     "@graphql-codegen/typescript-react-apollo": "^3.3.7",
-    "sonarqube-scanner": "^3.0.0"
+    "@types/node": "18.11.15",
+    "@types/react": "18.0.26",
+    "@types/react-dom": "18.0.9",
+    "eslint-config-next": "13.0.7",
+    "sonarqube-scanner": "^3.0.0",
+    "typescript": "4.9.4"
   }
 }
