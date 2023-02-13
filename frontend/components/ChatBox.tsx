@@ -9,9 +9,9 @@ import {faPaperPlane, faUser} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Button from "react-bootstrap/Button";
 
-import chatBotPic from '../public/assets/chatbot.png'
+import chatBotPic from '../public/assets/chatbot.webp'
 import Image from "next/image";
-import {Direction, IMessage, IQuestion} from "../types/chat";
+import {Direction, IQuestion} from "../types/chat";
 import Message from "./Message";
 import {v4 as uuidv4} from 'uuid';
 
@@ -85,7 +85,6 @@ const ChatBox: React.FC = () => {
                                 <Message icon={ <Image src={chatBotPic}
                                                        style={{ width: "45px", height: "100%" }}
                                                        alt="avatar 1"
-                                                       className='img-thumbnail'
                                          />}
                                          direction={Direction.LEFT}
                                          messages={[
@@ -114,7 +113,6 @@ const ChatBox: React.FC = () => {
                                                      src={chatBotPic}
                                                      style={{ width: "45px", height: "100%" }}
                                                      alt="avatar 1"
-                                                     className='img-thumbnail'
                                                  />}
                                                  direction={Direction.LEFT}
                                                  message={question.answer}
