@@ -1,7 +1,7 @@
 import {useTranslation} from "next-i18next";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 import {Alert, Container, Spinner} from "react-bootstrap";
-import React from "react";
+import React, {useState} from "react";
 import {
     OrderType,
     PostOrderField,
@@ -12,15 +12,19 @@ import Post from "../../components/Post";
 import {IPost} from "../../types/post";
 import Layout from "../../components/Layout";
 import NewPostFormDialog from "../../components/NewPostFormDialog";
+import Pagination from "../../components/Pagination";
 
 const MyPostPage = () => {
+
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [size, setSize] = useState<number>(5);
 
     const { data, error } = useOnPostAddedSubscription();
 
     const { data: postsData, loading: postDataLoading, error: postsDataError, refetch} = useGetAllPostsQuery({
         variables: {
-            page: 0,
-            size: 5,
+            page: (currentPage - 1),
+            size: size,
             orders: {
                 field: PostOrderField.CreatedAt,
                 order: OrderType.Desc
@@ -50,12 +54,17 @@ const MyPostPage = () => {
                 {postDataLoading ?
                     <div className="text-center">
                         <Spinner animation="border" variant="secondary"/>
-                    </div> :
-                    postsData?.posts?.length ? postsData.posts.map((post: IPost) => (
+                    </div>:
+                    postsData?.posts.content?.length ? <>{postsData.posts.content.map((post: IPost) => (
                         <Post key={post.id} post={post}/>
-                    )):
-                        <Alert variant="dark" className="text-center">{t('common:no.records.text')}</Alert>
+                    ))} <Pagination
+                        itemsCount={postsData?.posts.pageInfo.totalCount || 0}
+                    itemsPerPage={size}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    alwaysShown={false}/></>:<Alert variant="dark" className="text-center">{t('common:no.records.text')}</Alert>
                 }
+
             </Container>
         </Layout>
     )

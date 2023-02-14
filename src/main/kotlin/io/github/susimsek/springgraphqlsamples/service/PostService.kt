@@ -5,6 +5,7 @@ import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundExcepti
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.PostStatus
 import io.github.susimsek.springgraphqlsamples.graphql.input.AddPostInput
 import io.github.susimsek.springgraphqlsamples.graphql.input.UpdatePostInput
+import io.github.susimsek.springgraphqlsamples.graphql.type.PagedEntityModel
 import io.github.susimsek.springgraphqlsamples.graphql.type.PostPayload
 import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
 import io.github.susimsek.springgraphqlsamples.repository.PostRepository
@@ -84,9 +85,10 @@ class PostService(
         return post.id
     }
 
-    fun getPosts(pageRequest: Pageable): Flow<PostPayload> {
-        return postRepository.findByIdNotNull(pageRequest)
+    suspend fun getPosts(pageRequest: Pageable): PagedEntityModel<PostPayload> {
+        val result = postRepository.findAll(pageRequest)
             .map(postMapper::toType)
+        return PagedEntityModel<PostPayload>(result)
     }
 
     suspend fun getPost(id: String): PostPayload {

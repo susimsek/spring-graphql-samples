@@ -6,6 +6,7 @@ import io.github.susimsek.springgraphqlsamples.graphql.MAX_SIZE
 import io.github.susimsek.springgraphqlsamples.graphql.input.AddPostInput
 import io.github.susimsek.springgraphqlsamples.graphql.input.PostOrder
 import io.github.susimsek.springgraphqlsamples.graphql.input.UpdatePostInput
+import io.github.susimsek.springgraphqlsamples.graphql.type.PagedEntityModel
 import io.github.susimsek.springgraphqlsamples.graphql.type.PostPayload
 import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
 import io.github.susimsek.springgraphqlsamples.service.PostService
@@ -77,13 +78,13 @@ class PostController(
         @Argument size: Int?,
         @Argument orders: MutableList<PostOrder>?,
         locale: Locale
-    ): List<PostPayload> {
+    ): PagedEntityModel<PostPayload> {
         log.info("called posts locale: {}", locale)
         val pageNo = page ?: DEFAULT_PAGE_NO
         val sizeNo = (size ?: DEFAULT_SIZE).coerceAtMost(MAX_SIZE)
         val sort = orders?.map(PostOrder::toOrder)?.let { Sort.by(it) } ?: Sort.unsorted()
         val pageRequest = PageRequest.of(pageNo, sizeNo, sort)
-        return postService.getPosts(pageRequest).toList()
+        return postService.getPosts(pageRequest)
     }
 
     @QueryMapping

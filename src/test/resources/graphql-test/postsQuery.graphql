@@ -1,9 +1,20 @@
 query GetAllPosts($page: Int, $size: Int, $orders: [PostOrder!]) {
     posts(page: $page, size: $size, orders: $orders){
-        id
-        title
-        content
-        status
-        createdAt
+        pageInfo{
+            pageNumber
+            totalCount
+            totalPages
+            hasNext
+            hasPrev
+            nextPage
+            prevPage
+        },
+        content{
+            id
+            title
+            content
+            status
+            createdAt
+        }
     }
 }

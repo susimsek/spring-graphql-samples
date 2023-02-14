@@ -8,6 +8,7 @@ import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundExcepti
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.OrderType
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.PostOrderField
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.PostStatus
+import io.github.susimsek.springgraphqlsamples.graphql.type.PagedEntityModel
 import io.github.susimsek.springgraphqlsamples.graphql.type.PostPayload
 import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
 import io.github.susimsek.springgraphqlsamples.service.PostService
@@ -25,6 +26,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration
 import org.springframework.boot.test.autoconfigure.graphql.GraphQlTest
 import org.springframework.context.annotation.Import
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 import org.springframework.graphql.execution.ErrorType
 import org.springframework.graphql.test.tester.GraphQlTester
 import org.springframework.security.test.context.support.WithMockUser
@@ -83,7 +86,10 @@ class PostControllerTest {
 
     @Test
     fun `get all posts`() = runTest {
-        coEvery { postService.getPosts(any()) } returns flowOf(post)
+        val pageable = PageRequest.of(0, 1)
+        val posts = listOf(post)
+        val pagedData = PageImpl(posts, pageable, posts.size.toLong())
+        coEvery { postService.getPosts(any()) } returns PagedEntityModel(pagedData)
         graphQlTester.documentName("postsQuery")
             .variable("page", 0)
             .variable("size", 1)
@@ -95,9 +101,11 @@ class PostControllerTest {
                 )
             )
             .execute()
-            .path("data.posts[*]").entityList(Any::class.java).hasSize(1)
-            .path("data.posts[0].id").entity(String::class.java).isEqualTo(DEFAULT_ID)
-            .path("data.posts[0].title").entity(String::class.java).isEqualTo(
+            .path("data.posts.pageInfo.totalCount").entity(Int::class.java).isEqualTo(posts.size)
+            .path("data.posts.content.[*]").entityList(Any::class.java).hasSize(1)
+            .path("data.posts.content.[*]").entityList(Any::class.java).hasSize(1)
+            .path("data.posts.content.[0].id").entity(String::class.java).isEqualTo(DEFAULT_ID)
+            .path("data.posts.content.[0].title").entity(String::class.java).isEqualTo(
                 DEFAULT_TITLE.replaceFirstChar {
                     if (it.isLowerCase()) {
                         it.titlecase(Locale.getDefault())

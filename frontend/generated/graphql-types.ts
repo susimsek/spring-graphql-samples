@@ -120,7 +120,7 @@ export type GetAllPostsQueryVariables = Exact<{
 }>;
 
 
-export type GetAllPostsQuery = { posts: Array<{ id: string, title: string, content: string, status: PostStatus, createdAt: any }> };
+export type GetAllPostsQuery = { posts: { pageInfo: { pageNumber: number, totalCount: number, totalPages: number, hasNext: boolean, hasPrev: boolean, nextPage?: number | null, prevPage?: number | null }, content: Array<{ id: string, title: string, content: string, status: PostStatus, createdAt: any }> } };
 
 export type LoginMutationVariables = Exact<{
   input: LoginInput;
@@ -225,11 +225,22 @@ export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMut
 export const GetAllPostsDocument = gql`
     query GetAllPosts($page: Int, $size: Int, $orders: [PostOrder!]) {
   posts(page: $page, size: $size, orders: $orders) {
-    id
-    title
-    content
-    status
-    createdAt
+    pageInfo {
+      pageNumber
+      totalCount
+      totalPages
+      hasNext
+      hasPrev
+      nextPage
+      prevPage
+    }
+    content {
+      id
+      title
+      content
+      status
+      createdAt
+    }
   }
 }
     `;
