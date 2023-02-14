@@ -7,17 +7,14 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate
-import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
+import org.springframework.data.mongodb.core.query.isEqualTo
 
 class UserRepositoryOverrideImpl(
     private val mongoTemplate: ReactiveMongoTemplate
 ) : UserRepositoryOverride {
     override suspend fun findAllByFilter(filter: UserFilter?, pageable: Pageable): Page<User> {
-        val query = Query(
-            Criteria.where("id").ne(null)
-                .and("activated").`is`(true)
-        )
+        val query = Query(User::activated isEqualTo true)
         filter?.let {
             filter.toCriteria()?.let {
                 query.addCriteria(it)
