@@ -12,7 +12,7 @@ executors:
     machine:
       image: ubuntu-2204:2022.10.2
       docker_layer_caching: true
-      resource_class: medium
+      resource_class: large
 
 jobs:
 ### ---------------------- BACKEND ----------------------------
@@ -21,7 +21,7 @@ jobs:
     working_directory: ~/repo
     environment:
       # Customize the JVM maximum heap limit
-      MAVEN_OPTS: -Xmx7500m
+      MAVEN_OPTS: -Xmx12000m
     steps:
       - checkout
       - run:
