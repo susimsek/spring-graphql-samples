@@ -1,6 +1,6 @@
 import {useTranslation} from "next-i18next";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
-import {Alert, Container, Form, Row, Spinner} from "react-bootstrap";
+import {Alert, Col, Container, Form, Row, Spinner} from "react-bootstrap";
 import React, {useState} from "react";
 import {
     OrderType,
@@ -67,8 +67,8 @@ const MyPostPage = () => {
                     postsData?.posts.content?.length ? <>{postsData.posts.content.map((post: IPost) => (
                         <Post key={post.id} post={post}/>
                     ))}
-                        <div className="d-flex">
-                            <div className="col-sm-2 me-auto">
+                        <Row>
+                            <Col xs={12} md={2} className="mb-3">
                                 <Form.Select name="size"
                                              value={size}
                                              onChange={onChangeSizeSelect}>
@@ -77,14 +77,16 @@ const MyPostPage = () => {
                                     <option>25</option>
                                     <option>50</option>
                                 </Form.Select>
-                            </div>
-                            <Pagination
-                                itemsCount={postsData?.posts.pageInfo.totalCount || 0}
-                                itemsPerPage={size}
-                                currentPage={currentPage}
-                                onChange={onChangePage}
-                                alwaysShown={true}/>
-                        </div>
+                            </Col>
+                            <Col xs={12} md={10} className="d-flex justify-content-md-end">
+                                <Pagination
+                                    itemsCount={postsData?.posts.pageInfo.totalCount || 0}
+                                    itemsPerPage={size}
+                                    currentPage={currentPage}
+                                    onChange={onChangePage}
+                                    alwaysShown={true}/>
+                            </Col>
+                        </Row>
                       </>:<Alert variant="dark" className="text-center">{t('common:no.records.text')}</Alert>
                 }
 
