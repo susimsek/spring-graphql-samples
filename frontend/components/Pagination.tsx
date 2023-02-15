@@ -6,16 +6,26 @@ interface PaginationProps {
     itemsCount: number;
     itemsPerPage: number;
     currentPage: number;
-    setCurrentPage: (page: number) => void;
-    alwaysShown: boolean;
+    alwaysShown?: boolean;
+
+    showFirstLast?: boolean;
+
+    onChange: (page: number) => void;
 }
 
-const PaginationComponent: React.FC<PaginationProps> = ({
+const defaultProps = {
+    alwaysShown: true,
+    showFirstLast: true
+};
+
+const PaginationWrapper: React.FC<PaginationProps> = ({
                                                    itemsCount,
                                                    itemsPerPage,
                                                    currentPage,
-                                                   setCurrentPage,
-                                                   alwaysShown = true
+                                                   onChange,
+                                                   alwaysShown = defaultProps.alwaysShown,
+                                                   showFirstLast = defaultProps.showFirstLast,
+                                                   ...etc
                                                }) => {
 
     const pagesCount = Math.ceil(itemsCount / itemsPerPage);
@@ -23,9 +33,10 @@ const PaginationComponent: React.FC<PaginationProps> = ({
     const isCurrentPageFirst = currentPage === 1;
     const isCurrentPageLast = currentPage === pagesCount;
 
+
     const changePage = (page: number) => {
         if (currentPage === page) return;
-        setCurrentPage(page);
+        onChange(page);
     };
 
     const onPageNumberClick = (page: number) => {
@@ -40,9 +51,17 @@ const PaginationComponent: React.FC<PaginationProps> = ({
         changePage(currentPage + 1);
     };
 
+    const onFirstPageClick = () => {
+        changePage(1);
+    };
+
+    const onLastPageClick = () => {
+        changePage( pagesCount);
+    };
+
     const setLastPageAsCurrent = () => {
         if (currentPage > pagesCount) {
-            setCurrentPage(pagesCount);
+            onChange(pagesCount);
         }
     };
 
@@ -85,7 +104,11 @@ const PaginationComponent: React.FC<PaginationProps> = ({
     return (
         <>
             {isPaginationShown && (
-                <Pagination size="lg" className="d-flex justify-content-center">
+                <Pagination size="lg" {...etc}>
+                    { showFirstLast &&
+                        <Pagination.First
+                            onClick={onFirstPageClick}
+                            disabled={isCurrentPageFirst}/>}
                     <Pagination.Prev
                         onClick={onPreviousPageClick}
                         disabled={isCurrentPageFirst}
@@ -95,10 +118,13 @@ const PaginationComponent: React.FC<PaginationProps> = ({
                         onClick={onNextPageClick}
                         disabled={isCurrentPageLast}
                     />
+                    { showFirstLast &&  <Pagination.Last
+                        onClick={onLastPageClick}
+                        disabled={isCurrentPageLast}/>}
                 </Pagination>
             )}
         </>
     );
 }
 
-export default PaginationComponent;
+export default PaginationWrapper;

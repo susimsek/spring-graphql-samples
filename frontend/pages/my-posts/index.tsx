@@ -1,6 +1,6 @@
 import {useTranslation} from "next-i18next";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
-import {Alert, Container, Spinner} from "react-bootstrap";
+import {Alert, Container, Form, Row, Spinner} from "react-bootstrap";
 import React, {useState} from "react";
 import {
     OrderType,
@@ -42,6 +42,15 @@ const MyPostPage = () => {
         refetch()
     }
 
+    const onChangeSizeSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setCurrentPage(1)
+        setSize(+event.target.value)
+    }
+
+    const onChangePage = (page: number) => {
+        setCurrentPage(page)
+    }
+
     return (
         <Layout>
             <Container className="mt-3">
@@ -57,12 +66,26 @@ const MyPostPage = () => {
                     </div>:
                     postsData?.posts.content?.length ? <>{postsData.posts.content.map((post: IPost) => (
                         <Post key={post.id} post={post}/>
-                    ))} <Pagination
-                        itemsCount={postsData?.posts.pageInfo.totalCount || 0}
-                    itemsPerPage={size}
-                    currentPage={currentPage}
-                    setCurrentPage={setCurrentPage}
-                    alwaysShown={false}/></>:<Alert variant="dark" className="text-center">{t('common:no.records.text')}</Alert>
+                    ))}
+                        <div className="d-flex">
+                            <div className="col-sm-2 me-auto">
+                                <Form.Select name="size"
+                                             value={size}
+                                             onChange={onChangeSizeSelect}>
+                                    <option>5</option>
+                                    <option>10</option>
+                                    <option>25</option>
+                                    <option>50</option>
+                                </Form.Select>
+                            </div>
+                            <Pagination
+                                itemsCount={postsData?.posts.pageInfo.totalCount || 0}
+                                itemsPerPage={size}
+                                currentPage={currentPage}
+                                onChange={onChangePage}
+                                alwaysShown={true}/>
+                        </div>
+                      </>:<Alert variant="dark" className="text-center">{t('common:no.records.text')}</Alert>
                 }
 
             </Container>
