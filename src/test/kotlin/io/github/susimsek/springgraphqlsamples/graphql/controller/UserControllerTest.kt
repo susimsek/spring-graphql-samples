@@ -33,6 +33,7 @@ import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
+
 private const val DEFAULT_ID = "2e50aab8-cc23-4658-9305-49044a2cb8d3"
 private const val DEFAULT_NAME = "john doe"
 private const val DEFAULT_USERNAME = "johndoe"
@@ -74,17 +75,14 @@ class UserControllerTest {
     private lateinit var user: UserPayload
 
     @BeforeEach
-    fun setUp(@Autowired delegateService: ExecutionGraphQlService) {
+    fun setUp(@Autowired testerBuilder: ExecutionGraphQlServiceTester.Builder<*>) {
         user = DEFAULT_USER
 
-        val graphQlService = ExecutionGraphQlService { request ->
-            request.configureExecutionInput { _, builder ->
+        graphQlTester = testerBuilder
+            .configureExecutionInput { _, builder ->
                 builder.graphQLContext(mapOf("recaptcha" to RECAPTCHA_RESPONSE)).build()
             }
-            delegateService.execute(request)
-        }
-
-        graphQlTester = ExecutionGraphQlServiceTester.create(graphQlService)
+            .build()
     }
 
     @Test
