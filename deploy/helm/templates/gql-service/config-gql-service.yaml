@@ -34,3 +34,4 @@ data:
   SPRING_MAIL_PROPERTIES_MAIL_SMTP_SSL_TRUST: {{ .Values.mail.host }}
   APP_MAIL_FROM_ENABLED: {{ .Values.mail.from.enabled }}
   APP_MAIL_FROM_DEFAULT: {{ .Values.mail.from.default }}
+  APP_MAIL_BASE_URL: {{ .Values.mail.baseUrl }}

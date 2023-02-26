@@ -66,6 +66,7 @@ services:
       - SPRING_MAIL_PROPERTIES_MAIL_SMTP_SSL_TRUST
       - APP_MAIL_FROM_ENABLED
       - APP_MAIL_FROM_DEFAULT
+      - APP_MAIL_BASE_URL
     ports:
       - "9091:9091"
   web:

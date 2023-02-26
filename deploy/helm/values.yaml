@@ -43,6 +43,7 @@ mail:
   from:
     enabled: false
     default:
+  baseUrl: http://springgqlmsweb.susimsek.github.io
 
 spring:
   profiles:
