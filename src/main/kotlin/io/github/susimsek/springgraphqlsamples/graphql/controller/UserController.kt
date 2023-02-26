@@ -10,7 +10,6 @@ import io.github.susimsek.springgraphqlsamples.graphql.type.PagedEntityModel
 import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
 import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaService
 import io.github.susimsek.springgraphqlsamples.service.UserService
-import jakarta.validation.Valid
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.graphql.data.method.annotation.Argument
@@ -28,12 +27,17 @@ class UserController(
 ) {
     @MutationMapping
     suspend fun createUser(
-        @Argument @Valid
+        @Argument
         input: AddUserInput,
         @ContextValue recaptcha: String
     ): UserPayload {
         recaptchaService.validateToken(recaptcha)
         return userService.createUser(input)
+    }
+
+    @MutationMapping
+    suspend fun activateAccount(@Argument token: String): Boolean {
+        return userService.activateAccount(token)
     }
 
     @QueryMapping

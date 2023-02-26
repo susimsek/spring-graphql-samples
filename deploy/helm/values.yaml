@@ -13,6 +13,37 @@ token:
   validityInSeconds: 86400
   cookieDomain: springgqlmsweb.susimsek.github.io
 
+database:
+  user: user
+  password: iXCjXb7e2yjJbjRu
+
+cipher:
+  secret: secureCDCKey
+
+chatgpt:
+  model: text-davinci-003
+  temperature: 1.0
+  maxTokens: 300
+  secret: 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
+
+recaptcha:
+  enabled: true
+  threshold: 0.5
+  secret: 6Lca17IjAAAAAAEpjSTErRO4Rw6z9lHqVAohwWdW
+
+mail:
+  host: smtp.gmail.com
+  port: 587
+  username: "*****"
+  password: "*****"
+  smtp:
+    auth: true
+    starttls:
+      enable: true
+  from:
+    enabled: false
+    default:
+
 spring:
   profiles:
     active: prod,websocket

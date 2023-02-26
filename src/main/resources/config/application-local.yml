@@ -34,7 +34,15 @@ spring:
         variables:
           headerEditorEnabled: true
           shouldPersistHeaders: true
-
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: suayb@communitygaming.io
+    password: najpfgnqyrebsimy
+    properties.mail.smtp:
+      auth: true
+      starttls.enable: true
+      ssl.trust: smtp.gmail.com
 security:
   authentication:
     token:
@@ -65,7 +73,13 @@ recaptcha:
 
 chatgpt:
   base-url: https://api.openai.com/v1
-  secret-key: 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
+  secret-key: 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
   model: text-davinci-003
   temperature: 1.0
   maxTokens: 3000
+
+app:
+  mail:
+    from:
+      enabled: false
+      default:

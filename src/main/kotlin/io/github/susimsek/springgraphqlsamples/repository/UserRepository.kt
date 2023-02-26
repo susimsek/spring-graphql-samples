@@ -1,6 +1,7 @@
 package io.github.susimsek.springgraphqlsamples.repository
 
 import io.github.susimsek.springgraphqlsamples.domain.User
+import io.github.susimsek.springgraphqlsamples.graphql.type.Token
 import io.github.susimsek.springgraphqlsamples.repository.custom.UserRepositoryOverride
 import kotlinx.coroutines.flow.Flow
 import org.springframework.data.repository.kotlin.CoroutineCrudRepository
@@ -19,4 +20,6 @@ interface UserRepository :
     fun findOneByUsername(login: String): Mono<User>
 
     fun findAllByIdIn(id: MutableSet<String>?): Flow<User>
+
+    suspend fun findByActivationToken(activationToken: String): User?
 }

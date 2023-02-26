@@ -36,6 +36,7 @@ type Mutation {
     login(input: LoginInput!): Token!
     logout: Boolean!
     createUser(input: AddUserInput!): UserPayload!
+    activateAccount(token: String! @NotBlank): Boolean!
     createPost(input: AddPostInput!): PostPayload!
     updatePost(input: UpdatePostInput!): PostPayload!
     deletePost(id: ID!): ID!

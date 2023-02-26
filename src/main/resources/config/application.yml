@@ -6,9 +6,6 @@ spring:
   cloud:
     function:
       definition: postEventPublisher;postEventConsumer
-  data:
-    mongodb:
-      auto-index-creation: true
   graphql:
     cors:
       allowed-origins: http://localhost:3000
@@ -20,6 +17,13 @@ spring:
     locale: en
   messages:
     basename: i18n/messages
+  task:
+    execution:
+      thread-name-prefix: async-task-
+      pool:
+        core-size: 2
+        max-size: 50
+        queue-capacity: 10000
 management:
   endpoints:
     web:

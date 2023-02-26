@@ -5,12 +5,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field
+import java.time.OffsetDateTime
 import java.util.*
 
 // @QueryEntity
 @Document(collection = "user")
 data class User(
-    @Indexed
+
+    @Indexed(unique = true)
     var username: String = "",
 
     @JsonIgnore
@@ -25,12 +27,16 @@ data class User(
     @Field("lang")
     var lang: Locale = Locale.ENGLISH,
 
-    @Indexed
+    @Indexed(unique = true)
     var email: String = "",
 
     var activated: Boolean = false,
 
-    var roles: MutableSet<Role> = mutableSetOf()
+    var roles: MutableSet<Role> = mutableSetOf(),
+
+    var activationToken: String? = null,
+
+    var activationTokenExpiryDate: OffsetDateTime? = null
 
 ) : BaseEntity() {
     override fun equals(other: Any?): Boolean {

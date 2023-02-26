@@ -79,6 +79,8 @@ spec:
                 name: recaptcha-secret
             - secretRef:
                 name: chatgpt-secret
+            - secretRef:
+                name: email-secret
             - configMapRef:
                 name: spring-gql-service-config
           volumeMounts:
