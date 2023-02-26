@@ -54,6 +54,11 @@
         "noaccount": "You don't have an account yet?",
         "link": "Register a new account"
       }
+    },
+    "validate": {
+      "newpassword": {
+        "strength": "Password strength:"
+      }
     }
   }
 }

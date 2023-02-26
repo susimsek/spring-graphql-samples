@@ -1,5 +1,5 @@
 import React from "react";
-import {Alert, Container, Spinner} from "react-bootstrap";
+import {Alert, Col, Container, Row, Spinner} from "react-bootstrap";
 import Layout from "../../components/Layout";
 import {useTranslation} from "next-i18next";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
@@ -78,47 +78,51 @@ const LoginPage = () => {
     return (
         <Layout>
             <Container className="mt-3">
-                <Card className="col-6 offset-3">
-                    <Card.Header className="text-center">{t('login.title')}</Card.Header>
-                    <Card.Body>
-                        <Form onSubmit={handleSubmit(handleLogin)}>
-                            <Form.Group className="mb-3">
-                                <Form.Label>{t('common:form.username.label')}</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    {...register('username')}
-                                    isInvalid={!!errors.username}
-                                    disabled={loading}
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {errors.username?.message}
-                                </Form.Control.Feedback>
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>{t('common:form.password.label')}</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    {...register('password')}
-                                    isInvalid={!!errors.password}
-                                    disabled={loading}
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {errors.password?.message}
-                                </Form.Control.Feedback>
-                            </Form.Group>
-                            <Button className="mb-3" variant="primary" type="submit" disabled={loading}>
-                                {loading && <Spinner
-                                    as="span"
-                                    animation="border"
-                                    size="sm"
-                                    role="status"
-                                    aria-hidden="true"
-                                />} {t('login.form.button')}
-                            </Button>
-                            {error && <Alert variant="danger">{t('login.messages.error.authentication')}</Alert>}
-                        </Form>
-                    </Card.Body>
-                </Card>
+                <Row className="d-flex justify-content-center">
+                    <Col md={10} xl={6} lg={8}>
+                        <Card style={{ borderRadius: "15px" }}>
+                            <Card.Header className="text-center">{t('login.title')}</Card.Header>
+                            <Card.Body>
+                                <Form onSubmit={handleSubmit(handleLogin)}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>{t('common:form.username.label')}</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            {...register('username')}
+                                            isInvalid={!!errors.username}
+                                            disabled={loading}
+                                        />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.username?.message}
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>{t('common:form.password.label')}</Form.Label>
+                                        <Form.Control
+                                            type="password"
+                                            {...register('password')}
+                                            isInvalid={!!errors.password}
+                                            disabled={loading}
+                                        />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.password?.message}
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
+                                    <Button className="mb-3" variant="primary" type="submit" disabled={loading}>
+                                        {loading && <Spinner
+                                            as="span"
+                                            animation="border"
+                                            size="sm"
+                                            role="status"
+                                            aria-hidden="true"
+                                        />} {t('login.form.button')}
+                                    </Button>
+                                    {error && <Alert variant="danger">{t('login.messages.error.authentication')}</Alert>}
+                                </Form>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                </Row>
             </Container>
         </Layout>
     );

@@ -68,7 +68,7 @@ const MyPostPage = () => {
                         <Post key={post.id} post={post}/>
                     ))}
                         <Row>
-                            <Col xs={12} md={2} className="mb-3">
+                            <Col className="mb-3">
                                 <Form.Select name="size"
                                              value={size}
                                              onChange={onChangeSizeSelect}>

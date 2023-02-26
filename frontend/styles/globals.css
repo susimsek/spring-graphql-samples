@@ -46,3 +46,27 @@
     font-size: .875em;
     color: #dc3545;
 }
+
+.strength {
+    display: inline;
+    list-style: none;
+    margin: 0 0 0 0;
+    padding: 0;
+    vertical-align: 2px;
+}
+
+.strengthBar {
+    margin: 0 0 0 0;
+    padding: 0;
+}
+.point {
+    background: #ddd;
+    border-radius: 2px;
+    display: inline-block;
+    height: 5px;
+    margin-right: 1px;
+    width: 20px;
+}
+.point:last-child {
+    margin: 0 !important;
+}

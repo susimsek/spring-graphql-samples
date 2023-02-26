@@ -54,6 +54,11 @@
         "noaccount": "Henüz bir hesabınız yok mu?",
         "link": "Yeni hesap oluştur"
       }
+    },
+    "validate": {
+      "newpassword": {
+        "strength": "Şifre karmaşıklığı:"
+      }
     }
   }
   }

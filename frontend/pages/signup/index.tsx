@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Alert, Container, Spinner} from "react-bootstrap";
+import {Alert, Col, Container, Row, Spinner} from "react-bootstrap";
 import Layout from "../../components/Layout";
 import {Trans, useTranslation} from "next-i18next";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
@@ -12,6 +12,7 @@ import {useRouter} from "next/router";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import {useGoogleReCaptcha} from "react-google-recaptcha-v3";
+import PasswordStrengthBar from "../../components/PasswordStrengthBar";
 
 type SignupFormData = {
     username: string;
@@ -24,7 +25,9 @@ type SignupFormData = {
 const SignupPage = () => {
     const { t, i18n } = useTranslation('register')
 
-    const [visibleCreatedAlert, setVisibleCreatedAlert] = useState<boolean>(false);
+    const [password, setPassword] = useState('')
+
+    const [visibleCreatedAlert, setVisibleCreatedAlert] = useState<boolean>(false)
 
     const schema = yup.object({
         username: yup.string().required(t("common:validation.required"))
@@ -65,6 +68,8 @@ const SignupPage = () => {
         resolver: yupResolver(schema)
     });
     // Creating a state to store the uploaded video
+
+    const updatePassword = (event: React.ChangeEvent<HTMLInputElement>) => setPassword(event.target.value)
 
     const handleSignup: SubmitHandler<SignupFormData> = async (
         {
@@ -110,105 +115,111 @@ const SignupPage = () => {
     return (
         <Layout>
             <Container className="mt-3">
-                <Card className="col-6 offset-3">
-                    <Card.Header className="text-center">{t('register.title')}</Card.Header>
-                    <Card.Body>
-                        <Form onSubmit={handleSubmit(handleSignup)}>
-                            <Form.Group className="mb-3">
-                                <Form.Label>{t('common:form.username.label')}</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    {...register('username')}
-                                    isInvalid={!!errors.username}
-                                    disabled={loading}
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {errors.username?.message}
-                                </Form.Control.Feedback>
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>{t('common:form.firstName.label')}</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    {...register('firstName')}
-                                    isInvalid={!!errors.firstName}
-                                    disabled={loading}
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {errors.firstName?.message}
-                                </Form.Control.Feedback>
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>{t('common:form.lastName.label')}</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    {...register('lastName')}
-                                    isInvalid={!!errors.lastName}
-                                    disabled={loading}
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {errors.lastName?.message}
-                                </Form.Control.Feedback>
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>{t('common:form.email.label')}</Form.Label>
-                                <Form.Control
-                                    type="email"
-                                    {...register('email')}
-                                    isInvalid={!!errors.email}
-                                    disabled={loading}
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {errors.email?.message}
-                                </Form.Control.Feedback>
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>{t('common:form.newpassword.label')}</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    {...register('password')}
-                                    isInvalid={!!errors.password}
-                                    disabled={loading}
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {errors.password?.message}
-                                </Form.Control.Feedback>
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>{t('common:form.confirmpassword.label')}</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    {...register('confirmpassword')}
-                                    isInvalid={!!errors.confirmpassword}
-                                    disabled={loading}
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {errors.confirmpassword?.message}
-                                </Form.Control.Feedback>
-                            </Form.Group>
-                            <Button className="mb-3" variant="primary" type="submit" disabled={loading}>
-                                {loading && <Spinner
-                                    as="span"
-                                    animation="border"
-                                    size="sm"
-                                    role="status"
-                                    aria-hidden="true"
-                                />} {t('register.form.button')}
-                            </Button>
-                            <Alert show={visibleCreatedAlert} variant="success">
-                                <Trans
-                                    i18nKey="register:register.success"
-                                    components={{ bold: <strong />}}
-                                />
-                            </Alert>
-                            {error && error.graphQLErrors.map(({ message }, i) => (
-                                <Alert key={i} variant="danger">
-                                    {message}
-                                </Alert>
-                            ))}
-                        </Form>
-                    </Card.Body>
-                </Card>
+                <Row className="d-flex justify-content-center">
+                    <Col md={10} xl={6} lg={8}>
+                        <Card style={{ borderRadius: "15px" }}>
+                            <Card.Header className="text-center">{t('register.title')}</Card.Header>
+                            <Card.Body>
+                                <Form onSubmit={handleSubmit(handleSignup)}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>{t('common:form.username.label')}</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            {...register('username')}
+                                            isInvalid={!!errors.username}
+                                            disabled={loading}
+                                        />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.username?.message}
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>{t('common:form.firstName.label')}</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            {...register('firstName')}
+                                            isInvalid={!!errors.firstName}
+                                            disabled={loading}
+                                        />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.firstName?.message}
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>{t('common:form.lastName.label')}</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            {...register('lastName')}
+                                            isInvalid={!!errors.lastName}
+                                            disabled={loading}
+                                        />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.lastName?.message}
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>{t('common:form.email.label')}</Form.Label>
+                                        <Form.Control
+                                            type="email"
+                                            {...register('email')}
+                                            isInvalid={!!errors.email}
+                                            disabled={loading}
+                                        />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.email?.message}
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>{t('common:form.newpassword.label')}</Form.Label>
+                                        <Form.Control
+                                            type="password"
+                                            {...register('password')}
+                                            onChange={updatePassword}
+                                            isInvalid={!!errors.password}
+                                            disabled={loading}
+                                        />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.password?.message}
+                                        </Form.Control.Feedback>
+                                        <PasswordStrengthBar password={password} />
+                                    </Form.Group>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>{t('common:form.confirmpassword.label')}</Form.Label>
+                                        <Form.Control
+                                            type="password"
+                                            {...register('confirmpassword')}
+                                            isInvalid={!!errors.confirmpassword}
+                                            disabled={loading}
+                                        />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.confirmpassword?.message}
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
+                                    <Button className="mb-3" variant="primary" type="submit" disabled={loading}>
+                                        {loading && <Spinner
+                                            as="span"
+                                            animation="border"
+                                            size="sm"
+                                            role="status"
+                                            aria-hidden="true"
+                                        />} {t('register.form.button')}
+                                    </Button>
+                                    <Alert show={visibleCreatedAlert} variant="success">
+                                        <Trans
+                                            i18nKey="register:register.success"
+                                            components={{ bold: <strong />}}
+                                        />
+                                    </Alert>
+                                    {error && error.graphQLErrors.map(({ message }, i) => (
+                                        <Alert key={i} variant="danger">
+                                            {message}
+                                        </Alert>
+                                    ))}
+                                </Form>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                </Row>
             </Container>
         </Layout>
     );
