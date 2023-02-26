@@ -190,6 +190,7 @@ following bash command
 * Spring Boot Security
 * Spring Boot Data Mongodb Reactive
 * Spring Boot Validation
+* Spring Boot Mail
 * Spring Boot Actuator
 * Spring Boot RSocket
 * Spring Boot Configuration Processor
