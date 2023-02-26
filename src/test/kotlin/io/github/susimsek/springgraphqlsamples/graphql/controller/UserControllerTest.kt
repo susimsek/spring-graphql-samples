@@ -76,14 +76,13 @@ class UserControllerTest {
     private lateinit var user: UserPayload
 
     @BeforeEach
-    fun setUp(@Autowired testerBuilder: ExecutionGraphQlServiceTester.Builder<*>) {
+    fun setUp(@Autowired delegateService: ExecutionGraphQlService) {
         user = DEFAULT_USER
 
-        graphQlTester = testerBuilder
+        graphQlTester = ExecutionGraphQlServiceTester.builder(delegateService)
             .configureExecutionInput { _, builder ->
                 builder.graphQLContext(mapOf("recaptcha" to RECAPTCHA_RESPONSE)).build()
-            }
-            .build()
+            }.build()
     }
 
 

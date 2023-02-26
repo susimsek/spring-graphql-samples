@@ -68,13 +68,10 @@ class AuthControllerTest {
 
     @BeforeEach
     fun setUp(@Autowired delegateService: ExecutionGraphQlService) {
-        val graphQlService = ExecutionGraphQlService { request ->
-            request.configureExecutionInput { _, builder ->
+        graphQlTester = ExecutionGraphQlServiceTester.builder(delegateService)
+            .configureExecutionInput { _, builder ->
                 builder.graphQLContext(mapOf("recaptcha" to RECAPTCHA_RESPONSE)).build()
-            }
-            delegateService.execute(request)
-        }
-        graphQlTester = ExecutionGraphQlServiceTester.create(graphQlService)
+            }.build()
     }
 
     @Test
