@@ -43,6 +43,7 @@ private const val DEFAULT_LAST_NAME = "doe"
 private const val DEFAULT_EMAIL = "johndoe@localhost"
 private val DEFAULT_LANG = Locale.ENGLISH
 private const val DEFAULT_CREATED_DATE = "2023-01-21T22:40:12.710+03:00"
+private const val DEFAULT_ACTIVATION_TOKEN = "a8813c7a-a04a-4bd9-943f-a11b8255f755"
 
 val DEFAULT_USER = UserPayload(
     id = DEFAULT_ID,
@@ -84,6 +85,7 @@ class UserControllerTest {
             }
             .build()
     }
+
 
     @Test
     fun me() = runTest {
@@ -173,6 +175,33 @@ class UserControllerTest {
 
         coVerify(exactly = 1) { userService.createUser(any()) }
         coVerify(exactly = 1) { recaptchaService.validateToken(any()) }
+    }
+
+
+    @Test
+    fun `activate account`() = runTest {
+        coEvery { userService.activateAccount(any()) } returns true
+
+        graphQlTester
+            .documentName("activateAccountMutation")
+            .variable("token", DEFAULT_ACTIVATION_TOKEN)
+            .execute()
+            .path("data.activateAccount").entity(Boolean::class.java).isEqualTo(true)
+
+        coVerify(exactly = 1) { userService.activateAccount(any()) }
+    }
+
+    @Test
+    fun `activate account with wrong token`() = runTest {
+        coEvery { userService.activateAccount(any()) } returns false
+
+        graphQlTester
+            .documentName("activateAccountMutation")
+            .variable("token", "wrong activation token")
+            .execute()
+            .path("data.activateAccount").entity(Boolean::class.java).isEqualTo(false)
+
+        coVerify(exactly = 1) { userService.activateAccount(any()) }
     }
 
     @Test
