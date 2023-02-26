@@ -4,6 +4,6 @@
     "form": {
       "button": "Kayıt Ol"
     },
-    "success": "Kayıt işlemi yapıldı!."
+    "success": "<bold>Kayıt işlemi yapıldı!</bold> Lütfen onay için e-posta'nızı kontrol edin."
   }
 }

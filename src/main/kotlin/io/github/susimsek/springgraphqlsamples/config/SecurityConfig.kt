@@ -43,7 +43,7 @@ import java.security.interfaces.RSAPublicKey
 
 @Configuration(proxyBeanMethods = false)
 @EnableWebFluxSecurity
-@EnableReactiveMethodSecurity
+@EnableReactiveMethodSecurity(useAuthorizationManager = false)
 @EnableConfigurationProperties(SecurityMatcherProperties::class, TokenProperties::class)
 class SecurityConfig {
 

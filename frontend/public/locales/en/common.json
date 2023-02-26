@@ -43,5 +43,17 @@
   },
   "login.info.text": "Signed in as <bold>{{name}}</bold>",
   "no.records.text": "There are no records to display",
-  "language.label": "Language"
+  "language.label": "Language",
+  "messages": {
+    "info": {
+      "authenticated": {
+        "prefix": "If you want to ",
+        "link": "sign in"
+      },
+      "register": {
+        "noaccount": "You don't have an account yet?",
+        "link": "Register a new account"
+      }
+    }
+  }
 }

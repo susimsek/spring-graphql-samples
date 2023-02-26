@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}" lang="en">
+<head>
+    <title th:text="#{email.activation.title}">Registration Confirmation</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="icon" th:href="@{|${baseUrl}/favicon.ico|}" />
+</head>
+<body>
+<p th:text="#{email.activation.text}">
+    Your account has been created, please click on the URL below to activate it:
+</p>
+<p>
+    <a th:with="url=(@{|${baseUrl}/${#locale.language}/activate?token=${user.activationToken}|})" th:href="${url}"
+       th:text="${url}">Activation link</a>
+</p>
+</body>
+</html>

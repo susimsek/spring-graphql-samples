@@ -17,6 +17,8 @@ spring:
         postEventConsumer-in-0:
           destination: posts
           group: posts-group-${random.uuid}
+  thymeleaf:
+    cache: true
 
 security:
   authentication:

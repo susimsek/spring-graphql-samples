@@ -12,11 +12,17 @@ import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import java.nio.charset.StandardCharsets
+import org.thymeleaf.context.Context
+import org.thymeleaf.spring6.SpringTemplateEngine
+
+private const val USER = "user"
+private const val BASE_URL = "baseUrl"
 
 @Service
 @Suppress("TooGenericExceptionCaught")
 class MailService(
     private val javaMailSender: JavaMailSender,
+    private val templateEngine: SpringTemplateEngine,
     private val appProperties: AppProperties,
     private val messageSource: MessageSource
 ) {
@@ -52,18 +58,26 @@ class MailService(
     }
 
     @Async
-    fun sendActivationEmail(user: User) {
-        val confirmationUrl = "http://localhost:9091/regitrationConfirm?token=${user.activationToken}"
-        log.debug("Sending activation email to '{}'", user.email)
-        val content = messageSource.getMessage("email.activation.text", null, user.lang)
+    fun sendEmailFromTemplate(user: User, templateName: String, titleKey: String) {
+        val context = Context(user.lang).apply {
+            setVariable(USER, user)
+            setVariable(BASE_URL, appProperties.mail.baseUrl)
+        }
+        val content = templateEngine.process(templateName, context)
         sendEmail(
             EmailSenderDTO(
                 to = user,
-                subject = "email.activation.title",
-                content = "$content\r\n$confirmationUrl",
+                subject = titleKey,
+                content = content,
                 isMultipart = false,
-                isHtml = false
+                isHtml = true
             )
         )
+    }
+
+    @Async
+    fun sendActivationEmail(user: User) {
+        log.debug("Sending activation email to '{}'", user.email)
+        sendEmailFromTemplate(user, "mail/activationEmail", "email.activation.title")
     }
 }

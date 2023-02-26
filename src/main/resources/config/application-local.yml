@@ -43,6 +43,8 @@ spring:
       auth: true
       starttls.enable: true
       ssl.trust: smtp.gmail.com
+  thymeleaf:
+    cache: false
 security:
   authentication:
     token:
@@ -83,3 +85,4 @@ app:
     from:
       enabled: false
       default:
+    baseUrl: http://localhost:3000

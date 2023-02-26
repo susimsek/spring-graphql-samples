@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Alert, Container, Spinner} from "react-bootstrap";
 import Layout from "../../components/Layout";
-import {useTranslation} from "next-i18next";
+import {Trans, useTranslation} from "next-i18next";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -55,8 +55,6 @@ const SignupPage = () => {
             .oneOf([yup.ref("password")], t("common:validation.passwordNotMatch"))
     }).required();
 
-    const router = useRouter();
-
     const { executeRecaptcha } = useGoogleReCaptcha()
 
     const [createUser, { loading, error }, ] = useCreateUserMutation({
@@ -76,6 +74,8 @@ const SignupPage = () => {
             email,
             password
         }) => {
+
+        setVisibleCreatedAlert(false)
 
         if (!executeRecaptcha) {
             console.log('Execute recaptcha not yet available');
@@ -104,10 +104,6 @@ const SignupPage = () => {
 
         if (result.data) {
             setVisibleCreatedAlert(true)
-            setTimeout(() => {
-                setVisibleCreatedAlert(false)
-                router.push('/')
-            }, 2000)
         }
     };
 
@@ -200,7 +196,10 @@ const SignupPage = () => {
                                 />} {t('register.form.button')}
                             </Button>
                             <Alert show={visibleCreatedAlert} variant="success">
-                                {t('register.success')}
+                                <Trans
+                                    i18nKey="register:register.success"
+                                    components={{ bold: <strong />}}
+                                />
                             </Alert>
                             {error && error.graphQLErrors.map(({ message }, i) => (
                                 <Alert key={i} variant="danger">

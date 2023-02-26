@@ -43,5 +43,17 @@
   },
   "login.info.text": "<bold>{{name}}</bold> olarak oturum açıldı",
   "no.records.text": "Gösterilecek kayıt yok",
-  "language.label": "Dil"
-}
+  "language.label": "Dil",
+  "messages": {
+    "info": {
+      "authenticated": {
+        "prefix": "",
+        "link": "Oturum Aç"
+      },
+      "register": {
+        "noaccount": "Henüz bir hesabınız yok mu?",
+        "link": "Yeni hesap oluştur"
+      }
+    }
+  }
+  }

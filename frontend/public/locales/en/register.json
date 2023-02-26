@@ -4,6 +4,6 @@
     "form": {
       "button": "Register"
     },
-    "success": "Registration saved!."
+    "success": "<bold>Registration saved!</bold> Please check your email for confirmation."
   }
 }

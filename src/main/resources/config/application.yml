@@ -24,6 +24,8 @@ spring:
         core-size: 2
         max-size: 50
         queue-capacity: 10000
+  thymeleaf:
+    mode: HTML
 management:
   endpoints:
     web:
