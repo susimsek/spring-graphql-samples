@@ -44,6 +44,7 @@ private const val DEFAULT_EMAIL = "johndoe@localhost"
 private val DEFAULT_LANG = Locale.ENGLISH
 private const val DEFAULT_CREATED_DATE = "2023-01-21T22:40:12.710+03:00"
 private const val DEFAULT_ACTIVATION_TOKEN = "a8813c7a-a04a-4bd9-943f-a11b8255f755"
+private const val DEFAULT_RESET_TOKEN = "7b3fe2dc-0497-46d0-bd84-7f8e354385e9"
 
 val DEFAULT_USER = UserPayload(
     id = DEFAULT_ID,
@@ -189,6 +190,37 @@ class UserControllerTest {
 
         coVerify(exactly = 1) { userService.activateAccount(any()) }
     }
+
+    @Test
+    fun `reset password`() = runTest {
+        coEvery { userService.resetPassword(any()) } returns true
+        coEvery { recaptchaService.validateToken(any()) } returns true
+
+        graphQlTester
+            .documentName("resetPasswordMutation")
+            .variable("email", DEFAULT_EMAIL)
+            .execute()
+            .path("data.resetPassword").entity(Boolean::class.java).isEqualTo(true)
+
+        coVerify(exactly = 1) { userService.resetPassword(any()) }
+        coVerify(exactly = 1) { recaptchaService.validateToken(any()) }
+    }
+
+    @Test
+    fun `reset password with wrong email`() = runTest {
+        coEvery { userService.resetPassword(any()) } returns true
+        coEvery { recaptchaService.validateToken(any()) } returns true
+
+        graphQlTester
+            .documentName("resetPasswordMutation")
+            .variable("email", "password-reset-wrong-email@example.com")
+            .execute()
+            .path("data.resetPassword").entity(Boolean::class.java).isEqualTo(true)
+
+        coVerify(exactly = 1) { userService.resetPassword(any()) }
+        coVerify(exactly = 1) { recaptchaService.validateToken(any()) }
+    }
+
 
     @Test
     fun `change password`() = runTest {
