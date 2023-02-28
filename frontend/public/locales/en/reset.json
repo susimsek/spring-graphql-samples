@@ -17,7 +17,7 @@
       },
       "messages": {
         "info": "Choose a new password",
-        "success": "<bold>Your password has been reset.</bold>",
+        "success": "<bold>Your password has been reset.</bold> Please ",
         "keymissing": "The reset key is missing.",
         "error": "Your password couldn't be reset. Remember a password request is only valid for 24 hours."
       }

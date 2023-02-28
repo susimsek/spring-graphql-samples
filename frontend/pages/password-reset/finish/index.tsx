@@ -12,6 +12,7 @@ import * as yup from "yup";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import Layout from "../../../components/Layout";
+import Link from "next/link";
 type ResetPasswordFormData = {
     newPassword: string;
     confirmpassword: string};
@@ -108,10 +109,18 @@ const ResetPasswordPage = () => {
                 />} {t('reset.finish.form.button')}
             </Button>
             <Alert show={visibleSuccessMessage} variant="success">
-                <Trans
-                    i18nKey="reset:reset.finish.messages.success"
-                    components={{ bold: <strong />}}
-                />
+                <Alert variant="success">
+                    <Trans
+                        i18nKey="reset:reset.finish.messages.success"
+                        components={{ bold: <strong />}}
+                    />
+                    <Alert.Link as={Link} href="/login" className="alert-link">
+                        <Trans
+                            i18nKey="common:messages.info.authenticated.link"
+                            components={{ bold: <strong />}}
+                        />
+                    </Alert.Link>
+                </Alert>
             </Alert>
             <Alert show={visibleErrorMessage} variant="danger">
                 {t('reset.finish.messages.error')}
