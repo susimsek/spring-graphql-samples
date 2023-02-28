@@ -1,5 +1,5 @@
-import React from "react";
-import {Alert, Col, Container, Row, Spinner} from "react-bootstrap";
+import React, {useState} from "react";
+import {Alert, Col, Container, InputGroup, Row, Spinner} from "react-bootstrap";
 import Layout from "../../components/Layout";
 import {useTranslation} from "next-i18next";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
@@ -14,11 +14,15 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import {useGoogleReCaptcha} from "react-google-recaptcha-v3";
 import Link from "next/link";
+import {faEye, faEyeSlash, faSave} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 type LoginFormData = { username: string; password: string };
 
 const LoginPage = () => {
     const { t } = useTranslation('login')
+
+    const[passwordType,setPasswordType]=useState<string>("password");
 
     const schema = yup.object({
         username: yup.string().required(t("common:validation.required"))
@@ -38,6 +42,10 @@ const LoginPage = () => {
     const [login, { loading, error }, ] = useLoginMutation({
         errorPolicy: "all"
     });
+
+    const togglePassword =() => passwordType==="password" ? setPasswordType("text")
+            : setPasswordType("password")
+
 
 
 
@@ -99,15 +107,22 @@ const LoginPage = () => {
                                     </Form.Group>
                                     <Form.Group className="mb-3">
                                         <Form.Label>{t('common:form.password.label')}</Form.Label>
-                                        <Form.Control
-                                            type="password"
-                                            {...register('password')}
-                                            isInvalid={!!errors.password}
-                                            disabled={loading}
-                                        />
-                                        <Form.Control.Feedback type="invalid">
-                                            {errors.password?.message}
-                                        </Form.Control.Feedback>
+                                        <InputGroup>
+                                            <Form.Control
+                                                type={passwordType}
+                                                {...register('password')}
+                                                isInvalid={!!errors.password}
+                                                disabled={loading}
+                                            />
+                                            <InputGroup.Text>
+                                                <FontAwesomeIcon
+                                                    onClick={togglePassword}
+                                                    icon={passwordType == "password" ? faEyeSlash: faEye}/>
+                                            </InputGroup.Text>
+                                            <Form.Control.Feedback type="invalid">
+                                                {errors.password?.message}
+                                            </Form.Control.Feedback>
+                                        </InputGroup>
                                     </Form.Group>
                                     <Button className="mb-3" variant="primary" type="submit" disabled={loading}>
                                         {loading && <Spinner
