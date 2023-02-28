@@ -53,7 +53,7 @@ class UserService(
             }
         }
 
-        existingUser = userRepository.findOneByEmailIgnoreCase(input.email).awaitSingleOrNull()
+        existingUser = userRepository.findOneByEmail(input.email.lowercase(Locale.ENGLISH)).awaitSingleOrNull()
 
         existingUser?.let {
             if (!it.activated) {
@@ -147,6 +147,11 @@ class UserService(
         user.activationTokenExpiryDate = OffsetDateTime.now().plusMinutes(60 * 24)
     }
 
+    fun createPasswordResetToken(user: User, token: String) {
+        user.resetToken = token
+        user.resetTokenExpiryDate = OffsetDateTime.now().plusMinutes(60 * 24)
+    }
+
     suspend fun changePassword(currentPassword: String, newPassword: String): Boolean {
         val user = userContextProvider.getCurrentUser()
         val currentEncryptedPassword = user.password
@@ -160,4 +165,16 @@ class UserService(
         log.debug("Changed password for User: {}", user)
         return true
     }
+
+    suspend fun resetPassword(email: String): Boolean {
+        val user = userRepository.findOneByEmail(email.lowercase(Locale.ENGLISH)).awaitSingleOrNull()
+        if (user != null && user.activated) {
+            val resetToken = UUID.randomUUID().toString()
+            createPasswordResetToken(user, resetToken)
+            userRepository.save(user)
+            mailService.sendPasswordResetMail(user)
+        }
+        return true
+    }
+
 }

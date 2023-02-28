@@ -10,6 +10,9 @@
       "error": {
         "authentication": "Kullanıcı adı veya şifre hatalı"
       }
+    },
+    "password": {
+      "forgot": "Şifreni mi unuttun?"
     }
   }
 }

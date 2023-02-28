@@ -23,6 +23,6 @@ export const config = {
          * - _next/static (static files)
          * - favicon.ico (favicon file)
          */
-        '/((?!api|_next|signup|activate|favicon.ico).*)',
+        '/((?!api|_next|signup|activate|reset|favicon.ico).*)',
     ],
 }

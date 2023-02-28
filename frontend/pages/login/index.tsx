@@ -13,6 +13,7 @@ import {useAuth} from "../../contexts/AuthProvider";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import {useGoogleReCaptcha} from "react-google-recaptcha-v3";
+import Link from "next/link";
 
 type LoginFormData = { username: string; password: string };
 
@@ -119,6 +120,14 @@ const LoginPage = () => {
                                     </Button>
                                     {error && <Alert variant="danger">{t('login.messages.error.authentication')}</Alert>}
                                 </Form>
+                                <Alert variant="warning">
+                                    <Alert.Link as={Link} href="/reset/request">{t('login.password.forgot')}</Alert.Link>
+                                </Alert>
+                                <Alert variant="warning">
+                                     <span>
+                                         {t('common:messages.info.register.noaccount')}</span>{' '}
+                                    <Alert.Link as={Link} href="/signup">{t('common:messages.info.register.link')}</Alert.Link>
+                                </Alert>
                             </Card.Body>
                         </Card>
                     </Col>

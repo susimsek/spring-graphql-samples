@@ -22,7 +22,7 @@ class DomainUserDetailsService(private val userRepository: UserRepository) : Rea
         log.debug("Authenticating $login")
 
         if (EmailValidator().isValid(login, null)) {
-            return userRepository.findOneByEmailIgnoreCase(login)
+            return userRepository.findOneByEmail(login.lowercase(Locale.ENGLISH))
                 .switchIfEmpty(
                     Mono.error(
                         UsernameNotFoundException("User with email $login was not found in the database")

@@ -47,6 +47,15 @@ class UserController(
         return userService.changePassword(input.currentPassword, input.newPassword)
     }
 
+    @MutationMapping
+    suspend fun resetPassword(
+        @Argument email: String,
+        @ContextValue recaptcha: String
+    ): Boolean {
+        recaptchaService.validateToken(recaptcha)
+        return userService.resetPassword(email)
+    }
+
     @QueryMapping
     @PreAuthorize("isAuthenticated()")
     suspend fun users(

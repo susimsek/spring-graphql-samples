@@ -37,6 +37,7 @@ type Mutation {
     logout: Boolean!
     createUser(input: AddUserInput!): UserPayload!
     activateAccount(token: String! @NotBlank): Boolean!
+    resetPassword(email: String! @NotBlank @Email @Size(min: 5, max: 254)): Boolean!
     changePassword(input: ChangePasswordInput!): Boolean!
     createPost(input: AddPostInput!): PostPayload!
     updatePost(input: UpdatePostInput!): PostPayload!

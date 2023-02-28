@@ -80,4 +80,10 @@ class MailService(
         log.debug("Sending activation email to '{}'", user.email)
         sendEmailFromTemplate(user, "mail/activationEmail", "email.activation.title")
     }
+
+    @Async
+    fun sendPasswordResetMail(user: User) {
+        log.debug("Sending password reset email to '{}'", user.email)
+        sendEmailFromTemplate(user, "mail/passwordResetEmail", "email.reset.title")
+    }
 }

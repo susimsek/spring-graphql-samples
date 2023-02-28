@@ -36,7 +36,11 @@ data class User(
 
     var activationToken: String? = null,
 
-    var activationTokenExpiryDate: OffsetDateTime? = null
+    var activationTokenExpiryDate: OffsetDateTime? = null,
+
+    var resetToken: String? = null,
+
+    var resetTokenExpiryDate: OffsetDateTime? = null
 
 ) : BaseEntity() {
     override fun equals(other: Any?): Boolean {

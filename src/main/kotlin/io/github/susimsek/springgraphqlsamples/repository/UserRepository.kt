@@ -15,7 +15,7 @@ interface UserRepository :
     CoroutineSortingRepository<User, String>,
     // ReactiveQuerydslPredicateExecutor<User>,
     UserRepositoryOverride {
-    fun findOneByEmailIgnoreCase(email: String): Mono<User>
+    fun findOneByEmail(email: String): Mono<User>
 
     fun findOneByUsername(login: String): Mono<User>
 
