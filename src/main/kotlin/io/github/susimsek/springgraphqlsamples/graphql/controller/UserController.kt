@@ -42,6 +42,7 @@ class UserController(
     }
 
     @MutationMapping
+    @PreAuthorize("isAuthenticated()")
     suspend fun changePassword(@Argument input: ChangePasswordInput): Boolean {
         return userService.changePassword(input.currentPassword, input.newPassword)
     }
