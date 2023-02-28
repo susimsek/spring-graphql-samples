@@ -166,7 +166,7 @@ class UserService(
         return true
     }
 
-    suspend fun resetPassword(email: String): Boolean {
+    suspend fun forgotPassword(email: String): Boolean {
         val user = userRepository.findOneByEmail(email.lowercase(Locale.ENGLISH)).awaitSingleOrNull()
         if (user != null && user.activated) {
             val resetToken = UUID.randomUUID().toString()
@@ -174,6 +174,20 @@ class UserService(
             userRepository.save(user)
             mailService.sendPasswordResetMail(user)
         }
+        return true
+    }
+
+    suspend fun resetPassword(token: String, newPassword: String): Boolean {
+        log.debug("Reset user password for reset token {}", token)
+        val user = userRepository.findByResetToken(token) ?: return false
+        val isExpired = user.resetTokenExpiryDate?.isAfter(OffsetDateTime.now()) == false
+        if (isExpired) {
+            return false
+        }
+        user.password = passwordEncoder.encode(newPassword)
+        user.resetToken = null
+        user.resetTokenExpiryDate = null
+        userRepository.save(user)
         return true
     }
 

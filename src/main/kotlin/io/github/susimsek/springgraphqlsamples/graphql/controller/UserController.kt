@@ -5,6 +5,7 @@ import io.github.susimsek.springgraphqlsamples.graphql.DEFAULT_SIZE
 import io.github.susimsek.springgraphqlsamples.graphql.MAX_SIZE
 import io.github.susimsek.springgraphqlsamples.graphql.input.AddUserInput
 import io.github.susimsek.springgraphqlsamples.graphql.input.ChangePasswordInput
+import io.github.susimsek.springgraphqlsamples.graphql.input.ResetPasswordInput
 import io.github.susimsek.springgraphqlsamples.graphql.input.UserFilter
 import io.github.susimsek.springgraphqlsamples.graphql.input.UserOrder
 import io.github.susimsek.springgraphqlsamples.graphql.type.PagedEntityModel
@@ -48,12 +49,17 @@ class UserController(
     }
 
     @MutationMapping
-    suspend fun resetPassword(
+    suspend fun forgotPassword(
         @Argument email: String,
         @ContextValue recaptcha: String
     ): Boolean {
         recaptchaService.validateToken(recaptcha)
-        return userService.resetPassword(email)
+        return userService.forgotPassword(email)
+    }
+
+    @MutationMapping
+    suspend fun resetPassword(@Argument input: ResetPasswordInput): Boolean {
+        return userService.resetPassword(input.token, input.newPassword)
     }
 
     @QueryMapping

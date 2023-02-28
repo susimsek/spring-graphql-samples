@@ -9,14 +9,14 @@ import Card from 'react-bootstrap/Card';
 import {SubmitHandler, useForm} from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
-import {useResetPasswordMutation} from "../../../generated/graphql-types";
+import {useForgotPasswordMutation} from "../../../generated/graphql-types";
 import {useGoogleReCaptcha} from "react-google-recaptcha-v3";
 
 type PasswordResetFormData = {
     email: string;
 };
 
-const PasswordResetRequestPage = () => {
+const ForgotPasswordPage = () => {
     const { t } = useTranslation('reset')
 
     const [visibleSuccessMessage, setVisibleSuccessMessage] = useState<boolean>(false)
@@ -29,7 +29,7 @@ const PasswordResetRequestPage = () => {
 
     const { executeRecaptcha } = useGoogleReCaptcha()
 
-    const [resetPassword, { loading, error }, ] = useResetPasswordMutation({
+    const [forgotPassword, { loading, error }, ] = useForgotPasswordMutation({
         errorPolicy: "all"
     });
 
@@ -52,7 +52,7 @@ const PasswordResetRequestPage = () => {
 
         const token = await executeRecaptcha('reset_password');
 
-        const result = await resetPassword({
+        const result = await forgotPassword({
             variables: {
                 email
             },
@@ -63,7 +63,7 @@ const PasswordResetRequestPage = () => {
             }
         });
 
-        if (result.data?.resetPassword) {
+        if (result.data?.forgotPassword) {
             setVisibleSuccessMessage(true)
         }
     };
@@ -128,4 +128,4 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
     }
 })
 
-export default PasswordResetRequestPage;
+export default ForgotPasswordPage;

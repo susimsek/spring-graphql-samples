@@ -22,4 +22,6 @@ interface UserRepository :
     fun findAllByIdIn(id: MutableSet<String>?): Flow<User>
 
     suspend fun findByActivationToken(activationToken: String): User?
+
+    suspend fun findByResetToken(resetToken: String): User?
 }

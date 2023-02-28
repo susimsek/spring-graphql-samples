@@ -17,7 +17,7 @@
       },
       "messages": {
         "info": "Yeni şifre seç",
-        "success": "<bold>Şifren sıfırlandı.</bold> Lütfen ",
+        "success": "<bold>Şifren sıfırlandı.</bold>",
         "keymissing": "Şifre sıfırlama anahtarı geçersiz.",
         "error": "Şifren sıfırlanamaz. Şifre isteği sadece 24 saat geçerlidir."
       }

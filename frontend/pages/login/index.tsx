@@ -121,7 +121,7 @@ const LoginPage = () => {
                                     {error && <Alert variant="danger">{t('login.messages.error.authentication')}</Alert>}
                                 </Form>
                                 <Alert variant="warning">
-                                    <Alert.Link as={Link} href="/reset/request">{t('login.password.forgot')}</Alert.Link>
+                                    <Alert.Link as={Link} href="/password-reset/request">{t('login.password.forgot')}</Alert.Link>
                                 </Alert>
                                 <Alert variant="warning">
                                      <span>

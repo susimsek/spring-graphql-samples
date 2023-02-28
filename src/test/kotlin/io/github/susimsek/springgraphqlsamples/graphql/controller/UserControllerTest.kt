@@ -192,33 +192,69 @@ class UserControllerTest {
     }
 
     @Test
-    fun `reset password`() = runTest {
-        coEvery { userService.resetPassword(any()) } returns true
+    fun `forgot password`() = runTest {
+        coEvery { userService.forgotPassword(any()) } returns true
         coEvery { recaptchaService.validateToken(any()) } returns true
 
         graphQlTester
-            .documentName("resetPasswordMutation")
+            .documentName("forgotPasswordMutation")
             .variable("email", DEFAULT_EMAIL)
             .execute()
-            .path("data.resetPassword").entity(Boolean::class.java).isEqualTo(true)
+            .path("data.forgotPassword").entity(Boolean::class.java).isEqualTo(true)
 
-        coVerify(exactly = 1) { userService.resetPassword(any()) }
+        coVerify(exactly = 1) { userService.forgotPassword(any()) }
         coVerify(exactly = 1) { recaptchaService.validateToken(any()) }
     }
 
     @Test
-    fun `reset password with wrong email`() = runTest {
-        coEvery { userService.resetPassword(any()) } returns true
+    fun `forgot password with wrong email`() = runTest {
+        coEvery { userService.forgotPassword(any()) } returns true
         coEvery { recaptchaService.validateToken(any()) } returns true
 
         graphQlTester
-            .documentName("resetPasswordMutation")
+            .documentName("forgotPasswordMutation")
             .variable("email", "password-reset-wrong-email@example.com")
+            .execute()
+            .path("data.forgotPassword").entity(Boolean::class.java).isEqualTo(true)
+
+        coVerify(exactly = 1) { userService.forgotPassword(any()) }
+        coVerify(exactly = 1) { recaptchaService.validateToken(any()) }
+    }
+
+    @Test
+    fun `reset password`() = runTest {
+        coEvery { userService.resetPassword(any(), any()) } returns true
+
+        val input = mapOf(
+            "token" to DEFAULT_RESET_TOKEN,
+            "newPassword" to "new password"
+        )
+
+        graphQlTester
+            .documentName("resetPasswordMutation")
+            .variable("input", input)
             .execute()
             .path("data.resetPassword").entity(Boolean::class.java).isEqualTo(true)
 
-        coVerify(exactly = 1) { userService.resetPassword(any()) }
-        coVerify(exactly = 1) { recaptchaService.validateToken(any()) }
+        coVerify(exactly = 1) { userService.resetPassword(any(), any()) }
+    }
+
+    @Test
+    fun `reset password with wrong token`() = runTest {
+        coEvery { userService.resetPassword(any(), any()) } returns false
+
+        val input = mapOf(
+            "token" to "wrong reset token",
+            "newPassword" to "new password"
+        )
+
+        graphQlTester
+            .documentName("resetPasswordMutation")
+            .variable("input", input)
+            .execute()
+            .path("data.resetPassword").entity(Boolean::class.java).isEqualTo(false)
+
+        coVerify(exactly = 1) { userService.resetPassword(any(), any()) }
     }
 
 
