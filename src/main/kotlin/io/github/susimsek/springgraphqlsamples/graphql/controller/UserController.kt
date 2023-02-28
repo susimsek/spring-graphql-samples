@@ -4,6 +4,7 @@ import io.github.susimsek.springgraphqlsamples.graphql.DEFAULT_PAGE_NO
 import io.github.susimsek.springgraphqlsamples.graphql.DEFAULT_SIZE
 import io.github.susimsek.springgraphqlsamples.graphql.MAX_SIZE
 import io.github.susimsek.springgraphqlsamples.graphql.input.AddUserInput
+import io.github.susimsek.springgraphqlsamples.graphql.input.ChangePasswordInput
 import io.github.susimsek.springgraphqlsamples.graphql.input.UserFilter
 import io.github.susimsek.springgraphqlsamples.graphql.input.UserOrder
 import io.github.susimsek.springgraphqlsamples.graphql.type.PagedEntityModel
@@ -38,6 +39,11 @@ class UserController(
     @MutationMapping
     suspend fun activateAccount(@Argument token: String): Boolean {
         return userService.activateAccount(token)
+    }
+
+    @MutationMapping
+    suspend fun changePassword(@Argument input: ChangePasswordInput): Boolean {
+        return userService.changePassword(input.currentPassword, input.newPassword)
     }
 
     @QueryMapping

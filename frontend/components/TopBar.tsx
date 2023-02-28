@@ -13,6 +13,35 @@ const TopBar: React.FC = () => {
 
     const [isLoggedIn] = useAuth();
 
+    const accountMenuItemsAuthenticated = (
+        <>
+            <Nav className="me-auto">
+                <Nav.Link as={Link} href="/">{t('menu.home')}</Nav.Link>
+                <>
+                    <Nav.Link as={Link} href="/chatroom">{t('menu.chat')}</Nav.Link>
+                    <Nav.Link as={Link} href="/my-posts">{t('menu.myPosts')}</Nav.Link>
+                </>
+            </Nav>
+            <Nav>
+                <AccountMenu/>
+                <LanguageBar/>
+            </Nav>
+        </>
+    );
+
+    const accountMenuItems = (
+        <>
+            <Nav className="me-auto">
+                <Nav.Link as={Link} href="/">{t('menu.home')}</Nav.Link>
+            </Nav>
+            <Nav>
+                <Nav.Link as={Link} href="/signup">{t('account.register')}</Nav.Link>
+                <Nav.Link as={Link} href="/login">{t('account.login')}</Nav.Link>
+                <LanguageBar/>
+            </Nav>
+        </>
+    );
+
     return (
         <Navbar bg="dark" variant="dark" expand="lg">
             <Container>
@@ -26,25 +55,7 @@ const TopBar: React.FC = () => {
                     />{' '}GraphQL</Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
-                    <Nav className="me-auto">
-                        <Nav.Link as={Link} href="/">{t('menu.home')}</Nav.Link>
-                        {isLoggedIn &&
-                            <>
-                                <Nav.Link as={Link} href="/chatroom">{t('menu.chat')}</Nav.Link>
-                                <Nav.Link as={Link} href="/my-posts">{t('menu.myPosts')}</Nav.Link>
-                            </>}
-                    </Nav>
-                    <Nav>
-                        {
-                            isLoggedIn ? <AccountMenu/>
-                                : <>
-                                    <Nav.Link as={Link} href="/signup">{t('account.register')}</Nav.Link>
-                                    <Nav.Link as={Link} href="/login">{t('account.login')}</Nav.Link>
-                                </>
-                        }
-
-                        <LanguageBar/>
-                    </Nav>
+                    {isLoggedIn ? accountMenuItemsAuthenticated : accountMenuItems}
                 </Navbar.Collapse>
             </Container>
         </Navbar>

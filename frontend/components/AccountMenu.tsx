@@ -6,6 +6,7 @@ import {Trans, useTranslation} from "next-i18next";
 import {useLogout} from "../hooks/use-logout";
 import {useCurrentUser} from "../hooks/use-current-user";
 import {useRouter} from "next/router";
+import Link from "next/link";
 
 
 const AccountMenu: React.FC = () => {
@@ -34,6 +35,7 @@ const AccountMenu: React.FC = () => {
                 values={{ name: user?.name}}
                 components={{ bold: <strong />}}
             /></NavDropdown.Item>
+            <NavDropdown.Item as={Link} href="/password">{t("account.password")}</NavDropdown.Item>
             <NavDropdown.Item onClick={handleLogout}>{t('account.logout')}</NavDropdown.Item>
         </NavDropdown>
     );

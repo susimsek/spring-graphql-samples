@@ -191,6 +191,24 @@ class UserControllerTest {
     }
 
     @Test
+    fun `change password`() = runTest {
+        coEvery { userService.changePassword(any(), any()) } returns true
+
+        val input = mapOf(
+            "currentPassword" to DEFAULT_PASSWORD,
+            "newPassword" to "new password"
+        )
+
+        graphQlTester
+            .documentName("changePasswordMutation")
+            .variable("input", input)
+            .execute()
+            .path("data.changePassword").entity(Boolean::class.java).isEqualTo(true)
+
+        coVerify(exactly = 1) { userService.changePassword(any(), any()) }
+    }
+
+    @Test
     fun `activate account with wrong token`() = runTest {
         coEvery { userService.activateAccount(any()) } returns false
 

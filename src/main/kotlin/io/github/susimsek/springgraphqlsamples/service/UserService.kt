@@ -2,6 +2,7 @@ package io.github.susimsek.springgraphqlsamples.service
 
 import io.github.susimsek.springgraphqlsamples.domain.User
 import io.github.susimsek.springgraphqlsamples.exception.EMAIL_ALREADY_EXISTS_MSG_CODE
+import io.github.susimsek.springgraphqlsamples.exception.PASSWORD_INVALID_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.exception.ROLE_NAME_NOT_FOUND_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundException
 import io.github.susimsek.springgraphqlsamples.exception.USERNAME_ALREADY_EXISTS_MSG_CODE
@@ -11,10 +12,10 @@ import io.github.susimsek.springgraphqlsamples.graphql.enumerated.RoleName
 import io.github.susimsek.springgraphqlsamples.graphql.input.AddUserInput
 import io.github.susimsek.springgraphqlsamples.graphql.input.UserFilter
 import io.github.susimsek.springgraphqlsamples.graphql.type.PagedEntityModel
-import io.github.susimsek.springgraphqlsamples.graphql.type.Token
 import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
 import io.github.susimsek.springgraphqlsamples.repository.RoleRepository
 import io.github.susimsek.springgraphqlsamples.repository.UserRepository
+import io.github.susimsek.springgraphqlsamples.security.UserContextProvider
 import io.github.susimsek.springgraphqlsamples.security.getCurrentUserLogin
 import io.github.susimsek.springgraphqlsamples.service.mapper.UserMapper
 import kotlinx.coroutines.flow.Flow
@@ -36,7 +37,8 @@ class UserService(
     private val passwordEncoder: PasswordEncoder,
     private val userMapper: UserMapper,
     private val roleRepository: RoleRepository,
-    private val mailService: MailService
+    private val mailService: MailService,
+    private val userContextProvider: UserContextProvider
 ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -67,10 +69,12 @@ class UserService(
         input.password = encryptedPassword
         var user = userMapper.toEntity(input)
 
-        val role = roleRepository.findByName(RoleName.ROLE_USER)
-            ?: throw ResourceNotFoundException(ROLE_NAME_NOT_FOUND_MSG_CODE, arrayOf(RoleName.ROLE_USER))
-        user.roles = mutableSetOf(role)
-        user.activated = false
+        user.apply {
+            activated = false
+            val role = roleRepository.findByName(RoleName.ROLE_USER)
+                ?: throw ResourceNotFoundException(ROLE_NAME_NOT_FOUND_MSG_CODE, arrayOf(RoleName.ROLE_USER))
+            roles = mutableSetOf(role)
+        }
 
         val activationToken = UUID.randomUUID().toString()
         createVerificationToken(user, activationToken)
@@ -102,9 +106,7 @@ class UserService(
      */
 
     suspend fun getCurrentUser(): UserPayload {
-        val currentUserId = getCurrentUserLogin().awaitSingleOrNull()
-            ?: throw UsernameNotFoundException("User was not found")
-        val user = userRepository.findById(currentUserId) ?: throw UsernameNotFoundException("User was not found")
+        val user = userContextProvider.getCurrentUser()
         return userMapper.toType(user)
     }
 
@@ -143,5 +145,19 @@ class UserService(
     fun createVerificationToken(user: User, token: String) {
         user.activationToken = token
         user.activationTokenExpiryDate = OffsetDateTime.now().plusMinutes(60 * 24)
+    }
+
+    suspend fun changePassword(currentPassword: String, newPassword: String): Boolean {
+        val user = userContextProvider.getCurrentUser()
+        val currentEncryptedPassword = user.password
+        if (!passwordEncoder.matches(currentPassword, currentEncryptedPassword)) {
+            throw ValidationException(PASSWORD_INVALID_MSG_CODE)
+        }
+        val encryptedPassword = passwordEncoder.encode(newPassword)
+        user.password = encryptedPassword
+        userRepository.save(user)
+
+        log.debug("Changed password for User: {}", user)
+        return true
     }
 }

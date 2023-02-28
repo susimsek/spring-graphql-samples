@@ -37,6 +37,7 @@ type Mutation {
     logout: Boolean!
     createUser(input: AddUserInput!): UserPayload!
     activateAccount(token: String! @NotBlank): Boolean!
+    changePassword(input: ChangePasswordInput!): Boolean!
     createPost(input: AddPostInput!): PostPayload!
     updatePost(input: UpdatePostInput!): PostPayload!
     deletePost(id: ID!): ID!
@@ -50,6 +51,11 @@ type Subscription{
 input LoginInput {
     login: String! @NotBlank @Size(min: 4, max: 50)
     password: String! @NotBlank @Size(min: 4, max: 100)
+}
+
+input ChangePasswordInput {
+    currentPassword: String! @NotBlank
+    newPassword: String! @NotBlank @Size(min: 4, max: 100)
 }
 
 input AddUserInput {
