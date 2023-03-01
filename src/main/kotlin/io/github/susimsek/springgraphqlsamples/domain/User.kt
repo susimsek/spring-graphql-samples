@@ -40,6 +40,8 @@ data class User(
 
     var resetToken: String? = null,
 
+    var resetDate: OffsetDateTime? = null,
+
     var resetTokenExpiryDate: OffsetDateTime? = null
 
 ) : BaseEntity() {

@@ -150,6 +150,7 @@ class UserService(
     fun createPasswordResetToken(user: User, token: String) {
         user.resetToken = token
         user.resetTokenExpiryDate = OffsetDateTime.now().plusMinutes(60 * 24)
+        user.resetDate = OffsetDateTime.now()
     }
 
     suspend fun changePassword(currentPassword: String, newPassword: String): Boolean {
@@ -187,6 +188,7 @@ class UserService(
         user.password = passwordEncoder.encode(newPassword)
         user.resetToken = null
         user.resetTokenExpiryDate = null
+        user.resetDate = null
         userRepository.save(user)
         return true
     }
