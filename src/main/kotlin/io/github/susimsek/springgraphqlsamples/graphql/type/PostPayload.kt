@@ -23,7 +23,7 @@ data class PostPayload(
     var posts: MutableList<PostPayload>? = null,
 
     var locale: Locale? = null
-): Serializable {
+) : Serializable {
 
     companion object {
         private const val serialVersionUID = 1L

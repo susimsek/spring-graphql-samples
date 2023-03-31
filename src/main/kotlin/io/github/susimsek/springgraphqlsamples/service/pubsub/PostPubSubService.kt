@@ -15,6 +15,7 @@ class PostPubSubService(
     override suspend fun publish(message: PostPayload) {
         kafkaSink.emitNext(message, Sinks.EmitFailureHandler.FAIL_FAST)
     }
+
     override fun subscribe(): Flow<PostPayload> {
         return postFlow.asSharedFlow()
     }

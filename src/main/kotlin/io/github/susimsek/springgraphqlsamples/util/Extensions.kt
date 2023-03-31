@@ -1,6 +1,6 @@
 package io.github.susimsek.springgraphqlsamples.util
 
-import java.util.Locale
+import java.util.*
 import kotlin.reflect.KClass
 
 fun String.capitalize(locale: Locale): String {

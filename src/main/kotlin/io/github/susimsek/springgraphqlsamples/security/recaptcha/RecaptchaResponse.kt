@@ -50,7 +50,8 @@ data class RecaptchaResponse(
         companion object {
             private val codes = ErrorCode.values().associateBy(ErrorCode::code)
 
-            @JvmStatic @JsonCreator
+            @JvmStatic
+            @JsonCreator
             fun from(value: String) = codes[value]
         }
     }

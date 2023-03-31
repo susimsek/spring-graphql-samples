@@ -29,6 +29,4 @@ class AsyncConfig(private val taskExecutionProperties: TaskExecutionProperties) 
     }
 
     override fun getAsyncUncaughtExceptionHandler() = SimpleAsyncUncaughtExceptionHandler()
-
-
 }

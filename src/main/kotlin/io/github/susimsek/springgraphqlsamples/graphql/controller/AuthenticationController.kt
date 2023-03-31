@@ -26,7 +26,7 @@ class AuthenticationController(
         @ContextValue recaptcha: String,
         locale: Locale,
         context:
-            GraphQLContext
+        GraphQLContext
     ): Token {
         recaptchaService.validateToken(recaptcha)
         log.info("locale: {}", locale.toLanguageTag())

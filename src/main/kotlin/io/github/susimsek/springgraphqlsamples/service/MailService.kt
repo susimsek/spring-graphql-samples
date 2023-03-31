@@ -11,9 +11,9 @@ import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
-import java.nio.charset.StandardCharsets
 import org.thymeleaf.context.Context
 import org.thymeleaf.spring6.SpringTemplateEngine
+import java.nio.charset.StandardCharsets
 
 private const val USER = "user"
 private const val BASE_URL = "baseUrl"
@@ -52,6 +52,7 @@ class MailService(
             when (ex) {
                 is MailException,
                 is MessagingException -> log.warn("Email could not be sent to user '{}'", sender.to, ex)
+
                 else -> throw ex
             }
         }

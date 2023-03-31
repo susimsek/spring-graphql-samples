@@ -4,10 +4,9 @@ import io.github.susimsek.springgraphqlsamples.security.cipher.CryptoUtils.getAE
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Component
-import java.lang.IllegalStateException
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
-import java.util.Base64
+import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.spec.GCMParameterSpec
 

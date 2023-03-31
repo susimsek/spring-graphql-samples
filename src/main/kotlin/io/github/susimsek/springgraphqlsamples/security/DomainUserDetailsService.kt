@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
-import java.util.Locale
+import java.util.*
 
 @Component("userDetailsService")
 class DomainUserDetailsService(private val userRepository: UserRepository) : ReactiveUserDetailsService {
@@ -38,7 +38,7 @@ class DomainUserDetailsService(private val userRepository: UserRepository) : Rea
     }
 
     private fun createSpringSecurityUser(lowercaseLogin: String, user: User):
-        org.springframework.security.core.userdetails.User {
+            org.springframework.security.core.userdetails.User {
         if (!user.activated) {
             throw UserNotActivatedException("User $lowercaseLogin was not activated")
         }

@@ -42,6 +42,7 @@ class ReactiveGraphqlExceptionResolver(
             else -> super.resolveToMultipleErrors(ex, env)
         }
     }
+
     override fun resolveToSingleError(
         ex: Throwable,
         env: DataFetchingEnvironment
@@ -73,6 +74,7 @@ class ReactiveGraphqlExceptionResolver(
                 GraphqlErrorBuilder.newError(env)
                     .message("Throttled").errorType(ExtendedErrorType.THROTTLED).build()
             }
+
             else -> super.resolveToSingleError(ex, env)
         }
     }

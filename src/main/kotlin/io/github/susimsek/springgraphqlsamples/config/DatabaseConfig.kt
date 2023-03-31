@@ -13,8 +13,7 @@ import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRep
 import java.time.Clock
 import java.time.OffsetDateTime
 import java.time.ZoneId
-import java.util.Date
-import java.util.Optional
+import java.util.*
 
 @Configuration(proxyBeanMethods = false)
 @EnableReactiveMongoRepositories("io.github.susimsek.springgraphqlsamples.repository")

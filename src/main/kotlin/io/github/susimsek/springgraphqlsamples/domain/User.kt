@@ -57,12 +57,12 @@ data class User(
 
     override fun toString(): String {
         return "User(id=$id, " +
-            "username=$username}, " +
-            "password=$password, " +
-            "firstName=$firstName, " +
-            "lastName=$lastName, " +
-            "lang=$email, " +
-            "email=$email, " +
-            "activated=$activated)"
+                "username=$username}, " +
+                "password=$password, " +
+                "firstName=$firstName, " +
+                "lastName=$lastName, " +
+                "lang=$email, " +
+                "email=$email, " +
+                "activated=$activated)"
     }
 }
