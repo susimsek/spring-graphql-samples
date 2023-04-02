@@ -241,6 +241,7 @@
                 <configuration>
                     <buildArgs>
                         <buildArg>-H:IncludeLocales=tr,en</buildArg>
+                        <buildArg>-H:AdditionalSecurityProviders=org.apache.kafka.common.security.scram.internals.ScramSaslClientProvider</buildArg>
                         <buildArg>--enable-https</buildArg>
                         <buildArg>--enable-http</buildArg>
                         <buildArg>
@@ -269,6 +270,7 @@
                             <BP_BINARY_COMPRESSION_METHOD>upx</BP_BINARY_COMPRESSION_METHOD>
                             <BP_NATIVE_IMAGE_BUILD_ARGUMENTS>
                                 -H:+ReportExceptionStackTraces
+                                -H:AdditionalSecurityProviders=org.apache.kafka.common.security.scram.internals.ScramSaslClientProvider
                                 -H:IncludeLocales=tr,en
                                 --enable-http
                                 --enable-https
