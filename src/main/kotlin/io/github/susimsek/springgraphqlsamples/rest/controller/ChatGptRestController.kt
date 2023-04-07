@@ -21,4 +21,9 @@ class ChatGptRestController(
     suspend fun createTranscription(@RequestPart audio: FilePart): TranscriptionPayload {
         return chatGptService.createTranscription(audio)
     }
+
+    @PostMapping("/translation")
+    suspend fun createTranslation(@RequestPart audio: FilePart): TranscriptionPayload {
+        return chatGptService.createTranslation(audio)
+    }
 }

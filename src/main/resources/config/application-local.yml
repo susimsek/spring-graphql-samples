@@ -76,7 +76,7 @@ recaptcha:
 
 chatgpt:
   base-url: https://api.openai.com/v1
-  secret-key: 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
+  secret-key: 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
   gpt-model: text-davinci-003
   audio-model: whisper-1
   temperature: 1.0

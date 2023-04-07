@@ -1,9 +1,7 @@
 package io.github.susimsek.springgraphqlsamples.service.chatgpt
 
-import org.springframework.http.MediaType
 import org.springframework.http.codec.multipart.FilePart
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.service.annotation.HttpExchange
 import org.springframework.web.service.annotation.PostExchange
@@ -19,6 +17,12 @@ interface ChatGptClient {
 
     @PostExchange("/audio/transcriptions")
     fun createTranscription(
+        @RequestPart model: String,
+        @RequestPart file: FilePart
+    ): Mono<TranscriptionPayload>
+
+    @PostExchange("/audio/translations")
+    fun createTranslation(
         @RequestPart model: String,
         @RequestPart file: FilePart
     ): Mono<TranscriptionPayload>

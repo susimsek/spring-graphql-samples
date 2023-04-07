@@ -26,4 +26,11 @@ class ChatGptService(
             audio
         ).awaitSingle()
     }
+
+    suspend fun createTranslation(audio: FilePart): TranscriptionPayload {
+        return chatGptClient.createTranslation(
+            chatGptProperties.audioModel,
+            audio
+        ).awaitSingle()
+    }
 }
