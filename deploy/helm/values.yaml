@@ -21,7 +21,8 @@ cipher:
   secret: secureCDCKey
 
 chatgpt:
-  model: text-davinci-003
+  gptModel: text-davinci-003
+  audioModel: whisper-1
   temperature: 1.0
   maxTokens: 300
   secret: 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

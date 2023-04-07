@@ -16,6 +16,6 @@ class ChatGptController(
 
     @MutationMapping
     suspend fun textCompletion(@Argument input: TextCompletionInput): TextCompletion {
-        return chatGptService.sendMessage(input.prompt)
+        return chatGptService.chat(input.prompt)
     }
 }

@@ -17,7 +17,10 @@ data class ChatGptProperties(
     var baseUrl: String,
 
     @field:NotBlank
-    val model: String,
+    val gptModel: String,
+
+    @field:NotBlank
+    val audioModel: String,
 
     @field:DecimalMin("0.0")
     @field:DecimalMax("2.0")

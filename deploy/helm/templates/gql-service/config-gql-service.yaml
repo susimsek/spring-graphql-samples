@@ -22,7 +22,8 @@ data:
   RECAPTCHA_THRESHOLD: {{ .Values.recaptcha.threshold }}
   CHATGPT_BASE_URL: https://api.openai.com/v1
   CHATGPT_SECRET_KEY: ${CHATGPT_SECRET}
-  CHATGPT_MODEL: {{ .Values.chatgpt.model }}
+  CHATGPT_GPT_MODEL: {{ .Values.chatgpt.gptModel }}
+  CHATGPT_AUDIO_MODEL: {{ .Values.chatgpt.audioModel }}
   CHATGPT_TEMPERATURE: {{ .Values.chatgpt.temperature }}
   CHATGPT_MAX_TOKENS: {{ .Values.chatgpt.maxTokens }}
   SPRING_MAIL_HOST: {{ .Values.mail.host }}

@@ -1,24 +1,29 @@
 package io.github.susimsek.springgraphqlsamples.service.chatgpt
 
 import kotlinx.coroutines.reactive.awaitSingle
+import org.springframework.http.codec.multipart.FilePart
 
 class ChatGptService(
     private val chatGptClient: ChatGptClient,
     private val chatGptProperties: ChatGptProperties
 ) {
 
-    suspend fun sendMessage(message: String): TextCompletion {
+    suspend fun chat(message: String): TextCompletion {
         val request = ChatGptRequest(
-            model = chatGptProperties.model,
+            model = chatGptProperties.gptModel,
             temperature = chatGptProperties.temperature,
             maxTokens = chatGptProperties.maxTokens,
             prompt = message
         )
-        val token = "Bearer ${chatGptProperties.secretKey}"
-
         return chatGptClient.createCompletion(
-            token,
             request
+        ).awaitSingle()
+    }
+
+    suspend fun createTranscription(audio: FilePart): TranscriptionPayload {
+        return chatGptClient.createTranscription(
+            chatGptProperties.audioModel,
+            audio
         ).awaitSingle()
     }
 }

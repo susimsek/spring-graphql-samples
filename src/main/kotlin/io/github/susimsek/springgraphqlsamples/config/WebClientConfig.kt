@@ -1,6 +1,7 @@
 package io.github.susimsek.springgraphqlsamples.config
 
 import io.github.susimsek.springgraphqlsamples.exception.RateLimitingException
+import io.github.susimsek.springgraphqlsamples.service.chatgpt.ChatGptProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpStatus
@@ -11,8 +12,9 @@ import reactor.core.publisher.Mono
 @Configuration(proxyBeanMethods = false)
 class WebClientConfig {
     @Bean
-    fun webClientBuilder(): WebClient.Builder {
+    fun webClientBuilder(chatGptProperties: ChatGptProperties): WebClient.Builder {
         return WebClient.builder()
+            .defaultHeaders { h -> h.setBearerAuth(chatGptProperties.secretKey) }
             .filter(errorHandler())
     }
 

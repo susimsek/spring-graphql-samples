@@ -59,6 +59,7 @@ security:
       permit-all-patterns:
         - /actuator/**
         - /graphql
+        - /api/**
         - /subscriptions
   cipher:
     base64-secret: c2VjdXJlQ0RDS2V5
@@ -75,8 +76,9 @@ recaptcha:
 
 chatgpt:
   base-url: https://api.openai.com/v1
-  secret-key: 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
-  model: text-davinci-003
+  secret-key: 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
+  gpt-model: text-davinci-003
+  audio-model: whisper-1
   temperature: 1.0
   maxTokens: 3000
 
