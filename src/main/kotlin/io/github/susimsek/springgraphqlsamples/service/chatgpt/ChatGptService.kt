@@ -1,5 +1,6 @@
 package io.github.susimsek.springgraphqlsamples.service.chatgpt
 
+import io.github.susimsek.springgraphqlsamples.graphql.input.CreateImageInput
 import kotlinx.coroutines.reactive.awaitSingle
 import org.springframework.http.codec.multipart.FilePart
 
@@ -31,6 +32,15 @@ class ChatGptService(
         return chatGptClient.createTranslation(
             chatGptProperties.audioModel,
             audio
+        ).awaitSingle()
+    }
+
+    suspend fun createImage(input: CreateImageInput): CreateImagePayload {
+        val request = CreateImageRequest(
+            prompt = input.prompt
+        )
+        return chatGptClient.createImage(
+            request
         ).awaitSingle()
     }
 }

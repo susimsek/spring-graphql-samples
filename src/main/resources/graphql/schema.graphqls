@@ -44,6 +44,7 @@ type Mutation {
     updatePost(input: UpdatePostInput!): PostPayload!
     deletePost(id: ID!): ID!
     textCompletion(input: TextCompletionInput!): TextCompletion!
+    createImage(input: CreateImageInput!): CreateImagePayload!
 }
 
 type Subscription{
@@ -137,6 +138,10 @@ input PostOrder {
 }
 
 input TextCompletionInput {
+    prompt: String! @NotBlank @Size(min: 3)
+}
+
+input CreateImageInput {
     prompt: String! @NotBlank @Size(min: 3)
 }
 
@@ -238,4 +243,14 @@ type Usage {
     completionTokens: Int
     promptTokens: Int
     totalTokens: Int
+}
+
+
+type CreateImagePayload {
+    created: Int
+    data: [Link]
+}
+
+type Link {
+    url: String
 }
