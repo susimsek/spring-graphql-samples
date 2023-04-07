@@ -37,7 +37,9 @@ class ChatGptService(
 
     suspend fun createImage(input: CreateImageInput): CreateImagePayload {
         val request = CreateImageRequest(
-            prompt = input.prompt
+            prompt = input.prompt,
+            n = chatGptProperties.image.number,
+            size = chatGptProperties.image.size
         )
         return chatGptClient.createImage(
             request

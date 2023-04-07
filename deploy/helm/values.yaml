@@ -26,6 +26,9 @@ chatgpt:
   temperature: 1.0
   maxTokens: 300
   secret: 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
+  image:
+    number: 1
+    size: 1024x1024
 
 recaptcha:
   enabled: true

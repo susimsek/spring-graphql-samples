@@ -26,6 +26,8 @@ data:
   CHATGPT_AUDIO_MODEL: {{ .Values.chatgpt.audioModel }}
   CHATGPT_TEMPERATURE: {{ .Values.chatgpt.temperature }}
   CHATGPT_MAX_TOKENS: {{ .Values.chatgpt.maxTokens }}
+  CHATGPT_IMAGE_NUMBER: {{ .Values.chatgpt.image.number }}
+  CHATGPT_IMAGE_SIZE: {{ .Values.chatgpt.image.size }}
   SPRING_MAIL_HOST: {{ .Values.mail.host }}
   SPRING_MAIL_PORT: {{ .Values.mail.port }}
   SPRING_MAIL_USERNAME: ${MAIL_USERNAME}
