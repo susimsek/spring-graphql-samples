@@ -45,6 +45,7 @@ type Mutation {
     deletePost(id: ID!): ID!
     textCompletion(input: TextCompletionInput!): TextCompletion!
     createImage(input: CreateImageInput!): CreateImagePayload!
+    createModeration(input: TextModerationInput!): TextModerationPayload!
 }
 
 type Subscription{
@@ -141,6 +142,10 @@ input TextCompletionInput {
     prompt: String! @NotBlank @Size(min: 3)
 }
 
+input TextModerationInput {
+    input: String! @NotBlank @Size(min: 3)
+}
+
 input CreateImageInput {
     prompt: String! @NotBlank @Size(min: 3)
 }
@@ -223,34 +228,66 @@ type FileUploadPayload {
     id: String!
 }
 
-type CompletionChoice {
-    finishReason: String
-    index: Int
-    logprobs: JSON
-    text: String
+type TextCompletion {
+    choices: [CompletionChoice!]!
+    created: Int!
+    id: String!
+    model: String!
+    object: String!
+    usage: Usage!
 }
 
-type TextCompletion {
-    choices: [CompletionChoice]
-    created: Int
-    id: String
-    model: String
-    object: String
-    usage: Usage
+type CompletionChoice {
+    finishReason: String!
+    index: Int!
+    logprobs: JSON
+    text: String!
 }
 
 type Usage {
-    completionTokens: Int
-    promptTokens: Int
-    totalTokens: Int
+    completionTokens: Int!
+    promptTokens: Int!
+    totalTokens: Int!
 }
 
 
 type CreateImagePayload {
-    created: Int
-    data: [Link]
+    created: Int!
+    data: [Link!]!
 }
 
 type Link {
-    url: String
+    url: String!
+}
+
+type TextModerationPayload {
+    id: String!
+    model: String!
+    results: [TextModeration!]!
+}
+
+type TextModeration {
+    categoryScores: ModerationCategoryScore!
+    flagged: Boolean!
+    categories: ModerationCategory!
+}
+
+type ModerationCategoryScore {
+    hateThreatening: Float!
+    sexualMinors: Float!
+    hate: Float!
+    selfHarm: Float!
+    sexual: Float!
+    violenceGraphic: Float!
+    violence: Float!
+}
+
+type ModerationCategory {
+    hateThreatening: Boolean!
+    sexualMinors: Boolean!
+    hate: Boolean!
+    selfHarm: Boolean!
+    sexual: Boolean!
+    violenceGraphic: Boolean!
+    violence: Boolean!
 }

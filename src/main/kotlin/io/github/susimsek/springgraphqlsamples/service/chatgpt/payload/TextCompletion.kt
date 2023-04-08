@@ -1,4 +1,4 @@
-package io.github.susimsek.springgraphqlsamples.service.chatgpt
+package io.github.susimsek.springgraphqlsamples.service.chatgpt.payload
 
 @Suppress("ConstructorParameterNaming")
 data class TextCompletion(

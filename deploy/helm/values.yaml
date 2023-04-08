@@ -23,6 +23,7 @@ cipher:
 chatgpt:
   gptModel: text-davinci-003
   audioModel: whisper-1
+  moderationModel: text-moderation-latest
   temperature: 1.0
   maxTokens: 300
   secret: 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

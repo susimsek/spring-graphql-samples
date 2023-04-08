@@ -1,8 +1,8 @@
-package io.github.susimsek.springgraphqlsamples.service.chatgpt
+package io.github.susimsek.springgraphqlsamples.service.chatgpt.payload
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class ChatGptRequest(
+data class TextCompletionRequest(
     val model: String,
     val prompt: String,
     val temperature: Float,

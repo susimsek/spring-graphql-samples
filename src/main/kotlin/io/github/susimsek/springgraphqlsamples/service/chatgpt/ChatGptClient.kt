@@ -1,5 +1,12 @@
 package io.github.susimsek.springgraphqlsamples.service.chatgpt
 
+import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.CreateImagePayload
+import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.CreateImageRequest
+import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.TextCompletion
+import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.TextCompletionRequest
+import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.TextModerationPayload
+import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.TextModerationRequest
+import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.TranscriptionPayload
 import org.springframework.http.codec.multipart.FilePart
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestPart
@@ -12,7 +19,7 @@ interface ChatGptClient {
 
     @PostExchange("/completions")
     fun createCompletion(
-        @RequestBody completion: ChatGptRequest
+        @RequestBody completion: TextCompletionRequest
     ): Mono<TextCompletion>
 
     @PostExchange("/audio/transcriptions")
@@ -32,4 +39,9 @@ interface ChatGptClient {
     fun createImage(
         @RequestBody image: CreateImageRequest
     ): Mono<CreateImagePayload>
+
+    @PostExchange("/moderations")
+    fun createModeration(
+        @RequestBody moderation: TextModerationRequest
+    ): Mono<TextModerationPayload>
 }

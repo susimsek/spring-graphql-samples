@@ -24,6 +24,7 @@ data:
   CHATGPT_SECRET_KEY: ${CHATGPT_SECRET}
   CHATGPT_GPT_MODEL: {{ .Values.chatgpt.gptModel }}
   CHATGPT_AUDIO_MODEL: {{ .Values.chatgpt.audioModel }}
+  CHATGPT_MODERATION_MODEL: {{ .Values.chatgpt.moderationModel }}
   CHATGPT_TEMPERATURE: {{ .Values.chatgpt.temperature }}
   CHATGPT_MAX_TOKENS: {{ .Values.chatgpt.maxTokens }}
   CHATGPT_IMAGE_NUMBER: {{ .Values.chatgpt.image.number }}

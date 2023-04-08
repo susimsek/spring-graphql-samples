@@ -1,7 +1,7 @@
 package io.github.susimsek.springgraphqlsamples.rest.controller
 
 import io.github.susimsek.springgraphqlsamples.service.chatgpt.ChatGptService
-import io.github.susimsek.springgraphqlsamples.service.chatgpt.TranscriptionPayload
+import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.TranscriptionPayload
 import org.springframework.http.codec.multipart.FilePart
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.PostMapping

@@ -1,4 +1,4 @@
-package io.github.susimsek.springgraphqlsamples.service.chatgpt
+package io.github.susimsek.springgraphqlsamples.service.chatgpt.payload
 
 data class CreateImageRequest(
     val prompt: String,

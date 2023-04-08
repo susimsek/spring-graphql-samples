@@ -1,4 +1,4 @@
-package io.github.susimsek.springgraphqlsamples.service.chatgpt
+package io.github.susimsek.springgraphqlsamples.service.chatgpt.payload
 
 import com.fasterxml.jackson.annotation.JsonProperty
 

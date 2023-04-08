@@ -25,6 +25,9 @@ data class ChatGptProperties(
     @field:NotBlank
     val audioModel: String,
 
+    @field:NotBlank
+    val moderationModel: String,
+
     @field:DecimalMin("0.0")
     @field:DecimalMax("2.0")
     val temperature: Float,

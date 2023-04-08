@@ -79,6 +79,7 @@ chatgpt:
   secret-key: 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
   gpt-model: text-davinci-003
   audio-model: whisper-1
+  moderation-model: text-moderation-latest
   temperature: 1.0
   maxTokens: 3000
   image:
