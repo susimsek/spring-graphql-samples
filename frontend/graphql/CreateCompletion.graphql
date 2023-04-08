@@ -1,5 +1,5 @@
-mutation TextCompletion($input: TextCompletionInput!) {
-    textCompletion(input: $input){
+mutation CreateCompletion($input: TextCompletionInput!) {
+    createCompletion(input: $input){
         id
         object
         created

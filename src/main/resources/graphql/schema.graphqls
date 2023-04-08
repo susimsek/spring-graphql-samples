@@ -43,7 +43,7 @@ type Mutation {
     createPost(input: AddPostInput!): PostPayload!
     updatePost(input: UpdatePostInput!): PostPayload!
     deletePost(id: ID!): ID!
-    textCompletion(input: TextCompletionInput!): TextCompletion!
+    createCompletion(input: TextCompletionInput!): TextCompletionPayload!
     createImage(input: CreateImageInput!): CreateImagePayload!
     createModeration(input: TextModerationInput!): TextModerationPayload!
 }
@@ -228,7 +228,7 @@ type FileUploadPayload {
     id: String!
 }
 
-type TextCompletion {
+type TextCompletionPayload {
     choices: [CompletionChoice!]!
     created: Int!
     id: String!

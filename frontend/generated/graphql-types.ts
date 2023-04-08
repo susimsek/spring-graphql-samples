@@ -41,6 +41,10 @@ export interface ChangePasswordInput {
   newPassword: Scalars['String'];
 }
 
+export interface CreateImageInput {
+  prompt: Scalars['String'];
+}
+
 export interface LoginInput {
   login: Scalars['String'];
   password: Scalars['String'];
@@ -80,6 +84,10 @@ export enum RoleName {
 
 export interface TextCompletionInput {
   prompt: Scalars['String'];
+}
+
+export interface TextModerationInput {
+  input: Scalars['String'];
 }
 
 export interface UpdatePostInput {
@@ -122,6 +130,13 @@ export type ChangePasswordMutationVariables = Exact<{
 
 
 export type ChangePasswordMutation = { changePassword: boolean };
+
+export type CreateCompletionMutationVariables = Exact<{
+  input: TextCompletionInput;
+}>;
+
+
+export type CreateCompletionMutation = { createCompletion: { id: string, object: string, created: number, choices: Array<{ text: string, index: number, logprobs?: any | null, finishReason: string }>, usage: { promptTokens: number, completionTokens: number, totalTokens: number } } };
 
 export type CreatePostMutationVariables = Exact<{
   input: AddPostInput;
@@ -181,13 +196,6 @@ export type ResetPasswordMutationVariables = Exact<{
 
 
 export type ResetPasswordMutation = { resetPassword: boolean };
-
-export type TextCompletionMutationVariables = Exact<{
-  input: TextCompletionInput;
-}>;
-
-
-export type TextCompletionMutation = { textCompletion: { id?: string | null, object?: string | null, created?: number | null, choices?: Array<{ text?: string | null, index?: number | null, logprobs?: any | null, finishReason?: string | null } | null> | null, usage?: { promptTokens?: number | null, completionTokens?: number | null, totalTokens?: number | null } | null } };
 
 
 export const ActivateAccountDocument = gql`
@@ -252,6 +260,52 @@ export function useChangePasswordMutation(baseOptions?: Apollo.MutationHookOptio
 export type ChangePasswordMutationHookResult = ReturnType<typeof useChangePasswordMutation>;
 export type ChangePasswordMutationResult = Apollo.MutationResult<ChangePasswordMutation>;
 export type ChangePasswordMutationOptions = Apollo.BaseMutationOptions<ChangePasswordMutation, ChangePasswordMutationVariables>;
+export const CreateCompletionDocument = gql`
+    mutation CreateCompletion($input: TextCompletionInput!) {
+  createCompletion(input: $input) {
+    id
+    object
+    created
+    choices {
+      text
+      index
+      logprobs
+      finishReason
+    }
+    usage {
+      promptTokens
+      completionTokens
+      totalTokens
+    }
+  }
+}
+    `;
+export type CreateCompletionMutationFn = Apollo.MutationFunction<CreateCompletionMutation, CreateCompletionMutationVariables>;
+
+/**
+ * __useCreateCompletionMutation__
+ *
+ * To run a mutation, you first call `useCreateCompletionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCompletionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCompletionMutation, { data, loading, error }] = useCreateCompletionMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateCompletionMutation(baseOptions?: Apollo.MutationHookOptions<CreateCompletionMutation, CreateCompletionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateCompletionMutation, CreateCompletionMutationVariables>(CreateCompletionDocument, options);
+      }
+export type CreateCompletionMutationHookResult = ReturnType<typeof useCreateCompletionMutation>;
+export type CreateCompletionMutationResult = Apollo.MutationResult<CreateCompletionMutation>;
+export type CreateCompletionMutationOptions = Apollo.BaseMutationOptions<CreateCompletionMutation, CreateCompletionMutationVariables>;
 export const CreatePostDocument = gql`
     mutation CreatePost($input: AddPostInput!) {
   createPost(input: $input) {
@@ -574,49 +628,3 @@ export function useResetPasswordMutation(baseOptions?: Apollo.MutationHookOption
 export type ResetPasswordMutationHookResult = ReturnType<typeof useResetPasswordMutation>;
 export type ResetPasswordMutationResult = Apollo.MutationResult<ResetPasswordMutation>;
 export type ResetPasswordMutationOptions = Apollo.BaseMutationOptions<ResetPasswordMutation, ResetPasswordMutationVariables>;
-export const TextCompletionDocument = gql`
-    mutation TextCompletion($input: TextCompletionInput!) {
-  textCompletion(input: $input) {
-    id
-    object
-    created
-    choices {
-      text
-      index
-      logprobs
-      finishReason
-    }
-    usage {
-      promptTokens
-      completionTokens
-      totalTokens
-    }
-  }
-}
-    `;
-export type TextCompletionMutationFn = Apollo.MutationFunction<TextCompletionMutation, TextCompletionMutationVariables>;
-
-/**
- * __useTextCompletionMutation__
- *
- * To run a mutation, you first call `useTextCompletionMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useTextCompletionMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [textCompletionMutation, { data, loading, error }] = useTextCompletionMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useTextCompletionMutation(baseOptions?: Apollo.MutationHookOptions<TextCompletionMutation, TextCompletionMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<TextCompletionMutation, TextCompletionMutationVariables>(TextCompletionDocument, options);
-      }
-export type TextCompletionMutationHookResult = ReturnType<typeof useTextCompletionMutation>;
-export type TextCompletionMutationResult = Apollo.MutationResult<TextCompletionMutation>;
-export type TextCompletionMutationOptions = Apollo.BaseMutationOptions<TextCompletionMutation, TextCompletionMutationVariables>;

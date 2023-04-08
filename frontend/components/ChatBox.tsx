@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useTranslation} from "next-i18next";
 import {Card, Col, Form, Row, Spinner} from "react-bootstrap";
-import {useTextCompletionMutation} from "../generated/graphql-types";
+import {useCreateCompletionMutation} from "../generated/graphql-types";
 import {SubmitHandler, useForm} from "react-hook-form";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
@@ -29,7 +29,7 @@ const ChatBox: React.FC = () => {
             .min(3, t("common:validation.minlength"))
     }).required();
 
-    const [textCompletion, { data, loading, error }, ] = useTextCompletionMutation({
+    const [createCompletion, { data, loading, error }, ] = useCreateCompletionMutation({
         errorPolicy: "all"
     });
 
@@ -48,7 +48,7 @@ const ChatBox: React.FC = () => {
             answer: undefined
         })
         setMessages([...messages])
-        const response = await textCompletion({
+        const response = await createCompletion({
             variables: {
                 input: {
                     prompt: question
@@ -56,12 +56,12 @@ const ChatBox: React.FC = () => {
             }
         });
 
-        if (response.data?.textCompletion?.choices?.length) {
+        if (response.data?.createCompletion?.choices?.length) {
             messages[messages.length - 1] = {
                 ... messages[messages.length - 1],
                 answer: {
                     id: uuidv4(),
-                    message:  response.data.textCompletion.choices[0]?.text || "",
+                    message:  response.data.createCompletion.choices[0]?.text || "",
                     isChatBoot: true
             }
         }

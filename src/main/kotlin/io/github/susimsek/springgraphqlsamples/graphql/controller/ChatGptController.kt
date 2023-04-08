@@ -5,7 +5,7 @@ import io.github.susimsek.springgraphqlsamples.graphql.input.TextCompletionInput
 import io.github.susimsek.springgraphqlsamples.graphql.input.TextModerationInput
 import io.github.susimsek.springgraphqlsamples.service.chatgpt.ChatGptService
 import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.CreateImagePayload
-import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.TextCompletion
+import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.TextCompletionPayload
 import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.TextModerationPayload
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.MutationMapping
@@ -19,7 +19,7 @@ class ChatGptController(
 ) {
 
     @MutationMapping
-    suspend fun textCompletion(@Argument input: TextCompletionInput): TextCompletion {
+    suspend fun createCompletion(@Argument input: TextCompletionInput): TextCompletionPayload {
         return chatGptService.createCompletion(input.prompt)
     }
 
