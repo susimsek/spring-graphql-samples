@@ -16,7 +16,7 @@ class ChatGptService(
     private val chatGptProperties: ChatGptProperties
 ) {
 
-    suspend fun chat(message: String): TextCompletion {
+    suspend fun createCompletion(message: String): TextCompletion {
         val request = TextCompletionRequest(
             model = chatGptProperties.gptModel,
             temperature = chatGptProperties.temperature,
