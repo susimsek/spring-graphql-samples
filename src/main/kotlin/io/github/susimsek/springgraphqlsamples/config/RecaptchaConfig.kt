@@ -4,6 +4,7 @@ import io.github.susimsek.springgraphqlsamples.security.recaptcha.GraphQlRecaptc
 import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaClient
 import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaProperties
 import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaService
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -28,6 +29,7 @@ class RecaptchaConfig {
     }
 
     @Bean
+    @ConditionalOnMissingBean(RecaptchaService::class)
     fun recaptchaService(
         recaptchaClient: RecaptchaClient,
         recaptchaProperties: RecaptchaProperties
