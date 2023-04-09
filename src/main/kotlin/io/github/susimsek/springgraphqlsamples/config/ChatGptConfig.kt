@@ -21,6 +21,7 @@ class ChatGptConfig {
         chatGptProperties: ChatGptProperties
     ): ChatGptClient {
         val webClient = webClientBuilder.baseUrl(chatGptProperties.baseUrl)
+            .defaultHeaders { h -> h.setBearerAuth(chatGptProperties.secretKey) }
             .build()
         val httpServiceProxyFactory = HttpServiceProxyFactory.builder(WebClientAdapter.forClient(webClient))
             .build()
