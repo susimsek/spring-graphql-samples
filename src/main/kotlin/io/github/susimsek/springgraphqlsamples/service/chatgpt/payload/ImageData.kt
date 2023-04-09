@@ -1,5 +1,5 @@
 package io.github.susimsek.springgraphqlsamples.service.chatgpt.payload
 
-data class Link(
+data class ImageData(
     val url: String
 )

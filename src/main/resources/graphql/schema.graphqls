@@ -253,10 +253,10 @@ type Usage {
 
 type CreateImagePayload {
     created: Int!
-    data: [Link!]!
+    data: [ImageData!]!
 }
 
-type Link {
+type ImageData {
     url: String!
 }
 
