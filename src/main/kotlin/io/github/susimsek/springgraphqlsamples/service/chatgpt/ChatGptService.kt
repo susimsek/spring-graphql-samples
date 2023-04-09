@@ -46,7 +46,7 @@ class ChatGptService(
         val request = ImageRequest(
             prompt = input.prompt,
             n = chatGptProperties.image.number,
-            size = chatGptProperties.image.size
+            size = chatGptProperties.image.size.size
         )
         return chatGptClient.createImage(
             request

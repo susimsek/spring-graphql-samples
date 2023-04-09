@@ -29,7 +29,7 @@ chatgpt:
   secret: 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
   image:
     number: 1
-    size: 1024x1024
+    size: LARGE
 
 recaptcha:
   enabled: true

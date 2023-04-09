@@ -76,7 +76,7 @@ recaptcha:
 
 chatgpt:
   base-url: https://api.openai.com/v1
-  secret-key: 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
+  secret-key: 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
   gpt-model: text-davinci-003
   audio-model: whisper-1
   moderation-model: text-moderation-latest
@@ -84,7 +84,7 @@ chatgpt:
   maxTokens: 3000
   image:
     number: 1
-    size: 1024x1024
+    size: LARGE
 app:
   mail:
     from:
