@@ -41,7 +41,7 @@ export interface ChangePasswordInput {
   newPassword: Scalars['String'];
 }
 
-export interface CreateImageInput {
+export interface ImageInput {
   prompt: Scalars['String'];
 }
 

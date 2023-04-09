@@ -1,8 +1,8 @@
 package io.github.susimsek.springgraphqlsamples.service.chatgpt
 
-import io.github.susimsek.springgraphqlsamples.graphql.input.CreateImageInput
-import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.CreateImagePayload
-import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.CreateImageRequest
+import io.github.susimsek.springgraphqlsamples.graphql.input.ImageInput
+import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.ImagePayload
+import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.ImageRequest
 import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.TextCompletionPayload
 import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.TextCompletionRequest
 import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.TextModerationPayload
@@ -42,8 +42,8 @@ class ChatGptService(
         ).awaitSingle()
     }
 
-    suspend fun createImage(input: CreateImageInput): CreateImagePayload {
-        val request = CreateImageRequest(
+    suspend fun createImage(input: ImageInput): ImagePayload {
+        val request = ImageRequest(
             prompt = input.prompt,
             n = chatGptProperties.image.number,
             size = chatGptProperties.image.size

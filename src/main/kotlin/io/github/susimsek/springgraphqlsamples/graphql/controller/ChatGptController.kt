@@ -1,10 +1,10 @@
 package io.github.susimsek.springgraphqlsamples.graphql.controller
 
-import io.github.susimsek.springgraphqlsamples.graphql.input.CreateImageInput
+import io.github.susimsek.springgraphqlsamples.graphql.input.ImageInput
 import io.github.susimsek.springgraphqlsamples.graphql.input.TextCompletionInput
 import io.github.susimsek.springgraphqlsamples.graphql.input.TextModerationInput
 import io.github.susimsek.springgraphqlsamples.service.chatgpt.ChatGptService
-import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.CreateImagePayload
+import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.ImagePayload
 import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.TextCompletionPayload
 import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.TextModerationPayload
 import org.springframework.graphql.data.method.annotation.Argument
@@ -24,7 +24,7 @@ class ChatGptController(
     }
 
     @MutationMapping
-    suspend fun createImage(@Argument input: CreateImageInput): CreateImagePayload {
+    suspend fun createImage(@Argument input: ImageInput): ImagePayload {
         return chatGptService.createImage(input)
     }
 

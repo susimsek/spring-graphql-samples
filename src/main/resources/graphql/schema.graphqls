@@ -44,7 +44,7 @@ type Mutation {
     updatePost(input: UpdatePostInput!): PostPayload!
     deletePost(id: ID!): ID!
     createCompletion(input: TextCompletionInput!): TextCompletionPayload!
-    createImage(input: CreateImageInput!): CreateImagePayload!
+    createImage(input: ImageInput!): ImagePayload!
     createModeration(input: TextModerationInput!): TextModerationPayload!
 }
 
@@ -146,7 +146,7 @@ input TextModerationInput {
     input: String! @NotBlank @Size(min: 3)
 }
 
-input CreateImageInput {
+input ImageInput {
     prompt: String! @NotBlank @Size(min: 3)
 }
 
@@ -251,7 +251,7 @@ type Usage {
 }
 
 
-type CreateImagePayload {
+type ImagePayload {
     created: Int!
     data: [ImageData!]!
 }

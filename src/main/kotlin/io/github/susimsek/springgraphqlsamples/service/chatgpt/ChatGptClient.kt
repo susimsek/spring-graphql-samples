@@ -1,7 +1,7 @@
 package io.github.susimsek.springgraphqlsamples.service.chatgpt
 
-import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.CreateImagePayload
-import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.CreateImageRequest
+import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.ImagePayload
+import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.ImageRequest
 import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.TextCompletionPayload
 import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.TextCompletionRequest
 import io.github.susimsek.springgraphqlsamples.service.chatgpt.payload.TextModerationPayload
@@ -37,8 +37,8 @@ interface ChatGptClient {
 
     @PostExchange("/images/generations")
     fun createImage(
-        @RequestBody image: CreateImageRequest
-    ): Mono<CreateImagePayload>
+        @RequestBody image: ImageRequest
+    ): Mono<ImagePayload>
 
     @PostExchange("/moderations")
     fun createModeration(
