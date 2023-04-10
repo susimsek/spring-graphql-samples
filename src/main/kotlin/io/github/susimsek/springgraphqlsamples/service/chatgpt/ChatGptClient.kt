@@ -34,7 +34,6 @@ interface ChatGptClient {
         @RequestPart file: FilePart
     ): Mono<TranscriptionPayload>
 
-
     @PostExchange("/images/generations")
     fun createImage(
         @RequestBody image: ImageRequest
