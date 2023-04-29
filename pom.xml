@@ -22,7 +22,7 @@
         <kotlin.version>1.7.22</kotlin.version>
         <maven.version>3.2</maven.version>
         <spring-cloud.version>2022.0.2</spring-cloud.version>
-        <java-native-image.version>8.0.0</java-native-image.version>
+        <java-native-image.version>8.4.0</java-native-image.version>
         <docker.image.name>docker.io/suayb/spring-graphql-samples</docker.image.name>
         <docker.credentials.username/>
         <docker.credentials.password/>
