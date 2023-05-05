@@ -48,6 +48,7 @@
         <sonar-maven-plugin.version>3.9.1.2184</sonar-maven-plugin.version>
         <properties-maven-plugin.version>1.1.0</properties-maven-plugin.version>
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
+        <dependency-check-maven.version>8.2.1</dependency-check-maven.version>
         <detekt.version>1.22.0</detekt.version>
         <detekt.configFile>${project.basedir}/detekt-config.yml</detekt.configFile>
         <detekt.xmlReportFile>${project.build.directory}/detekt-reports/detekt.xml</detekt.xmlReportFile>
@@ -801,6 +802,25 @@
                     </exclusions>
                 </dependency>
             </dependencies>
+        </profile>
+        <profile>
+            <id>owasp</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.owasp</groupId>
+                        <artifactId>dependency-check-maven</artifactId>
+                        <version>${dependency-check-maven.version}</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 

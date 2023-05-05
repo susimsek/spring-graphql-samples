@@ -69,6 +69,15 @@ You can run detekt by typing the following command
 mvn antrun:run@detekt
 ```
 
+## Dependency Vulnerabilities Check
+
+You can check for security vulnerabilities by typing the following command
+
+```sh
+$ mvn -Powasp dependency-check:check
+```
+You can see the generated report at `target/dependency-check-report.html`
+
 ## Docker
 
 You can also fully dockerize  the sample applications. To achieve this, first build a docker image of your app.
