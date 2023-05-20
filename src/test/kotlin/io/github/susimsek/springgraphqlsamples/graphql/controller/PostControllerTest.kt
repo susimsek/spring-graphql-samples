@@ -6,6 +6,7 @@ import io.github.susimsek.springgraphqlsamples.config.ValidationConfig
 import io.github.susimsek.springgraphqlsamples.exception.POST_NOT_FOUND_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundException
 import io.github.susimsek.springgraphqlsamples.exception.handler.GraphqlExceptionHandler
+import io.github.susimsek.springgraphqlsamples.graphql.GraphQlUnitTest
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.OrderType
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.PostOrderField
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.PostStatus
@@ -55,13 +56,7 @@ val DEFAULT_POST = PostPayload(
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @WithMockUser(authorities = ["ROLE_USER"])
-@GraphQlTest(controllers = [PostController::class])
-@Import(
-    ValidationConfig::class,
-    GraphqlConfig::class,
-    MessageSourceAutoConfiguration::class,
-    GraphqlExceptionHandler::class
-)
+@GraphQlUnitTest([PostController::class])
 class PostControllerTest {
 
     @Autowired

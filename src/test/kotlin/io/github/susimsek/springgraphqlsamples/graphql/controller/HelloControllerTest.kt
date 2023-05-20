@@ -1,14 +1,10 @@
 package io.github.susimsek.springgraphqlsamples.graphql.controller
 
-import io.github.susimsek.springgraphqlsamples.config.GraphqlConfig
-import io.github.susimsek.springgraphqlsamples.config.ValidationConfig
+import io.github.susimsek.springgraphqlsamples.graphql.GraphQlUnitTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration
-import org.springframework.boot.test.autoconfigure.graphql.GraphQlTest
-import org.springframework.context.annotation.Import
 import org.springframework.graphql.test.tester.GraphQlTester
 import java.math.BigDecimal
 import java.net.URL
@@ -18,12 +14,7 @@ private val DEFAULT_CONTENT = mapOf("sivas" to "58", "istanbul" to "43")
 private val DEFAULT_PRICE = BigDecimal(30.82)
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@GraphQlTest(controllers = [HelloController::class])
-@Import(
-    ValidationConfig::class,
-    GraphqlConfig::class,
-    MessageSourceAutoConfiguration::class
-)
+@GraphQlUnitTest([HelloController::class])
 class HelloControllerTest {
 
     @Autowired

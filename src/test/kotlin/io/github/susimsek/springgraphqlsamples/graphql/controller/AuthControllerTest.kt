@@ -1,11 +1,9 @@
 package io.github.susimsek.springgraphqlsamples.graphql.controller
 
 import com.ninjasquad.springmockk.MockkBean
-import io.github.susimsek.springgraphqlsamples.config.GraphqlConfig
-import io.github.susimsek.springgraphqlsamples.config.ValidationConfig
 import io.github.susimsek.springgraphqlsamples.exception.InvalidCaptchaException
 import io.github.susimsek.springgraphqlsamples.exception.RECAPTCHA_INVALID_MSG_CODE
-import io.github.susimsek.springgraphqlsamples.exception.handler.GraphqlExceptionHandler
+import io.github.susimsek.springgraphqlsamples.graphql.GraphQlUnitTest
 import io.github.susimsek.springgraphqlsamples.graphql.type.Token
 import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaService
 import io.github.susimsek.springgraphqlsamples.service.AuthenticationService
@@ -17,12 +15,8 @@ import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration
-import org.springframework.boot.test.autoconfigure.graphql.GraphQlTest
-import org.springframework.context.annotation.Import
 import org.springframework.graphql.ExecutionGraphQlService
 import org.springframework.graphql.execution.ErrorType
-import org.springframework.graphql.execution.ReactiveSecurityDataFetcherExceptionResolver
 import org.springframework.graphql.test.tester.ExecutionGraphQlServiceTester
 import org.springframework.graphql.test.tester.GraphQlTester
 import org.springframework.security.authentication.BadCredentialsException
@@ -50,14 +44,7 @@ private const val DEFAULT_TOKEN = "pCtOnkH/FC5mYNhGRiJo3rwUqgj51trO7doM6gSHn/5hL
     "PTbBB/m4XSKffK0jRnqUvUWIPCP4ymGL6etRoSg6cPHrV2a2+Kj7c7G3g5/xV+I4HVnMidCTbYg/ruY="
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@GraphQlTest(controllers = [AuthenticationController::class])
-@Import(
-    ValidationConfig::class,
-    GraphqlConfig::class,
-    MessageSourceAutoConfiguration::class,
-    ReactiveSecurityDataFetcherExceptionResolver::class,
-    GraphqlExceptionHandler::class
-)
+@GraphQlUnitTest([AuthenticationController::class])
 class AuthControllerTest {
 
     private lateinit var graphQlTester: GraphQlTester
