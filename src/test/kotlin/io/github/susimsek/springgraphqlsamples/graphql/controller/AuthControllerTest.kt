@@ -5,6 +5,7 @@ import io.github.susimsek.springgraphqlsamples.config.GraphqlConfig
 import io.github.susimsek.springgraphqlsamples.config.ValidationConfig
 import io.github.susimsek.springgraphqlsamples.exception.InvalidCaptchaException
 import io.github.susimsek.springgraphqlsamples.exception.RECAPTCHA_INVALID_MSG_CODE
+import io.github.susimsek.springgraphqlsamples.exception.handler.GraphqlExceptionHandler
 import io.github.susimsek.springgraphqlsamples.graphql.type.Token
 import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaService
 import io.github.susimsek.springgraphqlsamples.service.AuthenticationService
@@ -54,7 +55,8 @@ private const val DEFAULT_TOKEN = "pCtOnkH/FC5mYNhGRiJo3rwUqgj51trO7doM6gSHn/5hL
     ValidationConfig::class,
     GraphqlConfig::class,
     MessageSourceAutoConfiguration::class,
-    ReactiveSecurityDataFetcherExceptionResolver::class
+    ReactiveSecurityDataFetcherExceptionResolver::class,
+    GraphqlExceptionHandler::class
 )
 class AuthControllerTest {
 

@@ -5,6 +5,7 @@ import io.github.susimsek.springgraphqlsamples.config.GraphqlConfig
 import io.github.susimsek.springgraphqlsamples.config.ValidationConfig
 import io.github.susimsek.springgraphqlsamples.exception.POST_NOT_FOUND_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundException
+import io.github.susimsek.springgraphqlsamples.exception.handler.GraphqlExceptionHandler
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.OrderType
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.PostOrderField
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.PostStatus
@@ -58,7 +59,8 @@ val DEFAULT_POST = PostPayload(
 @Import(
     ValidationConfig::class,
     GraphqlConfig::class,
-    MessageSourceAutoConfiguration::class
+    MessageSourceAutoConfiguration::class,
+    GraphqlExceptionHandler::class
 )
 class PostControllerTest {
 

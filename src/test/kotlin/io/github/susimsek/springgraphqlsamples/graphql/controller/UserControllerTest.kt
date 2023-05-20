@@ -5,6 +5,7 @@ import io.github.susimsek.springgraphqlsamples.config.GraphqlConfig
 import io.github.susimsek.springgraphqlsamples.config.ValidationConfig
 import io.github.susimsek.springgraphqlsamples.exception.InvalidCaptchaException
 import io.github.susimsek.springgraphqlsamples.exception.RECAPTCHA_INVALID_MSG_CODE
+import io.github.susimsek.springgraphqlsamples.exception.handler.GraphqlExceptionHandler
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.OrderType
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.UserOrderField
 import io.github.susimsek.springgraphqlsamples.graphql.type.PagedEntityModel
@@ -31,7 +32,7 @@ import org.springframework.graphql.test.tester.GraphQlTester
 import org.springframework.security.test.context.support.WithMockUser
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
-import java.util.*
+import java.util.Locale
 
 
 private const val DEFAULT_ID = "2e50aab8-cc23-4658-9305-49044a2cb8d3"
@@ -62,7 +63,8 @@ val DEFAULT_USER = UserPayload(
 @Import(
     ValidationConfig::class,
     GraphqlConfig::class,
-    MessageSourceAutoConfiguration::class
+    MessageSourceAutoConfiguration::class,
+    GraphqlExceptionHandler::class
 )
 class UserControllerTest {
 

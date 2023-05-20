@@ -9,6 +9,7 @@ import graphql.schema.idl.SchemaDirectiveWiring
 import graphql.validation.rules.OnValidationErrorStrategy
 import graphql.validation.rules.ValidationRules
 import graphql.validation.schemawiring.ValidationSchemaWiring
+import io.github.susimsek.springgraphqlsamples.graphql.GraphqlSortStrategy
 import io.github.susimsek.springgraphqlsamples.graphql.directive.CapitalizeDirective
 import io.github.susimsek.springgraphqlsamples.graphql.directive.LowercaseDirective
 import io.github.susimsek.springgraphqlsamples.graphql.directive.SchemaDirective
@@ -18,6 +19,7 @@ import io.github.susimsek.springgraphqlsamples.graphql.validation.EmailRule
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.graphql.data.query.SortStrategy
 import org.springframework.graphql.execution.RuntimeWiringConfigurer
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
 
@@ -100,6 +102,11 @@ class GraphqlConfig {
     @Bean
     fun trimDirective(): SchemaDirective {
         return SchemaDirective("trim", TrimDirective())
+    }
+
+    @Bean
+    fun sortStrategy(): SortStrategy {
+        return GraphqlSortStrategy()
     }
 
     @Bean

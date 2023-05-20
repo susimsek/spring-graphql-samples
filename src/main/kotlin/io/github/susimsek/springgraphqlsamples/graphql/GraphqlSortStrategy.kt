@@ -5,9 +5,7 @@ import io.github.susimsek.springgraphqlsamples.graphql.enumerated.OrderType
 import jakarta.validation.constraints.NotNull
 import org.springframework.data.domain.Sort
 import org.springframework.graphql.data.query.SortStrategy
-import org.springframework.stereotype.Component
 
-@Component
 class GraphqlSortStrategy : SortStrategy {
 
     override fun extract(environment: DataFetchingEnvironment): Sort {
