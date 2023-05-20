@@ -1,19 +1,6 @@
 package io.github.susimsek.springgraphqlsamples.exception.handler
 
-import graphql.GraphQLError
-import graphql.GraphqlErrorBuilder
-import graphql.schema.DataFetchingEnvironment
-import io.github.susimsek.springgraphqlsamples.exception.ExtendedErrorType
-import io.github.susimsek.springgraphqlsamples.exception.RateLimitingException
-import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundException
-import io.github.susimsek.springgraphqlsamples.exception.ValidationException
-import jakarta.validation.ConstraintViolationException
-import org.springframework.context.MessageSource
-import org.springframework.graphql.client.FieldAccessException
-import org.springframework.graphql.execution.DataFetcherExceptionResolverAdapter
-import org.springframework.graphql.execution.ErrorType
-import org.springframework.stereotype.Component
-
+/*
 @Component
 class ReactiveGraphqlExceptionResolver(
     private val messageSource: MessageSource
@@ -84,3 +71,5 @@ class ReactiveGraphqlExceptionResolver(
             .message(errorMessage).errorType(ErrorType.BAD_REQUEST).build()
     }
 }
+
+ */
