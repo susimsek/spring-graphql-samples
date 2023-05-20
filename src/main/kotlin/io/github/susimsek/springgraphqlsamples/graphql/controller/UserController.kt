@@ -7,7 +7,6 @@ import io.github.susimsek.springgraphqlsamples.graphql.input.AddUserInput
 import io.github.susimsek.springgraphqlsamples.graphql.input.ChangePasswordInput
 import io.github.susimsek.springgraphqlsamples.graphql.input.ResetPasswordInput
 import io.github.susimsek.springgraphqlsamples.graphql.input.UserFilter
-import io.github.susimsek.springgraphqlsamples.graphql.input.UserOrder
 import io.github.susimsek.springgraphqlsamples.graphql.type.PagedEntityModel
 import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
 import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaService
@@ -68,11 +67,10 @@ class UserController(
         @Argument page: Int?,
         @Argument size: Int?,
         @Argument filter: UserFilter?,
-        @Argument orders: MutableList<UserOrder>?
+        sort: Sort
     ): PagedEntityModel<UserPayload> {
         val pageNo = page ?: DEFAULT_PAGE_NO
         val sizeNo = (size ?: DEFAULT_SIZE).coerceAtMost(MAX_SIZE)
-        val sort = orders?.map(UserOrder::toOrder)?.let { Sort.by(it) } ?: Sort.unsorted()
         val pageRequest = PageRequest.of(pageNo, sizeNo, sort)
         return userService.getUsers(pageRequest, filter)
     }

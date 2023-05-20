@@ -18,11 +18,13 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
+import org.springframework.data.domain.Window
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.BatchMapping
 import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.graphql.data.method.annotation.SubscriptionMapping
+import org.springframework.graphql.data.query.ScrollSubrange
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 import java.util.*
@@ -77,14 +79,23 @@ class PostController(
         @Argument page: Int?,
         @Argument size: Int?,
         @Argument orders: MutableList<PostOrder>?,
-        locale: Locale
+        locale: Locale,
+        sort: Sort
     ): PagedEntityModel<PostPayload> {
         log.info("called posts locale: {}", locale)
         val pageNo = page ?: DEFAULT_PAGE_NO
         val sizeNo = (size ?: DEFAULT_SIZE).coerceAtMost(MAX_SIZE)
-        val sort = orders?.map(PostOrder::toOrder)?.let { Sort.by(it) } ?: Sort.unsorted()
         val pageRequest = PageRequest.of(pageNo, sizeNo, sort)
         return postService.getPosts(pageRequest)
+    }
+
+    @QueryMapping
+    suspend fun postsWithCursorPagination(
+        subrange: ScrollSubrange,
+        locale: Locale
+    ): Window<PostPayload> {
+        log.info("called posts with cursor pagination locale: {}", locale)
+        return postService.getPostsWithCursorPagination(subrange, Sort.unsorted())
     }
 
     @QueryMapping

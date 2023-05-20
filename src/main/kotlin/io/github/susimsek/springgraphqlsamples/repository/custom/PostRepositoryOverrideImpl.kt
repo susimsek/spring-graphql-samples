@@ -5,6 +5,9 @@ import kotlinx.coroutines.reactive.awaitSingle
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.ScrollPosition
+import org.springframework.data.domain.Sort
+import org.springframework.data.domain.Window
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate
 import org.springframework.data.mongodb.core.query.Query
 
@@ -20,6 +23,20 @@ class PostRepositoryOverrideImpl(
                 mongoTemplate.count(query, Post::class.java)
             )
             .map { PageImpl(it.t1, pageable, it.t2) }
+            .awaitSingle()
+    }
+
+    override suspend fun findAllByPosition(
+        limit: Int,
+        scrollPosition: ScrollPosition,
+        sort: Sort
+    ): Window<Post> {
+        val query = Query()
+            .limit(limit)
+            .with(scrollPosition)
+            .with(sort)
+
+        return mongoTemplate.scroll(query, Post::class.java)
             .awaitSingle()
     }
 }
