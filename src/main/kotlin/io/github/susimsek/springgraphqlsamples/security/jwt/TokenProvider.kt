@@ -11,7 +11,7 @@ import java.time.Instant
 const val AUTHORITIES_KEY = "auth"
 
 class TokenProvider(
-    private val tokenProperties: TokenProperties,
+    private val tokenProperties: io.github.susimsek.springgraphqlsamples.config.Token,
     private val jwtEncoder: JwtEncoder
 ) {
     private val tokenValidityInMilliseconds = 1000 * tokenProperties.validityInSeconds

@@ -10,7 +10,6 @@ import io.github.susimsek.springgraphqlsamples.security.cipher.SecurityCipher
 import io.github.susimsek.springgraphqlsamples.security.jwt.AUTHORITIES_KEY
 import io.github.susimsek.springgraphqlsamples.security.jwt.JwtDecoder
 import io.github.susimsek.springgraphqlsamples.security.jwt.TokenAuthenticationConverter
-import io.github.susimsek.springgraphqlsamples.security.jwt.TokenProperties
 import io.github.susimsek.springgraphqlsamples.security.jwt.TokenProvider
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
@@ -19,6 +18,7 @@ import org.springframework.core.convert.converter.Converter
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager
+import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
 import org.springframework.security.config.web.server.ServerHttpSecurity
@@ -33,7 +33,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter
 import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.security.web.server.authentication.ServerAuthenticationConverter
-import org.springframework.security.web.server.header.ReferrerPolicyServerHttpHeadersWriter
 import org.springframework.security.web.server.util.matcher.NegatedServerWebExchangeMatcher
 import org.springframework.security.web.server.util.matcher.OrServerWebExchangeMatcher
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers
@@ -44,17 +43,17 @@ import java.security.interfaces.RSAPublicKey
 @Configuration(proxyBeanMethods = false)
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity(useAuthorizationManager = false)
-@EnableConfigurationProperties(SecurityMatcherProperties::class, TokenProperties::class)
+@EnableConfigurationProperties(SecurityProperties::class)
 class SecurityConfig {
 
     @Bean
     fun passwordEncoder() = BCryptPasswordEncoder()
 
     @Bean
-    fun keyPair(tokenProperties: TokenProperties): KeyPair {
+    fun keyPair(securityProperties: SecurityProperties): KeyPair {
         return KeyPair(
-            RSAKeyUtils.generatePublicKey(tokenProperties.publicKey),
-            RSAKeyUtils.generatePrivateKey(tokenProperties.privateKey)
+            RSAKeyUtils.generatePublicKey(securityProperties.authentication.token.publicKey),
+            RSAKeyUtils.generatePrivateKey(securityProperties.authentication.token.privateKey)
         )
     }
 
@@ -77,10 +76,10 @@ class SecurityConfig {
 
     @Bean
     fun tokenProvider(
-        tokenProperties: TokenProperties,
+        securityProperties: SecurityProperties,
         jwtEncoder: JwtEncoder
     ): TokenProvider {
-        return TokenProvider(tokenProperties, jwtEncoder)
+        return TokenProvider(securityProperties.authentication.token, jwtEncoder)
     }
 
     @Bean
@@ -107,7 +106,7 @@ class SecurityConfig {
     @Bean
     fun springSecurityFilterChain(
         http: ServerHttpSecurity,
-        securityMatcherProperties: SecurityMatcherProperties,
+        securityProperties: SecurityProperties,
         jwtAuthenticationConverter: Converter<Jwt, Mono<AbstractAuthenticationToken>>,
         bearerTokenConverter: ServerAuthenticationConverter
     ): SecurityWebFilterChain {
@@ -117,29 +116,36 @@ class SecurityConfig {
                 NegatedServerWebExchangeMatcher(
                     OrServerWebExchangeMatcher(
                         ServerWebExchangeMatchers.pathMatchers(
-                            *securityMatcherProperties.ignorePatterns.toTypedArray()
+                            *securityProperties.authentication.securityMatcher.ignorePatterns.toTypedArray()
                         ),
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.OPTIONS, "/**")
                     )
                 )
             )
-            .cors().and()
+            .cors(Customizer.withDefaults())
             .csrf(ServerHttpSecurity.CsrfSpec::disable)
-            .httpBasic().disable()
-            .logout().disable()
-            .headers()
-            .referrerPolicy(ReferrerPolicyServerHttpHeadersWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)
-            .and()
-            .frameOptions().disable()
-            .and()
-            .authorizeExchange()
-            .pathMatchers(*securityMatcherProperties.permitAllPatterns.toTypedArray()).permitAll()
-            .and()
-            .oauth2ResourceServer()
-            .jwt()
-            .jwtAuthenticationConverter(jwtAuthenticationConverter)
-            .and()
-            .bearerTokenConverter(bearerTokenConverter)
+            .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
+            .logout(ServerHttpSecurity.LogoutSpec::disable)
+            .headers { headers ->
+                headers
+                    .frameOptions(ServerHttpSecurity.HeaderSpec.FrameOptionsSpec::disable)
+                    .contentSecurityPolicy { contentSecurityPolicy ->
+                        contentSecurityPolicy.policyDirectives("script-src 'self'")
+                    }
+            }
+            .authorizeExchange { auth ->
+                auth
+                    .pathMatchers(*securityProperties.authentication.securityMatcher.permitAllPatterns.toTypedArray())
+                    .permitAll()
+                    .anyExchange().authenticated()
+            }
+            .oauth2ResourceServer { oauth2 ->
+                oauth2
+                    .jwt { jwt ->
+                        jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)
+                    }
+                    .bearerTokenConverter(bearerTokenConverter)
+            }
         // @formatter:on
         return http.build()
     }

@@ -61,6 +61,8 @@ security:
         - /graphql
         - /api/**
         - /subscriptions
+        - /redirect
+  content-security-policy: "script-src 'self'"
   cipher:
     base64-secret: c2VjdXJlQ0RDS2V5
 
@@ -76,7 +78,7 @@ recaptcha:
 
 chatgpt:
   base-url: https://api.openai.com/v1
-  secret-key: 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
+  secret-key: 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
   gpt-model: text-davinci-003
   audio-model: whisper-1
   moderation-model: text-moderation-latest
