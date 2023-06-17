@@ -17,6 +17,7 @@ spring:
     locale: en
   messages:
     basename: i18n/messages
+    fallback-to-system-locale: false
   task:
     execution:
       thread-name-prefix: async-task-
