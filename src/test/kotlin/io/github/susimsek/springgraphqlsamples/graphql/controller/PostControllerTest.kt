@@ -1,11 +1,8 @@
 package io.github.susimsek.springgraphqlsamples.graphql.controller
 
 import com.ninjasquad.springmockk.MockkBean
-import io.github.susimsek.springgraphqlsamples.config.GraphqlConfig
-import io.github.susimsek.springgraphqlsamples.config.ValidationConfig
 import io.github.susimsek.springgraphqlsamples.exception.POST_NOT_FOUND_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundException
-import io.github.susimsek.springgraphqlsamples.exception.handler.GraphqlExceptionHandler
 import io.github.susimsek.springgraphqlsamples.graphql.GraphQlUnitTest
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.OrderType
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.PostOrderField
@@ -25,9 +22,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration
-import org.springframework.boot.test.autoconfigure.graphql.GraphQlTest
-import org.springframework.context.annotation.Import
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.graphql.execution.ErrorType
