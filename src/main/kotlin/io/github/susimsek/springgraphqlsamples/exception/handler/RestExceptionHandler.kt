@@ -13,6 +13,7 @@ import org.springframework.web.server.NotAcceptableStatusException
 import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.server.UnsupportedMediaTypeStatusException
 import reactor.core.publisher.Mono
+import java.lang.Exception
 import java.util.*
 
 @ControllerAdvice
@@ -124,6 +125,7 @@ class RestExceptionHandler(
         return Mono.just(
             ResponseEntity.status(apiError.status)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(apiError))
+                .body(apiError)
+        )
     }
 }

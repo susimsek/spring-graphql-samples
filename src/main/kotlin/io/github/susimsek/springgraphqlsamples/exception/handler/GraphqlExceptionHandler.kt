@@ -3,16 +3,14 @@ package io.github.susimsek.springgraphqlsamples.exception.handler
 import graphql.GraphQLError
 import graphql.GraphqlErrorBuilder
 import graphql.schema.DataFetchingEnvironment
-import io.github.susimsek.springgraphqlsamples.exception.ExtendedErrorType
-import io.github.susimsek.springgraphqlsamples.exception.RateLimitingException
-import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundException
-import io.github.susimsek.springgraphqlsamples.exception.ValidationException
+import io.github.susimsek.springgraphqlsamples.exception.*
 import jakarta.validation.ConstraintViolationException
 import org.springframework.context.MessageSource
 import org.springframework.graphql.client.FieldAccessException
 import org.springframework.graphql.data.method.annotation.GraphQlExceptionHandler
 import org.springframework.graphql.execution.ErrorType
 import org.springframework.web.bind.annotation.ControllerAdvice
+import java.lang.Exception
 
 @ControllerAdvice
 class GraphqlExceptionHandler(
@@ -57,8 +55,20 @@ class GraphqlExceptionHandler(
         ex: RateLimitingException,
         env: DataFetchingEnvironment
     ): GraphQLError {
+        val errorMessage = messageSource.getMessage(TOO_MANY_REQUESTS_MSG_CODE, null, env.locale)
         return GraphqlErrorBuilder.newError(env)
-            .message("Throttled").errorType(ExtendedErrorType.THROTTLED).build()
+            .message(errorMessage).errorType(ExtendedErrorType.THROTTLED).build()
+    }
+
+    // 500
+    @GraphQlExceptionHandler
+    fun handleAll(
+        ex: Exception,
+        env: DataFetchingEnvironment
+    ): GraphQLError {
+        val errorMessage = messageSource.getMessage(INTERNAL_SERVER_ERROR_MSG_CODE, null, env.locale)
+        return GraphqlErrorBuilder.newError(env)
+            .message(errorMessage).errorType(ErrorType.INTERNAL_ERROR).build()
     }
 
     @GraphQlExceptionHandler

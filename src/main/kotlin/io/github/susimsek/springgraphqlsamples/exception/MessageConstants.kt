@@ -4,6 +4,7 @@ const val METHOD_ARGUMENT_NOT_VALID_MSG_CODE = "error.method.argument.not.valid.
 const val METHOD_NOT_ALLOWED_MSG_CODE = "error.method.not.allowed.message"
 const val NOT_ACCEPTABLE_MSG_CODE = "error.not.acceptable.message"
 const val UNSUPPORTED_MEDIA_TYPE_MSG_CODE = "error.unsupported.media.type.message"
+const val TOO_MANY_REQUESTS_MSG_CODE = "error.too.many.requests.message"
 const val INTERNAL_SERVER_ERROR_MSG_CODE = "error.internal.server.message"
 
 const val USER_NOT_FOUND_MSG_CODE = "error.user.not.found.message"
