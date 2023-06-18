@@ -1,5 +1,7 @@
 package io.github.susimsek.springgraphqlsamples.exception
 
+const val METHOD_ARGUMENT_NOT_VALID_MSG_CODE = "error.method.argument.not.valid.message"
+
 const val USER_NOT_FOUND_MSG_CODE = "error.user.not.found.message"
 const val ROLE_NAME_NOT_FOUND_MSG_CODE = "error.roleName.not.found.message"
 const val EMAIL_ALREADY_EXISTS_MSG_CODE = "error.email.already.exists.message"

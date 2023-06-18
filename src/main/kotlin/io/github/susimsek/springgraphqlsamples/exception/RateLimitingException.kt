@@ -1,3 +1,3 @@
 package io.github.susimsek.springgraphqlsamples.exception
 
-open class RateLimitingException(message: String?) : GraphqlException(message)
+open class RateLimitingException(message: String?) : BaseException(message)
