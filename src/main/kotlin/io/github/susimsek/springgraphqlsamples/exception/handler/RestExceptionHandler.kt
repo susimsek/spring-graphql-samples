@@ -32,7 +32,7 @@ class RestExceptionHandler(
             null,
             exchange.localeContext.locale ?: Locale.getDefault()
         )
-        val apiError = ApiError(HttpStatus.BAD_REQUEST, errorMessage)
+        val apiError = buildApiError(HttpStatus.BAD_REQUEST, errorMessage, exchange)
         apiError.addFieldErrors(ex.fieldErrors)
         apiError.addGlobalErrors(ex.globalErrors)
         return buildResponseEntity(apiError)
@@ -42,10 +42,15 @@ class RestExceptionHandler(
     fun handleResourceNotFoundException(
         ex: ResourceNotFoundException,
         locale: Locale,
+        exchange: ServerWebExchange
     ): Mono<ResponseEntity<Any>> {
         val errorMessage = messageSource.getMessage(ex.message!!, ex.args, locale)
-        val apiError = ApiError(HttpStatus.NOT_FOUND, errorMessage)
+        val apiError = buildApiError(HttpStatus.NOT_FOUND, errorMessage, exchange)
         return buildResponseEntity(apiError)
+    }
+
+    private fun buildApiError(status: HttpStatus, message: String, exchange: ServerWebExchange): ApiError {
+        return ApiError(status, message, exchange.request.uri.path)
     }
 
     private fun buildResponseEntity(apiError: ApiError): Mono<ResponseEntity<Any>> {

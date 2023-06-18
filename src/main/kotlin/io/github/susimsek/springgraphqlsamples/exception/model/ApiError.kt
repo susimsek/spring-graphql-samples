@@ -11,9 +11,15 @@ data class ApiError(
     val status: HttpStatus,
     val timestamp: OffsetDateTime,
     val message: String,
+    val path: String,
     var fieldErrors: MutableList<ApiFieldError>? = null,
 ) {
-    constructor(status: HttpStatus, message: String) : this(status, OffsetDateTime.now(), message)
+    constructor(status: HttpStatus, message: String, path: String) : this(
+        status,
+        OffsetDateTime.now(),
+        message,
+        path
+    )
 
     fun addFieldErrors(fieldErrors: List<FieldError>) {
         val validationErrors = fieldErrors.map(this::mapFieldError)
