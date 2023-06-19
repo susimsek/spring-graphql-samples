@@ -5,6 +5,7 @@ import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet
 import com.nimbusds.jose.jwk.source.JWKSource
 import com.nimbusds.jose.proc.SecurityContext
+import io.github.susimsek.springgraphqlsamples.exception.handler.ReactiveSecurityExceptionResolver
 import io.github.susimsek.springgraphqlsamples.security.cipher.RSAKeyUtils
 import io.github.susimsek.springgraphqlsamples.security.cipher.SecurityCipher
 import io.github.susimsek.springgraphqlsamples.security.jwt.AUTHORITIES_KEY
@@ -104,11 +105,13 @@ class SecurityConfig {
         }
 
     @Bean
+    @Suppress("LongParameterList")
     fun springSecurityFilterChain(
         http: ServerHttpSecurity,
         securityProperties: SecurityProperties,
         jwtAuthenticationConverter: Converter<Jwt, Mono<AbstractAuthenticationToken>>,
-        bearerTokenConverter: ServerAuthenticationConverter
+        bearerTokenConverter: ServerAuthenticationConverter,
+        securityExceptionResolver: ReactiveSecurityExceptionResolver
     ): SecurityWebFilterChain {
         // @formatter:off
         http
@@ -122,6 +125,11 @@ class SecurityConfig {
                     )
                 )
             )
+            .exceptionHandling { exceptionHandling ->
+                exceptionHandling
+                    .authenticationEntryPoint(securityExceptionResolver)
+                    .accessDeniedHandler(securityExceptionResolver)
+            }
             .cors(Customizer.withDefaults())
             .csrf(ServerHttpSecurity.CsrfSpec::disable)
             .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)

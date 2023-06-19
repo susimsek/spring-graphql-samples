@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import org.springframework.http.HttpStatus
 import org.springframework.validation.FieldError
 import org.springframework.validation.ObjectError
+import org.springframework.web.server.ServerWebExchange
 import java.time.OffsetDateTime
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -20,6 +21,12 @@ data class ApiError(
         message,
         path
     )
+
+    companion object {
+        fun build(status: HttpStatus, message: String, exchange: ServerWebExchange): ApiError {
+            return ApiError(status, message, exchange.request.uri.path)
+        }
+    }
 
     fun addFieldErrors(fieldErrors: List<FieldError>) {
         val validationErrors = fieldErrors.map(this::mapFieldError)

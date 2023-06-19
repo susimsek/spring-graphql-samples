@@ -59,7 +59,8 @@ security:
       permit-all-patterns:
         - /actuator/**
         - /graphql
-        - /api/**
+        - /api/v1/transcription
+        - /api/v1/translation
         - /subscriptions
         - /redirect
   content-security-policy: "script-src 'self'"

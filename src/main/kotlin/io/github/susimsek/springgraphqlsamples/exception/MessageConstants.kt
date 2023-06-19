@@ -1,6 +1,8 @@
 package io.github.susimsek.springgraphqlsamples.exception
 
 const val METHOD_ARGUMENT_NOT_VALID_MSG_CODE = "error.method.argument.not.valid.message"
+const val UNAUTHORIZED_MSG_CODE = "error.unauthorized.message"
+const val FORBIDDEN_MSG_CODE = "error.forbidden.message"
 const val METHOD_NOT_ALLOWED_MSG_CODE = "error.method.not.allowed.message"
 const val NOT_ACCEPTABLE_MSG_CODE = "error.not.acceptable.message"
 const val UNSUPPORTED_MEDIA_TYPE_MSG_CODE = "error.unsupported.media.type.message"
