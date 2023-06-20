@@ -2,6 +2,7 @@ package io.github.susimsek.springgraphqlsamples.exception.model
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import org.springframework.http.HttpStatus
+import org.springframework.validation.BindingResult
 import org.springframework.validation.FieldError
 import org.springframework.validation.ObjectError
 import org.springframework.web.server.ServerWebExchange
@@ -13,7 +14,7 @@ data class ApiError(
     val timestamp: OffsetDateTime,
     val message: String,
     val path: String,
-    var fieldErrors: MutableList<Violation>? = null,
+    var violations: MutableList<Violation>? = null,
 ) {
     constructor(status: HttpStatus, message: String, path: String) : this(
         status,
@@ -28,24 +29,21 @@ data class ApiError(
         }
     }
 
-    fun addFieldErrors(fieldErrors: List<FieldError>) {
-        val validationErrors = fieldErrors.map(this::mapFieldError)
-        addViolations(validationErrors)
-    }
-
-    fun addGlobalErrors(globalErrors: List<ObjectError>) {
-        val validationErrors = globalErrors.map(this::mapObjectError)
-        addViolations(validationErrors)
+    fun createViolations(result: BindingResult) {
+        val fieldErrors = result.fieldErrors.map(this::createViolation)
+        val globalErrors = result.globalErrors.map(this::createViolation)
+        addViolations(fieldErrors)
+        addViolations(globalErrors)
     }
 
     private fun addViolations(fieldErrors: List<Violation>) {
-        if (this.fieldErrors == null) {
-            this.fieldErrors = mutableListOf()
+        if (this.violations == null) {
+            this.violations = mutableListOf()
         }
-        this.fieldErrors!!.addAll(fieldErrors)
+        this.violations!!.addAll(fieldErrors)
     }
 
-    private fun mapFieldError(fieldError: FieldError): Violation {
+    private fun createViolation(fieldError: FieldError): Violation {
         return Violation(
             fieldError.objectName,
             fieldError.field,
@@ -54,7 +52,7 @@ data class ApiError(
         )
     }
 
-    private fun mapObjectError(objectError: ObjectError): Violation {
+    private fun createViolation(objectError: ObjectError): Violation {
         return Violation(
             objectError.objectName,
             objectError.defaultMessage ?: ""

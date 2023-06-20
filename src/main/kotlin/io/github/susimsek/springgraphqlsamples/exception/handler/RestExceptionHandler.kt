@@ -37,8 +37,7 @@ class RestExceptionHandler(
             exchange.localeContext.locale ?: Locale.getDefault()
         )
         val apiError = ApiError.build(HttpStatus.BAD_REQUEST, errorMessage, exchange)
-        apiError.addFieldErrors(ex.fieldErrors)
-        apiError.addGlobalErrors(ex.globalErrors)
+        apiError.createViolations(ex.bindingResult)
         return WebExceptionUtils.buildResponseEntity(apiError)
     }
 
