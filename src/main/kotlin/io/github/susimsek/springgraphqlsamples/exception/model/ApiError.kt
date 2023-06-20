@@ -13,7 +13,7 @@ data class ApiError(
     val timestamp: OffsetDateTime,
     val message: String,
     val path: String,
-    var fieldErrors: MutableList<ApiFieldError>? = null,
+    var fieldErrors: MutableList<Violation>? = null,
 ) {
     constructor(status: HttpStatus, message: String, path: String) : this(
         status,
@@ -30,23 +30,23 @@ data class ApiError(
 
     fun addFieldErrors(fieldErrors: List<FieldError>) {
         val validationErrors = fieldErrors.map(this::mapFieldError)
-        addApiFieldErrors(validationErrors)
+        addViolations(validationErrors)
     }
 
     fun addGlobalErrors(globalErrors: List<ObjectError>) {
-        val validationErrors = globalErrors.map(this::mapFieldError)
-        addApiFieldErrors(validationErrors)
+        val validationErrors = globalErrors.map(this::mapObjectError)
+        addViolations(validationErrors)
     }
 
-    private fun addApiFieldErrors(fieldErrors: List<ApiFieldError>) {
+    private fun addViolations(fieldErrors: List<Violation>) {
         if (this.fieldErrors == null) {
             this.fieldErrors = mutableListOf()
         }
         this.fieldErrors!!.addAll(fieldErrors)
     }
 
-    private fun mapFieldError(fieldError: FieldError): ApiFieldError {
-        return ApiFieldError(
+    private fun mapFieldError(fieldError: FieldError): Violation {
+        return Violation(
             fieldError.objectName,
             fieldError.field,
             fieldError.rejectedValue ?: "",
@@ -54,8 +54,8 @@ data class ApiError(
         )
     }
 
-    private fun mapFieldError(objectError: ObjectError): ApiFieldError {
-        return ApiFieldError(
+    private fun mapObjectError(objectError: ObjectError): Violation {
+        return Violation(
             objectError.objectName,
             objectError.defaultMessage ?: ""
         )

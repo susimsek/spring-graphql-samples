@@ -2,6 +2,7 @@ package io.github.susimsek.springgraphqlsamples.exception.handler
 
 import io.github.susimsek.springgraphqlsamples.exception.*
 import io.github.susimsek.springgraphqlsamples.exception.model.ApiError
+import io.github.susimsek.springgraphqlsamples.exception.utils.WebExceptionUtils
 import org.springframework.context.MessageSource
 import org.springframework.http.*
 import org.springframework.security.access.AccessDeniedException
@@ -38,7 +39,7 @@ class RestExceptionHandler(
         val apiError = ApiError.build(HttpStatus.BAD_REQUEST, errorMessage, exchange)
         apiError.addFieldErrors(ex.fieldErrors)
         apiError.addGlobalErrors(ex.globalErrors)
-        return buildResponseEntity(apiError)
+        return WebExceptionUtils.buildResponseEntity(apiError)
     }
 
     // 401, 403
@@ -62,7 +63,7 @@ class RestExceptionHandler(
     ): Mono<ResponseEntity<Any>> {
         val errorMessage = messageSource.getMessage(ex.message!!, ex.args, locale)
         val apiError = ApiError.build(HttpStatus.NOT_FOUND, errorMessage, exchange)
-        return buildResponseEntity(apiError)
+        return WebExceptionUtils.buildResponseEntity(apiError)
     }
 
     // 405
@@ -81,7 +82,7 @@ class RestExceptionHandler(
             exchange.localeContext.locale ?: Locale.getDefault()
         )
         val apiError = ApiError.build(HttpStatus.METHOD_NOT_ALLOWED, errorMessage, exchange)
-        return buildResponseEntity(apiError)
+        return WebExceptionUtils.buildResponseEntity(apiError)
     }
 
     // 406
@@ -97,7 +98,7 @@ class RestExceptionHandler(
             exchange.localeContext.locale ?: Locale.getDefault()
         )
         val apiError = ApiError.build(HttpStatus.NOT_ACCEPTABLE, errorMessage, exchange)
-        return buildResponseEntity(apiError)
+        return WebExceptionUtils.buildResponseEntity(apiError)
     }
 
     // 415
@@ -116,7 +117,7 @@ class RestExceptionHandler(
             exchange.localeContext.locale ?: Locale.getDefault()
         )
         val apiError = ApiError.build(HttpStatus.UNSUPPORTED_MEDIA_TYPE, errorMessage, exchange)
-        return buildResponseEntity(apiError)
+        return WebExceptionUtils.buildResponseEntity(apiError)
     }
 
     // 500
@@ -128,14 +129,6 @@ class RestExceptionHandler(
     ): Mono<ResponseEntity<Any>> {
         val errorMessage = messageSource.getMessage(INTERNAL_SERVER_ERROR_MSG_CODE, null, locale)
         val apiError = ApiError.build(HttpStatus.INTERNAL_SERVER_ERROR, errorMessage, exchange)
-        return buildResponseEntity(apiError)
-    }
-
-    private fun buildResponseEntity(apiError: ApiError): Mono<ResponseEntity<Any>> {
-        return Mono.just(
-            ResponseEntity.status(apiError.status)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(apiError)
-        )
+        return WebExceptionUtils.buildResponseEntity(apiError)
     }
 }

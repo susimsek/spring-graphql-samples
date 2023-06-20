@@ -7,11 +7,10 @@ import graphql.schema.DataFetchingEnvironment
 import io.github.susimsek.springgraphqlsamples.exception.FORBIDDEN_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.exception.UNAUTHORIZED_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.exception.model.ApiError
+import io.github.susimsek.springgraphqlsamples.exception.utils.WebExceptionUtils
 import org.springframework.context.MessageSource
-import org.springframework.core.io.buffer.DefaultDataBufferFactory
 import org.springframework.graphql.execution.ErrorType
 import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.authentication.AuthenticationTrustResolver
@@ -30,7 +29,7 @@ import java.util.*
 @Component
 class ReactiveSecurityExceptionResolver(
     private val messageSource: MessageSource,
-    private val objectMapper: ObjectMapper
+    private val mapper: ObjectMapper
 ) : ServerAuthenticationEntryPoint, ServerAccessDeniedHandler {
 
     private val trustResolver: AuthenticationTrustResolver = AuthenticationTrustResolverImpl()
@@ -52,11 +51,11 @@ class ReactiveSecurityExceptionResolver(
         exchange: ServerWebExchange
     ): Mono<ResponseEntity<Any>> {
         return if (ex is AuthenticationException) {
-            buildResponseEntity(unauthorized(exchange))
+            WebExceptionUtils.buildResponseEntity(unauthorized(exchange))
         } else {
             ReactiveSecurityContextHolder.getContext()
-                .flatMap { context -> buildResponseEntity(accessDenied(exchange, context)) }
-                .switchIfEmpty { buildResponseEntity(unauthorized(exchange)) }
+                .flatMap { context -> WebExceptionUtils.buildResponseEntity(accessDenied(exchange, context)) }
+                .switchIfEmpty { WebExceptionUtils.buildResponseEntity(unauthorized(exchange)) }
         }
     }
 
@@ -112,25 +111,15 @@ class ReactiveSecurityExceptionResolver(
         return exchange.localeContext.locale ?: Locale.getDefault()
     }
 
-    private fun buildResponseEntity(apiError: ApiError): Mono<ResponseEntity<Any>> {
-        return Mono.just(
-            ResponseEntity.status(apiError.status)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(apiError)
-        )
-    }
-
+    @Suppress("kotlin:S6508")
     override fun commence(exchange: ServerWebExchange, ex: AuthenticationException): Mono<Void> {
-        return writeResponse(exchange, unauthorized(exchange))
+        return resolveException(ex, exchange)
+            .flatMap { WebExceptionUtils.setHttpResponse(exchange, unauthorized(exchange), mapper) }
     }
 
+    @Suppress("kotlin:S6508")
     override fun handle(exchange: ServerWebExchange, denied: AccessDeniedException): Mono<Void> {
-        return writeResponse(exchange, accessDenied(exchange))
-    }
-
-    private fun writeResponse(exchange: ServerWebExchange, apiError: ApiError): Mono<Void> {
-        val dataBuffer = DefaultDataBufferFactory().wrap(objectMapper.writeValueAsBytes(apiError))
-        exchange.response.headers.contentType = MediaType.APPLICATION_JSON
-        return exchange.response.writeWith(Mono.just(dataBuffer))
+        return resolveException(denied, exchange)
+            .flatMap { WebExceptionUtils.setHttpResponse(exchange, accessDenied(exchange), mapper) }
     }
 }
