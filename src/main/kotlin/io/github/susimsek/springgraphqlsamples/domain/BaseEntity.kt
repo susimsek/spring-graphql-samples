@@ -6,5 +6,5 @@ import java.util.*
 
 open class BaseEntity(
     @Id
-    var id: String = UUID.randomUUID().toString()
+    open var id: String = UUID.randomUUID().toString()
 ) : AbstractUserAuditingEntity()
