@@ -5,6 +5,6 @@ import io.github.susimsek.springgraphqlsamples.graphql.input.UserFilter
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
-interface UserRepositoryOverride {
+fun interface UserRepositoryOverride {
     suspend fun findAllByFilter(filter: UserFilter?, pageable: Pageable): Page<User>
 }

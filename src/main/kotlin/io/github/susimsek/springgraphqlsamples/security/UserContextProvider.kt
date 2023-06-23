@@ -7,20 +7,26 @@ import kotlinx.coroutines.reactor.awaitSingleOrNull
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Component
 
+private const val USERNAME_NOT_FOUND_MSG = "User was not found"
+
 @Component
 class UserContextProvider(
     private val userRepository: UserRepository,
     private val userMapper: UserMapper
 ) {
 
+    suspend fun getCurrentUserId(): String {
+        return getCurrentUserLogin().awaitSingleOrNull()
+            ?: throw UsernameNotFoundException(USERNAME_NOT_FOUND_MSG)
+    }
+
     suspend fun getCurrentUser(): User {
-        val currentUserId = getCurrentUserLogin().awaitSingleOrNull()
-            ?: throw UsernameNotFoundException("User was not found")
-        return userRepository.findById(currentUserId) ?: throw UsernameNotFoundException("User was not found")
+        val currentUserId = getCurrentUserId()
+        return userRepository.findById(currentUserId) ?: throw UsernameNotFoundException(USERNAME_NOT_FOUND_MSG)
     }
 
     suspend fun getUserDetails(userId: String): org.springframework.security.core.userdetails.User {
-        val user = userRepository.findById(userId) ?: throw UsernameNotFoundException("User was not found")
+        val user = userRepository.findById(userId) ?: throw UsernameNotFoundException(USERNAME_NOT_FOUND_MSG)
         return userMapper.mapSpringSecurityUser(user)
     }
 }

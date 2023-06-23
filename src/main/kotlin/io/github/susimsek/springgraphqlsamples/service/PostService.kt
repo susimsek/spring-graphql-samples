@@ -10,13 +10,12 @@ import io.github.susimsek.springgraphqlsamples.graphql.type.PagedEntityModel
 import io.github.susimsek.springgraphqlsamples.graphql.type.PostPayload
 import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
 import io.github.susimsek.springgraphqlsamples.repository.PostRepository
-import io.github.susimsek.springgraphqlsamples.security.getCurrentUserLogin
+import io.github.susimsek.springgraphqlsamples.security.UserContextProvider
 import io.github.susimsek.springgraphqlsamples.service.mapper.PostMapper
 import io.github.susimsek.springgraphqlsamples.service.pubsub.PostPubSubService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.reactor.awaitSingleOrNull
 import org.springframework.context.MessageSource
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.ScrollPosition
@@ -25,9 +24,8 @@ import org.springframework.data.domain.Window
 import org.springframework.data.mongodb.core.query.TextCriteria
 import org.springframework.graphql.data.query.ScrollSubrange
 import org.springframework.security.access.AccessDeniedException
-import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
-import java.util.Locale
+import java.util.*
 
 @Service
 class PostService(
@@ -35,7 +33,8 @@ class PostService(
     private val postMapper: PostMapper,
     private val userService: UserService,
     private val messageSource: MessageSource,
-    private val postPubSubService: PostPubSubService
+    private val postPubSubService: PostPubSubService,
+    private val userContextProvider: UserContextProvider
 ) {
 
     suspend fun createPost(input: AddPostInput, locale: Locale): PostPayload {
@@ -58,8 +57,7 @@ class PostService(
     }
 
     suspend fun updatePost(input: UpdatePostInput): PostPayload {
-        val currentUserId = getCurrentUserLogin().awaitSingleOrNull()
-            ?: throw UsernameNotFoundException("User was not found")
+        val currentUserId = userContextProvider.getCurrentUserId()
         var post = postRepository.findById(input.id) ?: throw ResourceNotFoundException(
             POST_NOT_FOUND_MSG_CODE,
             arrayOf(input.id)
@@ -75,8 +73,7 @@ class PostService(
     }
 
     suspend fun deletePost(id: String): String {
-        val currentUserId = getCurrentUserLogin().awaitSingleOrNull()
-            ?: throw UsernameNotFoundException("User was not found")
+        val currentUserId = userContextProvider.getCurrentUserId()
         val post = postRepository.findById(id) ?: throw ResourceNotFoundException(
             POST_NOT_FOUND_MSG_CODE,
             arrayOf(id)

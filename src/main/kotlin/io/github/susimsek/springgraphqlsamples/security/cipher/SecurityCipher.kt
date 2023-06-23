@@ -52,13 +52,13 @@ class SecurityCipher(
             val bb = ByteBuffer.wrap(decode)
 
             val iv = ByteArray(IV_LENGTH_BYTE)
-            bb.get(iv)
+            bb[iv]
 
             val salt = ByteArray(SALT_LENGTH_BYTE)
-            bb.get(salt)
+            bb[salt]
 
             val cipherText = ByteArray(bb.remaining())
-            bb.get(cipherText)
+            bb[cipherText]
 
             val keyBytes = com.nimbusds.jose.util.Base64(cipherProperties.base64Secret).decode()
             val secretKey = getAESKeyFromPassword(String(keyBytes).toCharArray(), salt)

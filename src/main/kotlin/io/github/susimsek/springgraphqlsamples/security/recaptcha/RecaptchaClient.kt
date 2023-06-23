@@ -6,7 +6,7 @@ import org.springframework.web.service.annotation.PostExchange
 import reactor.core.publisher.Mono
 
 @HttpExchange
-interface RecaptchaClient {
+fun interface RecaptchaClient {
     @PostExchange
     fun verifyResponse(
         @RequestParam secret: String,

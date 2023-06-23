@@ -6,7 +6,6 @@ import io.github.susimsek.springgraphqlsamples.repository.UserRepository
 import io.github.susimsek.springgraphqlsamples.service.mapper.UserMapper
 import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator
 import org.slf4j.LoggerFactory
-import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UsernameNotFoundException
