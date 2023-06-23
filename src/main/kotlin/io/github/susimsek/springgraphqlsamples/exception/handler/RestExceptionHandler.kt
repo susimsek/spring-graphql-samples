@@ -1,10 +1,19 @@
 package io.github.susimsek.springgraphqlsamples.exception.handler
 
-import io.github.susimsek.springgraphqlsamples.exception.*
+import io.github.susimsek.springgraphqlsamples.exception.INTERNAL_SERVER_ERROR_MSG_CODE
+import io.github.susimsek.springgraphqlsamples.exception.InvalidTokenException
+import io.github.susimsek.springgraphqlsamples.exception.METHOD_ARGUMENT_NOT_VALID_MSG_CODE
+import io.github.susimsek.springgraphqlsamples.exception.METHOD_NOT_ALLOWED_MSG_CODE
+import io.github.susimsek.springgraphqlsamples.exception.NOT_ACCEPTABLE_MSG_CODE
+import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundException
+import io.github.susimsek.springgraphqlsamples.exception.UNSUPPORTED_MEDIA_TYPE_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.exception.model.ApiError
 import io.github.susimsek.springgraphqlsamples.exception.utils.WebExceptionUtils
 import org.springframework.context.MessageSource
-import org.springframework.http.*
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.core.AuthenticationException
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -19,6 +28,7 @@ import reactor.core.publisher.Mono
 import java.util.*
 
 @ControllerAdvice
+@Suppress("UnusedPrivateMember")
 class RestExceptionHandler(
     private val messageSource: MessageSource,
     private val securityExceptionResolver: ReactiveSecurityExceptionResolver

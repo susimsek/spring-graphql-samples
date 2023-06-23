@@ -1,7 +1,12 @@
 package io.github.susimsek.springgraphqlsamples.security
 
 import io.github.susimsek.springgraphqlsamples.config.Token
-import org.springframework.graphql.server.*
+import org.springframework.graphql.server.WebGraphQlInterceptor
+import org.springframework.graphql.server.WebGraphQlRequest
+import org.springframework.graphql.server.WebGraphQlResponse
+import org.springframework.graphql.server.WebSocketGraphQlInterceptor
+import org.springframework.graphql.server.WebSocketGraphQlRequest
+import org.springframework.graphql.server.WebSocketSessionInfo
 import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.core.context.ReactiveSecurityContextHolder

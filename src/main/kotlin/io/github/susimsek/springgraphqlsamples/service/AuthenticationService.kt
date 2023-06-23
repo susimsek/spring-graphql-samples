@@ -33,7 +33,7 @@ class AuthenticationService(
         ).awaitSingle()
         val userDetails = authentication.principal as UserDetails
         val accessToken = tokenProvider.createAccessToken(userDetails)
-        val refreshToken = tokenProvider.createRefreshToken(authentication)
+        val refreshToken = tokenProvider.createRefreshToken()
         refreshTokenService.createToken(authentication.name, refreshToken)
         return TokenPayload(
             accessToken = securityCipher.encrypt(accessToken.token),

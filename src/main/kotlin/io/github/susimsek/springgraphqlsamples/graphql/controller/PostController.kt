@@ -75,6 +75,7 @@ class PostController(
     }
 
     @QueryMapping
+    @Suppress("UnusedPrivateMember")
     suspend fun posts(
         @Argument page: Int?,
         @Argument size: Int?,

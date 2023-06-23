@@ -3,7 +3,13 @@ package io.github.susimsek.springgraphqlsamples.exception.handler
 import graphql.GraphQLError
 import graphql.GraphqlErrorBuilder
 import graphql.schema.DataFetchingEnvironment
-import io.github.susimsek.springgraphqlsamples.exception.*
+import io.github.susimsek.springgraphqlsamples.exception.ExtendedErrorType
+import io.github.susimsek.springgraphqlsamples.exception.INTERNAL_SERVER_ERROR_MSG_CODE
+import io.github.susimsek.springgraphqlsamples.exception.InvalidTokenException
+import io.github.susimsek.springgraphqlsamples.exception.RateLimitingException
+import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundException
+import io.github.susimsek.springgraphqlsamples.exception.TOO_MANY_REQUESTS_MSG_CODE
+import io.github.susimsek.springgraphqlsamples.exception.ValidationException
 import jakarta.validation.ConstraintViolationException
 import org.springframework.context.MessageSource
 import org.springframework.graphql.client.FieldAccessException
@@ -15,6 +21,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import reactor.core.publisher.Mono
 
 @ControllerAdvice
+@Suppress("UnusedPrivateMember")
 class GraphqlExceptionHandler(
     private val messageSource: MessageSource,
     private val securityExceptionResolver: ReactiveSecurityExceptionResolver

@@ -2,7 +2,6 @@ package io.github.susimsek.springgraphqlsamples.security.jwt
 
 import io.github.susimsek.springgraphqlsamples.graphql.type.TokenPayload
 import org.springframework.http.ResponseCookie
-import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.oauth2.jwt.JwtClaimsSet
 import org.springframework.security.oauth2.jwt.JwtEncoder
@@ -48,7 +47,7 @@ class TokenProvider(
         return Duration.between(now, expiryDate).seconds
     }
 
-    fun createRefreshToken(authentication: Authentication): Token {
+    fun createRefreshToken(): Token {
         val tokenValue = UUID.randomUUID().toString()
         return Token(
             token = tokenValue,
