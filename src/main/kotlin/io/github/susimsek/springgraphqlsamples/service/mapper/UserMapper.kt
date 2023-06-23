@@ -1,5 +1,6 @@
 package io.github.susimsek.springgraphqlsamples.service.mapper
 
+import io.github.susimsek.springgraphqlsamples.domain.Role
 import io.github.susimsek.springgraphqlsamples.domain.User
 import io.github.susimsek.springgraphqlsamples.graphql.input.AddUserInput
 import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
@@ -10,6 +11,7 @@ import org.mapstruct.MappingTarget
 import org.mapstruct.Named
 import org.mapstruct.NullValuePropertyMappingStrategy
 import org.mapstruct.ReportingPolicy
+import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
@@ -24,11 +26,15 @@ interface UserMapper : EntityMapper<User, UserPayload> {
 
     fun mapSpringSecurityUser(user: User): org.springframework.security.core.userdetails.User {
         val grantedAuthorities = user.roles
-            .map { SimpleGrantedAuthority(it.name.name) }
+            .map(this::mapGrantedAuthority)
         return org.springframework.security.core.userdetails.User(
             user.id,
             user.password,
             grantedAuthorities
         )
+    }
+
+    fun mapGrantedAuthority(role: Role): GrantedAuthority {
+        return SimpleGrantedAuthority(role.name.name)
     }
 }
