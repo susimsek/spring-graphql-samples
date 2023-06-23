@@ -1,5 +1,6 @@
 package io.github.susimsek.springgraphqlsamples.security.jwt
 
+import io.github.susimsek.springgraphqlsamples.config.Token
 import org.springframework.http.HttpCookie
 import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.security.core.Authentication
@@ -12,9 +13,9 @@ import org.springframework.util.MultiValueMap
 import org.springframework.web.server.ServerWebExchange
 import reactor.core.publisher.Mono
 
-class TokenAuthenticationConverter : ServerBearerTokenAuthenticationConverter() {
+class TokenAuthenticationConverter(tokenProperties: Token) : ServerBearerTokenAuthenticationConverter() {
 
-    private var tokenCookieName = TOKEN_COOKIE_NAME
+    private var tokenCookieName = tokenProperties.accessTokenCookieName
 
     override fun convert(exchange: ServerWebExchange): Mono<Authentication> {
         val token = token(exchange.request)

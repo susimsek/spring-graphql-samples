@@ -2,7 +2,7 @@ package io.github.susimsek.springgraphqlsamples.graphql.controller
 
 import graphql.GraphQLContext
 import io.github.susimsek.springgraphqlsamples.graphql.input.LoginInput
-import io.github.susimsek.springgraphqlsamples.graphql.type.Token
+import io.github.susimsek.springgraphqlsamples.graphql.type.TokenPayload
 import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaService
 import io.github.susimsek.springgraphqlsamples.service.AuthenticationService
 import org.slf4j.LoggerFactory
@@ -25,9 +25,8 @@ class AuthenticationController(
         @Argument input: LoginInput,
         @ContextValue recaptcha: String,
         locale: Locale,
-        context:
-        GraphQLContext
-    ): Token {
+        context: GraphQLContext
+    ): TokenPayload {
         recaptchaService.validateToken(recaptcha)
         log.info("locale: {}", locale.toLanguageTag())
         val token = authenticationService.authorize(input)
@@ -39,8 +38,23 @@ class AuthenticationController(
     suspend fun logout(context: GraphQLContext): Boolean {
         val result = authenticationService.logout()
         if (result) {
-            context.put("token", Token(token = ""))
+            context.put("token", TokenPayload())
         }
         return result
+    }
+
+    @MutationMapping
+    suspend fun refreshToken(
+        @Argument refreshToken: String,
+        @ContextValue("refreshToken") refreshTokenCookie: String,
+        context: GraphQLContext
+    ): TokenPayload {
+        val token = when (refreshTokenCookie.isNotBlank()) {
+            true -> refreshTokenCookie
+            else -> refreshToken
+        }
+        val payload = authenticationService.refreshToken(token)
+        context.put("token", payload)
+        return payload
     }
 }

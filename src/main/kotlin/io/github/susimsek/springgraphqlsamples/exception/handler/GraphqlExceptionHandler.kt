@@ -48,6 +48,18 @@ class GraphqlExceptionHandler(
     }
 
     @GraphQlExceptionHandler
+    fun handleInvalidTokenException(
+        ex: InvalidTokenException,
+        env: DataFetchingEnvironment,
+    ): Mono<GraphQLError> {
+        val errorMessage = messageSource.getMessage(ex.message!!, ex.args, env.locale)
+        return Mono.just(
+            GraphqlErrorBuilder.newError(env)
+                .message(errorMessage).errorType(ErrorType.UNAUTHORIZED).build()
+        )
+    }
+
+    @GraphQlExceptionHandler
     fun handleResourceNotFoundException(
         ex: ResourceNotFoundException,
         env: DataFetchingEnvironment,

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field
-import java.time.OffsetDateTime
 import java.util.*
 
 // @QueryEntity
@@ -32,17 +31,7 @@ data class User(
 
     var activated: Boolean = false,
 
-    var roles: MutableSet<Role> = mutableSetOf(),
-
-    var activationToken: String? = null,
-
-    var activationTokenExpiryDate: OffsetDateTime? = null,
-
-    var resetToken: String? = null,
-
-    var resetDate: OffsetDateTime? = null,
-
-    var resetTokenExpiryDate: OffsetDateTime? = null
+    var roles: MutableSet<Role> = mutableSetOf()
 
 ) : BaseEntity() {
     override fun equals(other: Any?): Boolean {
@@ -57,12 +46,12 @@ data class User(
 
     override fun toString(): String {
         return "User(id=$id, " +
-                "username=$username}, " +
-                "password=$password, " +
-                "firstName=$firstName, " +
-                "lastName=$lastName, " +
-                "lang=$email, " +
-                "email=$email, " +
-                "activated=$activated)"
+            "username=$username}, " +
+            "password=$password, " +
+            "firstName=$firstName, " +
+            "lastName=$lastName, " +
+            "lang=$email, " +
+            "email=$email, " +
+            "activated=$activated)"
     }
 }

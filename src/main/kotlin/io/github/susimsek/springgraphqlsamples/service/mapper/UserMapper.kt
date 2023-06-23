@@ -10,6 +10,7 @@ import org.mapstruct.MappingTarget
 import org.mapstruct.Named
 import org.mapstruct.NullValuePropertyMappingStrategy
 import org.mapstruct.ReportingPolicy
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 interface UserMapper : EntityMapper<User, UserPayload> {
@@ -20,4 +21,14 @@ interface UserMapper : EntityMapper<User, UserPayload> {
     @Named("partialUpdate")
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     fun partialUpdate(@MappingTarget entity: User, input: AddUserInput)
+
+    fun mapSpringSecurityUser(user: User): org.springframework.security.core.userdetails.User {
+        val grantedAuthorities = user.roles
+            .map { SimpleGrantedAuthority(it.name.name) }
+        return org.springframework.security.core.userdetails.User(
+            user.id,
+            user.password,
+            grantedAuthorities
+        )
+    }
 }

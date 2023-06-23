@@ -1,14 +1,7 @@
 package io.github.susimsek.springgraphqlsamples.security
 
-import io.github.susimsek.springgraphqlsamples.security.jwt.TOKEN_COOKIE_NAME
-import io.github.susimsek.springgraphqlsamples.security.jwt.TOKEN_PREFIX
-import io.github.susimsek.springgraphqlsamples.security.jwt.WS_TOKEN_KEY_NAME
-import org.springframework.graphql.server.WebGraphQlInterceptor
-import org.springframework.graphql.server.WebGraphQlRequest
-import org.springframework.graphql.server.WebGraphQlResponse
-import org.springframework.graphql.server.WebSocketGraphQlInterceptor
-import org.springframework.graphql.server.WebSocketGraphQlRequest
-import org.springframework.graphql.server.WebSocketSessionInfo
+import io.github.susimsek.springgraphqlsamples.config.Token
+import org.springframework.graphql.server.*
 import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.core.context.ReactiveSecurityContextHolder
@@ -18,8 +11,10 @@ import reactor.core.publisher.Mono
 import java.net.HttpCookie
 
 class GraphQlWsAuthenticationInterceptor(
-    private val reactiveAuthenticationManager: ReactiveAuthenticationManager
+    private val reactiveAuthenticationManager: ReactiveAuthenticationManager,
+    private val tokenProperties: Token
 ) : WebSocketGraphQlInterceptor {
+
     private companion object {
 
         private val AUTHENTICATION_SESSION_ATTRIBUTE_KEY =
@@ -31,6 +26,8 @@ class GraphQlWsAuthenticationInterceptor(
         fun WebSocketSessionInfo.setAuthentication(authentication: BearerTokenAuthenticationToken) {
             attributes[AUTHENTICATION_SESSION_ATTRIBUTE_KEY] = authentication
         }
+
+        private const val TOKEN_PREFIX = "Bearer "
     }
 
     override fun intercept(request: WebGraphQlRequest, chain: WebGraphQlInterceptor.Chain): Mono<WebGraphQlResponse> {
@@ -66,16 +63,16 @@ class GraphQlWsAuthenticationInterceptor(
     }
 
     private fun resolveTokenFromPayload(connectionInitPayload: MutableMap<String, Any>): String? {
-        return (connectionInitPayload[WS_TOKEN_KEY_NAME] as? String)
+        return (connectionInitPayload[tokenProperties.accessTokenCookieName] as? String)
             ?.takeIf { it.startsWith(TOKEN_PREFIX, ignoreCase = true) }
-            ?.substring(TOKEN_PREFIX.length)
+            ?.substring(Companion.TOKEN_PREFIX.length)
     }
 
     private fun resolveTokenFromCookie(headers: HttpHeaders): String? {
         val cookie = headers.getFirst(HttpHeaders.COOKIE) ?: return null
         val tokenCookie = cookie.split(";")
             .flatMap { HttpCookie.parse(it) }
-            .find { it.name == TOKEN_COOKIE_NAME }
+            .find { it.name == tokenProperties.accessTokenCookieName }
         return tokenCookie?.value
     }
 }

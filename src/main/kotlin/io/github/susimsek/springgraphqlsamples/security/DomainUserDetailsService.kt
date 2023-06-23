@@ -3,6 +3,7 @@ package io.github.susimsek.springgraphqlsamples.security
 import io.github.susimsek.springgraphqlsamples.domain.User
 import io.github.susimsek.springgraphqlsamples.exception.UserNotActivatedException
 import io.github.susimsek.springgraphqlsamples.repository.UserRepository
+import io.github.susimsek.springgraphqlsamples.service.mapper.UserMapper
 import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator
 import org.slf4j.LoggerFactory
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -14,7 +15,10 @@ import reactor.core.publisher.Mono
 import java.util.*
 
 @Component("userDetailsService")
-class DomainUserDetailsService(private val userRepository: UserRepository) : ReactiveUserDetailsService {
+class DomainUserDetailsService(
+    private val userRepository: UserRepository,
+    private val userMapper: UserMapper
+) : ReactiveUserDetailsService {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -38,16 +42,10 @@ class DomainUserDetailsService(private val userRepository: UserRepository) : Rea
     }
 
     private fun createSpringSecurityUser(lowercaseLogin: String, user: User):
-            org.springframework.security.core.userdetails.User {
+        org.springframework.security.core.userdetails.User {
         if (!user.activated) {
             throw UserNotActivatedException("User $lowercaseLogin was not activated")
         }
-        val grantedAuthorities = user.roles
-            .map { SimpleGrantedAuthority(it.name.name) }
-        return org.springframework.security.core.userdetails.User(
-            user.id,
-            user.password,
-            grantedAuthorities
-        )
+        return userMapper.mapSpringSecurityUser(user)
     }
 }

@@ -10,7 +10,7 @@
     Your account has been created, please click on the URL below to activate it:
 </p>
 <p>
-    <a th:with="url=(@{|${baseUrl}/${#locale.language}/activate?token=${user.activationToken}|})" th:href="${url}"
+    <a th:with="url=(@{|${baseUrl}/${#locale.language}/activate?token=${token}|})" th:href="${url}"
        th:text="${url}">Activation link</a>
 </p>
 </body>

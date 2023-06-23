@@ -53,6 +53,17 @@ class RestExceptionHandler(
         return securityExceptionResolver.resolveException(ex, exchange)
     }
 
+    @ExceptionHandler
+    fun handleInvalidTokenException(
+        ex: InvalidTokenException,
+        locale: Locale,
+        exchange: ServerWebExchange
+    ): Mono<ResponseEntity<Any>> {
+        val errorMessage = messageSource.getMessage(ex.message!!, ex.args, locale)
+        val apiError = ApiError.build(HttpStatus.UNAUTHORIZED, errorMessage, exchange)
+        return WebExceptionUtils.buildResponseEntity(apiError)
+    }
+
     // 404
     @ExceptionHandler
     fun handleResourceNotFoundException(

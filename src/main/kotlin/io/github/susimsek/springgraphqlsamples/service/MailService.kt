@@ -16,6 +16,7 @@ import org.thymeleaf.spring6.SpringTemplateEngine
 import java.nio.charset.StandardCharsets
 
 private const val USER = "user"
+private const val TOKEN = "token"
 private const val BASE_URL = "baseUrl"
 
 @Service
@@ -59,9 +60,15 @@ class MailService(
     }
 
     @Async
-    fun sendEmailFromTemplate(user: User, templateName: String, titleKey: String) {
+    fun sendConfirmationEmailFromTemplate(
+        user: User,
+        token: String,
+        templateName: String,
+        titleKey: String
+    ) {
         val context = Context(user.lang).apply {
             setVariable(USER, user)
+            setVariable(TOKEN, token)
             setVariable(BASE_URL, appProperties.mail.baseUrl)
         }
         val content = templateEngine.process(templateName, context)
@@ -77,14 +84,19 @@ class MailService(
     }
 
     @Async
-    fun sendActivationEmail(user: User) {
+    fun sendActivationEmail(user: User, activationToken: String) {
         log.debug("Sending activation email to '{}'", user.email)
-        sendEmailFromTemplate(user, "mail/activationEmail", "email.activation.title")
+        sendConfirmationEmailFromTemplate(
+            user,
+            activationToken,
+            "mail/activationEmail",
+            "email.activation.title"
+        )
     }
 
     @Async
-    fun sendPasswordResetMail(user: User) {
+    fun sendPasswordResetMail(user: User, resetToken: String) {
         log.debug("Sending password reset email to '{}'", user.email)
-        sendEmailFromTemplate(user, "mail/passwordResetEmail", "email.reset.title")
+        sendConfirmationEmailFromTemplate(user, resetToken, "mail/passwordResetEmail", "email.reset.title")
     }
 }

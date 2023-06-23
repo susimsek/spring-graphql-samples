@@ -34,7 +34,8 @@ type Query {
 }
 
 type Mutation {
-    login(input: LoginInput!): Token!
+    login(input: LoginInput!): TokenPayload!
+    refreshToken(refreshToken: String! @NotBlank): TokenPayload!
     logout: Boolean!
     createUser(input: AddUserInput!): UserPayload!
     activateAccount(token: String! @NotBlank): Boolean!
@@ -219,10 +220,12 @@ type PostPayload{
     locale: Locale
 }
 
-type Token {
-    token: String!
+type TokenPayload {
+    accessToken: String!
+    refreshToken: String!
     tokenType: String!
-    expiresIn: Int!
+    accessTokenExpiresIn: Int!
+    refreshTokenExpiresIn: Int!
 }
 
 type FileUploadPayload {

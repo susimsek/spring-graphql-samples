@@ -12,6 +12,7 @@ import java.util.*
 
 @RestController
 @RequestMapping("/api/v1")
+@PreAuthorize("isAuthenticated()")
 class PostRestController(
     private val postService: PostService
 ) {
@@ -22,14 +23,13 @@ class PostRestController(
     }
 
     @DeleteMapping("/posts/{postId}")
-    @PreAuthorize("hasRole('ASD')")
     suspend fun deletePost(@PathVariable @Size(min = 36, max = 36) postId: String): ResponseEntity<Unit> {
         postService.deletePost(postId)
         return ResponseEntity.noContent().build()
     }
 
     @PostMapping("/posts")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
     suspend fun createPost(
         @RequestBody @Valid
         input: AddPostInput,

@@ -4,7 +4,7 @@ import com.ninjasquad.springmockk.MockkBean
 import io.github.susimsek.springgraphqlsamples.exception.InvalidCaptchaException
 import io.github.susimsek.springgraphqlsamples.exception.RECAPTCHA_INVALID_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.graphql.GraphQlUnitTest
-import io.github.susimsek.springgraphqlsamples.graphql.type.Token
+import io.github.susimsek.springgraphqlsamples.graphql.type.TokenPayload
 import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaService
 import io.github.susimsek.springgraphqlsamples.service.AuthenticationService
 import io.mockk.coEvery
@@ -43,6 +43,8 @@ private const val DEFAULT_TOKEN = "pCtOnkH/FC5mYNhGRiJo3rwUqgj51trO7doM6gSHn/5hL
     "sQOIXrFHJOqJ+cDpxvS9FbNMqYyvdj/6FQ0IwiAiLukB2+LA8Vm1EieuJWWWEoWC28Z/4ck9hyUMAiAVS55nfeysES" +
     "PTbBB/m4XSKffK0jRnqUvUWIPCP4ymGL6etRoSg6cPHrV2a2+Kj7c7G3g5/xV+I4HVnMidCTbYg/ruY="
 
+private const val DEFAULT_REFRESH_TOKEN = "7f6060eb-03a3-473a-8077-12a2394ab804"
+
 @OptIn(ExperimentalCoroutinesApi::class)
 @GraphQlUnitTest([AuthenticationController::class])
 class AuthControllerTest {
@@ -65,7 +67,7 @@ class AuthControllerTest {
 
     @Test
     fun authorize() = runTest {
-        coEvery { authenticationService.authorize(any()) } returns Token(DEFAULT_TOKEN)
+        coEvery { authenticationService.authorize(any()) } returns TokenPayload(DEFAULT_TOKEN, DEFAULT_REFRESH_TOKEN)
         coEvery { recaptchaService.validateToken(any()) } returns true
 
         val input = mapOf(
@@ -77,7 +79,8 @@ class AuthControllerTest {
             .documentName("loginMutation")
             .variable("input", input)
             .execute()
-            .path("data.login.token").entity(String::class.java).isEqualTo(DEFAULT_TOKEN)
+            .path("data.login.accessToken").entity(String::class.java).isEqualTo(DEFAULT_TOKEN)
+            .path("data.login.refreshToken").entity(String::class.java).isEqualTo(DEFAULT_REFRESH_TOKEN)
 
         coVerify(exactly = 1) { authenticationService.authorize(any()) }
         coVerify(exactly = 1) { recaptchaService.validateToken(any()) }

@@ -15,7 +15,6 @@ data class SecurityProperties(
     var contentSecurityPolicy: String
 )
 
-
 data class Authentication(
     @field:Valid
     @NestedConfigurationProperty
@@ -27,13 +26,19 @@ data class Authentication(
 )
 
 data class Token(
-    var validityInSeconds: Long = 1800L,
-
+    var accessTokenValidityInSeconds: Long = 1800L,
+    var refreshTokenValidityInSeconds: Long = 5400L,
     @field:NotBlank
     var publicKey: String,
 
     @field:NotBlank
     var privateKey: String,
+
+    @field:NotBlank
+    var accessTokenCookieName: String,
+
+    @field:NotBlank
+    var refreshTokenCookieName: String,
 
     @field:NotBlank
     var cookieDomain: String
@@ -43,4 +48,3 @@ data class SecurityMatcher(
     var ignorePatterns: MutableList<String> = mutableListOf(),
     var permitAllPatterns: MutableList<String> = mutableListOf()
 )
-

@@ -41,7 +41,7 @@ class PostController(
     lateinit var instanceId: String
 
     @MutationMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
     suspend fun createPost(
         @Argument @Valid
         input: AddPostInput,

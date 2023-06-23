@@ -20,15 +20,19 @@ class WebsocketSecurityConfig {
     @Bean
     fun graphQlWsAuthenticationInterceptor(
         decoder: ReactiveJwtDecoder,
-        jwtAuthenticationConverter: Converter<Jwt, Mono<AbstractAuthenticationToken>>
+        jwtAuthenticationConverter: Converter<Jwt, Mono<AbstractAuthenticationToken>>,
+        securityProperties: SecurityProperties
     ): GraphQlWsAuthenticationInterceptor {
         val manager = JwtReactiveAuthenticationManager(decoder)
         manager.setJwtAuthenticationConverter(jwtAuthenticationConverter)
-        return GraphQlWsAuthenticationInterceptor(manager)
+        return GraphQlWsAuthenticationInterceptor(manager, securityProperties.authentication.token)
     }
 
     @Bean
-    fun graphQlTokenCookieInterceptor(tokenProvider: TokenProvider): GraphQlTokenCookieInterceptor {
-        return GraphQlTokenCookieInterceptor(tokenProvider)
+    fun graphQlTokenCookieInterceptor(
+        tokenProvider: TokenProvider,
+        securityProperties: SecurityProperties
+    ): GraphQlTokenCookieInterceptor {
+        return GraphQlTokenCookieInterceptor(tokenProvider, securityProperties.authentication.token)
     }
 }

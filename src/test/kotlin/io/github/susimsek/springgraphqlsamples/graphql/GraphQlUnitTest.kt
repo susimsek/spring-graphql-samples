@@ -2,11 +2,11 @@ package io.github.susimsek.springgraphqlsamples.graphql
 
 import io.github.susimsek.springgraphqlsamples.config.GraphqlConfig
 import io.github.susimsek.springgraphqlsamples.exception.handler.GraphqlExceptionHandler
+import io.github.susimsek.springgraphqlsamples.exception.handler.ReactiveSecurityExceptionResolver
 import org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration
 import org.springframework.boot.test.autoconfigure.graphql.GraphQlTest
 import org.springframework.context.annotation.Import
 import org.springframework.core.annotation.AliasFor
-import org.springframework.graphql.execution.ReactiveSecurityDataFetcherExceptionResolver
 import kotlin.reflect.KClass
 
 @Target(AnnotationTarget.TYPE, AnnotationTarget.CLASS)
@@ -16,7 +16,7 @@ import kotlin.reflect.KClass
 @Import(
     GraphqlConfig::class,
     MessageSourceAutoConfiguration::class,
-    ReactiveSecurityDataFetcherExceptionResolver::class,
+    ReactiveSecurityExceptionResolver::class,
     GraphqlExceptionHandler::class
 )
 annotation class GraphQlUnitTest(

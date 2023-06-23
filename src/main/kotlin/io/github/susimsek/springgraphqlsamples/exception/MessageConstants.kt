@@ -9,6 +9,7 @@ const val UNSUPPORTED_MEDIA_TYPE_MSG_CODE = "error.unsupported.media.type.messag
 const val TOO_MANY_REQUESTS_MSG_CODE = "error.too.many.requests.message"
 const val INTERNAL_SERVER_ERROR_MSG_CODE = "error.internal.server.message"
 
+const val INVALID_REFRESH_TOKEN_MSG_CODE = "error.invalid.refresh.token.message"
 const val USER_NOT_FOUND_MSG_CODE = "error.user.not.found.message"
 const val ROLE_NAME_NOT_FOUND_MSG_CODE = "error.roleName.not.found.message"
 const val EMAIL_ALREADY_EXISTS_MSG_CODE = "error.email.already.exists.message"

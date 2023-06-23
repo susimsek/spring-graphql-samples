@@ -94,8 +94,8 @@ class SecurityConfig {
     }
 
     @Bean
-    fun bearerTokenConverter(): ServerAuthenticationConverter {
-        return TokenAuthenticationConverter()
+    fun bearerTokenConverter(securityProperties: SecurityProperties): ServerAuthenticationConverter {
+        return TokenAuthenticationConverter(securityProperties.authentication.token)
     }
 
     @Bean

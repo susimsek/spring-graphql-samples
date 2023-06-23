@@ -25,8 +25,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Mono
-import java.time.OffsetDateTime
 import java.util.*
 
 @Service
@@ -36,7 +36,9 @@ class UserService(
     private val userMapper: UserMapper,
     private val roleRepository: RoleRepository,
     private val mailService: MailService,
-    private val userContextProvider: UserContextProvider
+    private val userContextProvider: UserContextProvider,
+    private val passwordResetTokenService: PasswordResetTokenService,
+    private val verificationTokenService: VerificationTokenService
 ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -75,10 +77,10 @@ class UserService(
         }
 
         val activationToken = UUID.randomUUID().toString()
-        createVerificationToken(user, activationToken)
+        verificationTokenService.createToken(user.id, activationToken)
 
         user = userRepository.save(user)
-        mailService.sendActivationEmail(user)
+        mailService.sendActivationEmail(user, activationToken)
         return userMapper.toType(user)
     }
 
@@ -119,36 +121,30 @@ class UserService(
         return userMapper.toType(user)
     }
 
+    suspend fun findById(id: String): User? {
+        return userRepository.findById(id)
+    }
+
     fun getUserByIdIn(ids: MutableSet<String>): Flow<UserPayload> {
         return userRepository.findAllByIdIn(ids)
             .map(userMapper::toType)
     }
 
+    @Transactional
     suspend fun activateAccount(token: String): Boolean {
         log.debug("Activating user for activation token {}", token)
-        val user = userRepository.findByActivationToken(token) ?: return false
-        val isExpired = user.activationTokenExpiryDate?.isAfter(OffsetDateTime.now()) == false
-        if (user.activated || isExpired) {
+        val verificationToken = verificationTokenService.findByToken(token) ?: return false
+        val user = findById(verificationToken.userId) ?: return false
+        val isValid = verificationTokenService.verifyExpiration(verificationToken)
+        if (!isValid) {
             return false
         }
         user.activated = true
-        user.activationToken = null
-        user.activationTokenExpiryDate = null
         userRepository.save(user)
+        verificationTokenService.delete(verificationToken)
 
         log.debug("Activated user: {}", user)
         return true
-    }
-
-    fun createVerificationToken(user: User, token: String) {
-        user.activationToken = token
-        user.activationTokenExpiryDate = OffsetDateTime.now().plusMinutes(60 * 24)
-    }
-
-    fun createPasswordResetToken(user: User, token: String) {
-        user.resetToken = token
-        user.resetTokenExpiryDate = OffsetDateTime.now().plusMinutes(60 * 24)
-        user.resetDate = OffsetDateTime.now()
     }
 
     suspend fun changePassword(currentPassword: String, newPassword: String): Boolean {
@@ -169,26 +165,24 @@ class UserService(
         val user = userRepository.findOneByEmail(email.lowercase(Locale.ENGLISH)).awaitSingleOrNull()
         if (user != null && user.activated) {
             val resetToken = UUID.randomUUID().toString()
-            createPasswordResetToken(user, resetToken)
-            userRepository.save(user)
-            mailService.sendPasswordResetMail(user)
+            passwordResetTokenService.createToken(user.id, resetToken)
+            mailService.sendPasswordResetMail(user, resetToken)
         }
         return true
     }
 
+    @Transactional
     suspend fun resetPassword(token: String, newPassword: String): Boolean {
         log.debug("Reset user password for reset token {}", token)
-        val user = userRepository.findByResetToken(token) ?: return false
-        val isExpired = user.resetTokenExpiryDate?.isAfter(OffsetDateTime.now()) == false
-        if (isExpired) {
+        val resetToken = passwordResetTokenService.findByToken(token) ?: return false
+        val user = findById(resetToken.userId) ?: return false
+        val isValid = passwordResetTokenService.verifyExpiration(resetToken)
+        if (!isValid) {
             return false
         }
         user.password = passwordEncoder.encode(newPassword)
-        user.resetToken = null
-        user.resetTokenExpiryDate = null
-        user.resetDate = null
         userRepository.save(user)
+        passwordResetTokenService.delete(resetToken)
         return true
     }
-
 }
