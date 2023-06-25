@@ -4,11 +4,13 @@ import io.github.susimsek.springgraphqlsamples.graphql.input.LoginInput
 import io.github.susimsek.springgraphqlsamples.graphql.type.TokenPayload
 import io.github.susimsek.springgraphqlsamples.rest.payload.LoginRequest
 import io.github.susimsek.springgraphqlsamples.rest.payload.LogoutPayload
+import io.github.susimsek.springgraphqlsamples.rest.payload.RefreshTokenRequest
 import io.github.susimsek.springgraphqlsamples.security.jwt.TokenProvider
 import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaService
 import io.github.susimsek.springgraphqlsamples.service.AuthenticationService
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.CookieValue
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
@@ -50,5 +52,23 @@ class AuthenticationRestController(
             .header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())
             .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
             .body(LogoutPayload(success = true))
+    }
+
+    @PostMapping("/refresh-token")
+    suspend fun refreshToken(
+        @RequestBody refreshTokenRequest: RefreshTokenRequest,
+        @CookieValue refreshToken: String
+    ): ResponseEntity<TokenPayload> {
+        val token = when (refreshToken.isNotBlank()) {
+            true -> refreshToken
+            else -> refreshTokenRequest.refreshToken
+        }
+        val payload = authenticationService.refreshToken(token)
+        val accessTokenCookie = tokenProvider.createAccessTokenCookie(payload)
+        val refreshTokenCookie = tokenProvider.createRefreshTokenCookie(payload)
+        return ResponseEntity.ok()
+            .header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())
+            .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
+            .body(payload)
     }
 }
