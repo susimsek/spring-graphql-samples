@@ -11,6 +11,7 @@ import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundExcepti
 import io.github.susimsek.springgraphqlsamples.exception.TOO_MANY_REQUESTS_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.exception.ValidationException
 import jakarta.validation.ConstraintViolationException
+import org.slf4j.LoggerFactory
 import org.springframework.context.MessageSource
 import org.springframework.graphql.client.FieldAccessException
 import org.springframework.graphql.data.method.annotation.GraphQlExceptionHandler
@@ -26,6 +27,10 @@ class GraphqlExceptionHandler(
     private val messageSource: MessageSource,
     private val securityExceptionResolver: ReactiveSecurityExceptionResolver
 ) {
+
+    companion object {
+        private val log = LoggerFactory.getLogger(GraphqlExceptionHandler::class.java)
+    }
 
     @GraphQlExceptionHandler
     fun handleFieldAccessException(
@@ -104,7 +109,7 @@ class GraphqlExceptionHandler(
         ex: Exception,
         env: DataFetchingEnvironment,
     ): Mono<GraphQLError> {
-        println("ex=" + ex.message)
+        log.error("Internal server error {}", ex.message)
         val errorMessage = messageSource.getMessage(INTERNAL_SERVER_ERROR_MSG_CODE, null, env.locale)
         return Mono.just(
             GraphqlErrorBuilder.newError(env)

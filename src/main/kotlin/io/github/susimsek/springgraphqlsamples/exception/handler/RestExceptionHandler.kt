@@ -9,6 +9,7 @@ import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundExcepti
 import io.github.susimsek.springgraphqlsamples.exception.UNSUPPORTED_MEDIA_TYPE_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.exception.model.ApiError
 import io.github.susimsek.springgraphqlsamples.exception.utils.WebExceptionUtils
+import org.slf4j.LoggerFactory
 import org.springframework.context.MessageSource
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -33,6 +34,10 @@ class RestExceptionHandler(
     private val messageSource: MessageSource,
     private val securityExceptionResolver: ReactiveSecurityExceptionResolver
 ) : ResponseEntityExceptionHandler() {
+
+    companion object {
+        private val log = LoggerFactory.getLogger(RestExceptionHandler::class.java)
+    }
 
     // 400
     override fun handleWebExchangeBindException(
@@ -147,6 +152,7 @@ class RestExceptionHandler(
         locale: Locale,
         exchange: ServerWebExchange,
     ): Mono<ResponseEntity<Any>> {
+        log.error("Internal server error {}", ex.message)
         val errorMessage = messageSource.getMessage(INTERNAL_SERVER_ERROR_MSG_CODE, null, locale)
         val apiError = ApiError.build(HttpStatus.INTERNAL_SERVER_ERROR, errorMessage, exchange)
         return WebExceptionUtils.buildResponseEntity(apiError)
