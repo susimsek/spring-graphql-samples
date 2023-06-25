@@ -1,7 +1,7 @@
 import React from "react";
 import {NavDropdown, Navbar} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faLock, faPlusSquare, faRightFromBracket, faUser} from "@fortawesome/free-solid-svg-icons";
+import {faLock, faRightFromBracket, faUser} from "@fortawesome/free-solid-svg-icons";
 import {Trans, useTranslation} from "next-i18next";
 import {useLogout} from "../hooks/use-logout";
 import {useCurrentUser} from "../hooks/use-current-user";

@@ -14,7 +14,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import {useGoogleReCaptcha} from "react-google-recaptcha-v3";
 import Link from "next/link";
-import {faEye, faEyeSlash, faSave} from "@fortawesome/free-solid-svg-icons";
+import {faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 type LoginFormData = { username: string; password: string };
@@ -35,7 +35,7 @@ const LoginPage = () => {
 
     const router = useRouter();
 
-    // const { executeRecaptcha } = useGoogleReCaptcha()
+    const { executeRecaptcha } = useGoogleReCaptcha()
 
     const redirectUrl = (router.query?.redirectUrl as string) ?? "/";
 
@@ -55,16 +55,12 @@ const LoginPage = () => {
     // Creating a state to store the uploaded video
 
     const handleLogin: SubmitHandler<LoginFormData> = async ({username, password}) => {
-
-        /*
         if (!executeRecaptcha) {
             console.log('Execute recaptcha not yet available');
             return;
         }
 
-         */
-
-        const token = "asd";
+        const token = await executeRecaptcha('login');
 
 
         const result = await login({

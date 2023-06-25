@@ -2,8 +2,6 @@ import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 import {Alert, Container} from "react-bootstrap";
 import Layout from "../components/Layout";
 import React from "react";
-import Image from 'next/image';
-import welcomePic from '../public/assets/introduction.jpeg'
 import {useTranslation} from "next-i18next";
 
 const NotFoundPage = () => {
