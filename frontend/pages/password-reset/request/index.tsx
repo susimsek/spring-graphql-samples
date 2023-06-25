@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {Alert, Col, Container, Row, Spinner} from "react-bootstrap";
 import Layout from "../../../components/Layout";
-import {Trans, useTranslation} from "next-i18next";
+import {useTranslation} from "next-i18next";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';

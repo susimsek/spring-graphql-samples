@@ -7,6 +7,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faGlobe} from "@fortawesome/free-solid-svg-icons";
 import {useTranslation} from "next-i18next";
 import {LANGUAGES} from "../constants";
+import {wait} from "@apollo/client/testing";
 
 
 
@@ -20,9 +21,9 @@ const LanguageBar: React.FC = () => {
 
     const { pathname, asPath, query } = router
 
-    const changeLanguage = (locale: string) => {
+    const changeLanguage = async (locale: string) => {
         setCookie("NEXT_LOCALE", locale, {path: "/"})
-        router.push({ pathname, query }, asPath, { locale })
+        await router.push({pathname, query}, asPath, {locale})
     }
 
     const currentLanguage = LANGUAGES.find((language) => {

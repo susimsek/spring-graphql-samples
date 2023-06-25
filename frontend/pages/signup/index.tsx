@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {Alert, Col, Container, Row, Spinner} from "react-bootstrap";
 import Layout from "../../components/Layout";
 import {Trans, useTranslation} from "next-i18next";
@@ -8,7 +8,6 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import {SubmitHandler, useForm} from "react-hook-form";
 import {useCreateUserMutation} from "../../generated/graphql-types";
-import {useRouter} from "next/router";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import {useGoogleReCaptcha} from "react-google-recaptcha-v3";

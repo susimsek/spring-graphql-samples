@@ -7,7 +7,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import {SubmitHandler, useForm} from "react-hook-form";
-import {useChangePasswordMutation, useCreateUserMutation} from "../../generated/graphql-types";
+import {useChangePasswordMutation} from "../../generated/graphql-types";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import PasswordStrengthBar from "../../components/PasswordStrengthBar";

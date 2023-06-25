@@ -2,7 +2,7 @@ import React from "react";
 import {IPost} from "../types/post";
 import {Card} from "react-bootstrap";
 import {useTranslation} from "next-i18next";
-import QuillNoSSRWrapper, {modules} from "./QuillNoSSRWrapper";
+import QuillNoSSRWrapper from "./QuillNoSSRWrapper";
 
 interface PostProps {
     post: IPost;

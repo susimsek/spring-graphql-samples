@@ -1,5 +1,3 @@
-import {PostStatus} from "../generated/graphql-types";
-
 export interface IUser {
     id: string;
     email: string;
