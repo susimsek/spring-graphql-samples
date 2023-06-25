@@ -1,14 +1,12 @@
 package io.github.susimsek.springgraphqlsamples.rest.controller
 
-import io.github.susimsek.springgraphqlsamples.exception.LOGOUT_SUCCESS_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.graphql.input.LoginInput
 import io.github.susimsek.springgraphqlsamples.graphql.type.TokenPayload
 import io.github.susimsek.springgraphqlsamples.rest.payload.LoginRequest
-import io.github.susimsek.springgraphqlsamples.rest.payload.MessagePayload
+import io.github.susimsek.springgraphqlsamples.rest.payload.LogoutPayload
 import io.github.susimsek.springgraphqlsamples.security.jwt.TokenProvider
 import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaService
 import io.github.susimsek.springgraphqlsamples.service.AuthenticationService
-import org.springframework.context.MessageSource
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -23,8 +21,7 @@ import java.util.*
 class AuthenticationRestController(
     private val authenticationService: AuthenticationService,
     private val recaptchaService: RecaptchaService,
-    private val tokenProvider: TokenProvider,
-    private val messageSource: MessageSource
+    private val tokenProvider: TokenProvider
 ) {
 
     @PostMapping("/login")
@@ -45,14 +42,13 @@ class AuthenticationRestController(
     }
 
     @PostMapping("/logout")
-    suspend fun logout(locale: Locale): ResponseEntity<MessagePayload> {
+    suspend fun logout(): ResponseEntity<LogoutPayload> {
         authenticationService.logout()
         val accessTokenCookie = tokenProvider.deleteAccessTokenCookie()
         val refreshTokenCookie = tokenProvider.deleteRefreshTokenCookie()
-        val message = messageSource.getMessage(LOGOUT_SUCCESS_MSG_CODE, null, locale)
         return ResponseEntity.ok()
             .header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())
             .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
-            .body(MessagePayload(message))
+            .body(LogoutPayload(success = true))
     }
 }

@@ -17,5 +17,3 @@ const val USERNAME_ALREADY_EXISTS_MSG_CODE = "error.username.already.exists.mess
 const val POST_NOT_FOUND_MSG_CODE = "error.post.not.found.message"
 const val RECAPTCHA_INVALID_MSG_CODE = "error.recaptcha.invalid.message"
 const val PASSWORD_INVALID_MSG_CODE = "error.password.invalid.message"
-
-const val LOGOUT_SUCCESS_MSG_CODE = "logout.success.message"
