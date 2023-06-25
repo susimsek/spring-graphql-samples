@@ -27,6 +27,7 @@ abstract class AbstractCoroutineRedisRepository<T : Any> : CoroutineRedisReposit
     abstract fun initKey(): String
 
     @PostConstruct
+    @Suppress("UnusedPrivateMember")
     private fun init() {
         reactiveHashOperations = redisOperations.opsForHash()
         cacheProperties = appProperties.cache
