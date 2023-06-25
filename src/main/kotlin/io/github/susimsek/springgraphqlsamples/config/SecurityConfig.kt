@@ -34,6 +34,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter
 import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.security.web.server.authentication.ServerAuthenticationConverter
+import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository
 import org.springframework.security.web.server.util.matcher.NegatedServerWebExchangeMatcher
 import org.springframework.security.web.server.util.matcher.OrServerWebExchangeMatcher
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers
@@ -125,6 +126,7 @@ class SecurityConfig {
                     )
                 )
             )
+            .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
             .exceptionHandling { exceptionHandling ->
                 exceptionHandling
                     .authenticationEntryPoint(securityExceptionResolver)
@@ -153,6 +155,8 @@ class SecurityConfig {
                         jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)
                     }
                     .bearerTokenConverter(bearerTokenConverter)
+                    .authenticationEntryPoint(securityExceptionResolver)
+                    .accessDeniedHandler(securityExceptionResolver)
             }
         // @formatter:on
         return http.build()

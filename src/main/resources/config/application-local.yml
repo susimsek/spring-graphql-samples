@@ -66,6 +66,7 @@ security:
         - /favicon.ico
       permit-all-patterns:
         - /actuator/**
+        - /api/v1/auth/**
         - /graphql
         - /api/v1/transcription
         - /api/v1/translation

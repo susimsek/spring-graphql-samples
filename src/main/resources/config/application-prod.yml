@@ -35,6 +35,7 @@ security:
         - /favicon.ico
       permit-all-patterns:
         - /actuator/**
+        - /api/v1/auth/**
         - /graphql
         - /subscriptions
         - /redirect
