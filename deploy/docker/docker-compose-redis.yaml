@@ -1,0 +1,23 @@
+version: '3.8'
+
+volumes:
+  redis:
+
+networks:
+  backend:
+    name: backend
+
+services:
+  redis:
+    image: redis:7.0.4
+    restart: unless-stopped
+    container_name: redis
+    networks:
+      - backend
+    command: redis-server --appendonly yes --requirepass "$REDIS_PASSWORD"
+    environment:
+      - REDIS_PASSWORD=d41d8cd98f00b204e9800998ecf8427e
+    volumes:
+      - redis:/data
+    ports:
+      - "6379:6379"

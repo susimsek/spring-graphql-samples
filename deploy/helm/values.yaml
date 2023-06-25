@@ -10,12 +10,22 @@ serviceAccount:
   name: default
 
 token:
-  validityInSeconds: 86400
+  accessToken:
+    validityInSeconds: 86400
+  refreshToken:
+    validityInSeconds: 259200
   cookieDomain: springgqlmsweb.susimsek.github.io
+
+cache:
+  redis:
+    timeToLiveSeconds: 3600
 
 database:
   user: user
   password: iXCjXb7e2yjJbjRu
+
+redis:
+  password: d41d8cd98f00b204e9800998ecf8427e
 
 cipher:
   secret: secureCDCKey

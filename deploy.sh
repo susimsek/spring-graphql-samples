@@ -50,12 +50,15 @@ helmVersion=$(helm version --client | grep -E "v3\\.[0-9]{1,3}\\.[0-9]{1,3}" | w
 
 if [ -n "$remove" ]; then
    if [ -n "$docker" ]; then
+         docker-compose -f ./deploy/docker/docker-compose-redis.yaml down -v
          docker-compose -f ./deploy/docker/docker-compose-kafka.yaml down -v
          docker-compose -f ./deploy/docker/docker-compose.yaml down -v
    elif [ -n "$k8s" ]; then
         helm uninstall kafka -n ${namespace}
         helm uninstall mongodb -n ${namespace}
+        helm uninstall redis -n ${namespace}
         helm uninstall ${name} -n ${namespace}
+        kubectl delete pvc --selector="app.kubernetes.io/name=redis" -n ${namespace}
         kubectl delete pvc --selector="app.kubernetes.io/name=kafka" -n ${namespace}
         kubectl delete pvc --selector="app.kubernetes.io/name=mongodb" -n ${namespace}
           if [ -n "$istio" ]; then
@@ -70,6 +73,7 @@ elif [ -n "$upgrade" ]; then
 else
    if [ -n "$docker" ]; then
        docker-compose -f ./deploy/docker/docker-compose-kafka.yaml up -d
+       docker-compose -f ./deploy/docker/docker-compose-redis.yaml up -d
        docker-compose -f ./deploy/docker/docker-compose.yaml up -d
    elif [ -n "$k8s" ]; then
      if [ $helmVersion -eq 1 ]; then
@@ -84,6 +88,8 @@ else
       kubectl rollout status statefulset kafka -n ${namespace}
       helm install mongodb bitnami/mongodb --values ./deploy/${suffix}/helm-mongodb-values.yml -n ${namespace}
       kubectl rollout status deployment mongodb -n ${namespace}
+      helm install redis bitnami/redis --values ./deploy/${suffix}/helm-redis-values.yml -n ${namespace}
+      kubectl rollout status statefulset redis-master -n ${namespace}
       helm dep up ./deploy/${suffix}
        if [ -n "$istio" ]; then
            kubectl label namespace ${namespace} istio-injection=enabled --overwrite=true

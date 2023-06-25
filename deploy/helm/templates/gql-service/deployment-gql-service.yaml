@@ -72,6 +72,8 @@ spec:
             - secretRef:
                 name: db-secret
             - secretRef:
+                name: redis-secret
+            - secretRef:
                 name: cipher-secret
             - secretRef:
                 name: token-secret
