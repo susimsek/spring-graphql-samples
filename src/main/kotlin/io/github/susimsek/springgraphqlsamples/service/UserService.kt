@@ -15,6 +15,7 @@ import io.github.susimsek.springgraphqlsamples.graphql.type.PagedEntityModel
 import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
 import io.github.susimsek.springgraphqlsamples.repository.RoleRepository
 import io.github.susimsek.springgraphqlsamples.repository.UserRepository
+import io.github.susimsek.springgraphqlsamples.repository.redis.UserRedisRepository
 import io.github.susimsek.springgraphqlsamples.security.UserContextProvider
 import io.github.susimsek.springgraphqlsamples.service.mapper.UserMapper
 import kotlinx.coroutines.flow.Flow
@@ -38,7 +39,8 @@ class UserService(
     private val mailService: MailService,
     private val userContextProvider: UserContextProvider,
     private val passwordResetTokenService: PasswordResetTokenService,
-    private val verificationTokenService: VerificationTokenService
+    private val verificationTokenService: VerificationTokenService,
+    private val userRedisRepository: UserRedisRepository
 ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -106,8 +108,15 @@ class UserService(
      */
 
     suspend fun getCurrentUser(): UserPayload {
-        val user = userContextProvider.getCurrentUser()
-        return userMapper.toType(user)
+        val userId = userContextProvider.getCurrentUserId()
+        val cache = userRedisRepository.findById(userId)
+        if (cache != null) {
+            return cache
+        }
+        val user = userContextProvider.getCurrentUserById(userId)
+        val payload = userMapper.toType(user)
+        userRedisRepository.save(user.id, payload)
+        return payload
     }
 
     suspend fun getName(user: UserPayload): String {
@@ -116,9 +125,15 @@ class UserService(
     }
 
     suspend fun getUser(id: String): UserPayload {
+        val cache = userRedisRepository.findById(id)
+        if (cache != null) {
+            return cache
+        }
         val user = userRepository.findById(id)
             ?: throw ResourceNotFoundException(USER_NOT_FOUND_MSG_CODE, arrayOf(id))
-        return userMapper.toType(user)
+        val payload = userMapper.toType(user)
+        userRedisRepository.save(user.id, payload)
+        return payload
     }
 
     suspend fun findById(id: String): User? {

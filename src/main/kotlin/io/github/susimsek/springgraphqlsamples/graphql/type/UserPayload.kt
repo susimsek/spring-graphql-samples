@@ -1,6 +1,7 @@
 package io.github.susimsek.springgraphqlsamples.graphql.type
 
 import io.github.susimsek.springgraphqlsamples.domain.Role
+import java.io.Serializable
 import java.time.OffsetDateTime
 import java.util.*
 
@@ -20,4 +21,9 @@ data class UserPayload(
     var lang: Locale,
 
     var roles: MutableSet<Role> = mutableSetOf()
-)
+) : Serializable {
+
+    companion object {
+        private const val serialVersionUID = 1L
+    }
+}

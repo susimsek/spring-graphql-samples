@@ -22,6 +22,11 @@ spring:
   data:
     mongodb:
       uri: mongodb+srv://test_user123456:4hRsOKoJxkHswunQ@cluster0.nbzfi.mongodb.net/demo
+    redis:
+      host: redis-16911.c98.us-east-1-4.ec2.cloud.redislabs.com
+      port: 16911
+      database: 0
+      password: RRqkBJPQniz71buLA09aJ2oQCoHmGTI7
   devtools:
     restart:
       enabled: true
@@ -97,3 +102,8 @@ app:
       enabled: false
       default:
     baseUrl: http://localhost:3000
+  cache:
+    redis:
+      time-to-live-seconds: 3600
+      serializer:
+        valueType: JSON

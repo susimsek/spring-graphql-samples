@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field
+import java.io.Serializable
 import java.util.*
 
 // @QueryEntity
@@ -33,7 +34,7 @@ data class User(
 
     var roles: MutableSet<Role> = mutableSetOf()
 
-) : BaseEntity() {
+) : BaseEntity(), Serializable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is User) return false
@@ -53,5 +54,9 @@ data class User(
             "lang=$email, " +
             "email=$email, " +
             "activated=$activated)"
+    }
+
+    companion object {
+        private const val serialVersionUID = 1L
     }
 }

@@ -104,6 +104,7 @@ class GraphqlExceptionHandler(
         ex: Exception,
         env: DataFetchingEnvironment,
     ): Mono<GraphQLError> {
+        println("ex=" + ex.message)
         val errorMessage = messageSource.getMessage(INTERNAL_SERVER_ERROR_MSG_CODE, null, env.locale)
         return Mono.just(
             GraphqlErrorBuilder.newError(env)

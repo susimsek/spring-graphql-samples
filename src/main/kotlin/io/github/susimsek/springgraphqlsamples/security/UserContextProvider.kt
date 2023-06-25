@@ -25,6 +25,10 @@ class UserContextProvider(
         return userRepository.findById(currentUserId) ?: throw UsernameNotFoundException(USERNAME_NOT_FOUND_MSG)
     }
 
+    suspend fun getCurrentUserById(userId: String): User {
+        return userRepository.findById(userId) ?: throw UsernameNotFoundException(USERNAME_NOT_FOUND_MSG)
+    }
+
     suspend fun getUserDetails(userId: String): org.springframework.security.core.userdetails.User {
         val user = userRepository.findById(userId) ?: throw UsernameNotFoundException(USERNAME_NOT_FOUND_MSG)
         return userMapper.mapSpringSecurityUser(user)

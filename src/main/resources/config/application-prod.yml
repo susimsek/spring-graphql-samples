@@ -56,3 +56,15 @@ chatgpt:
   image:
     number: 1
     size: LARGE
+
+app:
+  mail:
+    from:
+      enabled: false
+      default:
+    baseUrl: http://localhost:3000
+  cache:
+    redis:
+      time-to-live-seconds: 3600
+    serializer:
+      valueType: JSON
