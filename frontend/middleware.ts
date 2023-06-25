@@ -1,7 +1,8 @@
 import {NextRequest, NextResponse} from "next/server";
+import {ACCESS_TOKEN_COOKIE_NAME} from "./constants";
 
 export function middleware(request: NextRequest){
-    const token = request.cookies.get("authToken")?.value
+    const token = request.cookies.get(ACCESS_TOKEN_COOKIE_NAME)?.value
     const url = request.nextUrl.clone()
 
     if (url.pathname == "/login" && token) {

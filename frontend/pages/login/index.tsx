@@ -35,7 +35,7 @@ const LoginPage = () => {
 
     const router = useRouter();
 
-    const { executeRecaptcha } = useGoogleReCaptcha()
+    // const { executeRecaptcha } = useGoogleReCaptcha()
 
     const redirectUrl = (router.query?.redirectUrl as string) ?? "/";
 
@@ -56,12 +56,15 @@ const LoginPage = () => {
 
     const handleLogin: SubmitHandler<LoginFormData> = async ({username, password}) => {
 
+        /*
         if (!executeRecaptcha) {
             console.log('Execute recaptcha not yet available');
             return;
         }
 
-        const token = await executeRecaptcha('login');
+         */
+
+        const token = "asd";
 
 
         const result = await login({

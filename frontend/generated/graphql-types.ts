@@ -173,7 +173,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { login: { token: string } };
+export type LoginMutation = { login: { accessToken: string, refreshToken: string } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -462,7 +462,8 @@ export type GetAllPostsQueryResult = Apollo.QueryResult<GetAllPostsQuery, GetAll
 export const LoginDocument = gql`
     mutation Login($input: LoginInput!) {
   login(input: $input) {
-    token
+    accessToken
+    refreshToken
   }
 }
     `;
