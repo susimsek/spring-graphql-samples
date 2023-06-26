@@ -1,9 +1,5 @@
 package io.github.susimsek.springgraphqlsamples.config
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.kotlinModule
 import graphql.scalars.ExtendedScalars
 import graphql.schema.GraphQLScalarType
 import graphql.schema.idl.SchemaDirectiveWiring
@@ -17,24 +13,13 @@ import io.github.susimsek.springgraphqlsamples.graphql.directive.SchemaDirective
 import io.github.susimsek.springgraphqlsamples.graphql.directive.TrimDirective
 import io.github.susimsek.springgraphqlsamples.graphql.directive.UppercaseDirective
 import io.github.susimsek.springgraphqlsamples.graphql.validation.EmailRule
-import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.graphql.data.query.SortStrategy
 import org.springframework.graphql.execution.RuntimeWiringConfigurer
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
 
 @Configuration(proxyBeanMethods = false)
 class GraphqlConfig {
-
-    @Bean
-    fun jsonCustomizer(): Jackson2ObjectMapperBuilderCustomizer {
-        return Jackson2ObjectMapperBuilderCustomizer { builder: Jackson2ObjectMapperBuilder ->
-            builder.featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-            builder.featuresToDisable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
-            builder.modules(kotlinModule(), JavaTimeModule())
-        }
-    }
 
     @Bean
     fun dateTimeScalarType(): GraphQLScalarType {

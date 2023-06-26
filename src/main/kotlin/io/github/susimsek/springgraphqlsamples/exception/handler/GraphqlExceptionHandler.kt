@@ -28,9 +28,7 @@ class GraphqlExceptionHandler(
     private val securityExceptionResolver: ReactiveSecurityExceptionResolver
 ) {
 
-    companion object {
-        private val log = LoggerFactory.getLogger(GraphqlExceptionHandler::class.java)
-    }
+    private val log = LoggerFactory.getLogger(javaClass)
 
     @GraphQlExceptionHandler
     fun handleFieldAccessException(

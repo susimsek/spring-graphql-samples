@@ -30,10 +30,10 @@ const val RECAPTCHA_RESPONSE = "03AFY_a8XSt-psckZobB96CoI6txaEmyt82-kBP" +
     "_OyuPYwBiN0lMdkZcHRDkKXXqJwhKg6g0OgE2dELt5Xl1al7bswKvghPgAxMaED8MYqllkvoBve3dO" +
     "YtlWgLUZz6pdETvWsO3fH0-6d7xb7"
 
-private const val DEFAULT_USERNAME = "johndoe"
-private const val DEFAULT_PASSWORD = "passjohndoe"
+const val DEFAULT_USERNAME = "johndoe"
+const val DEFAULT_PASSWORD = "passjohndoe"
 
-private const val DEFAULT_TOKEN = "pCtOnkH/FC5mYNhGRiJo3rwUqgj51trO7doM6gSHn/5hLQtNoORLwi" +
+const val DEFAULT_ACCESS_TOKEN = "pCtOnkH/FC5mYNhGRiJo3rwUqgj51trO7doM6gSHn/5hLQtNoORLwi" +
     "cqX7TPyPhyUCYpHlBVmmACXfePfzZMAkfUqnsnr9hEm3mY298dCgSgboDUihVHW71HKCRQfY+als2HiBsxY/M" +
     "oSGKUZgdg4908a+EC18wsQB/zO/uwgmzWSzIRUBoff3aPLtiJiDxQ2cV1kLMnpT+wuLpFcGGSpUMiSaHYF3/c" +
     "0oEcfJ7jyN5gC5aw1ux3nQd4Ulkuaed8SC6efAeCV3/oiLhsCUTYf6dy/QOmiqZyGC9JhQsbnWmSiJLsm0Zivz" +
@@ -43,7 +43,7 @@ private const val DEFAULT_TOKEN = "pCtOnkH/FC5mYNhGRiJo3rwUqgj51trO7doM6gSHn/5hL
     "sQOIXrFHJOqJ+cDpxvS9FbNMqYyvdj/6FQ0IwiAiLukB2+LA8Vm1EieuJWWWEoWC28Z/4ck9hyUMAiAVS55nfeysES" +
     "PTbBB/m4XSKffK0jRnqUvUWIPCP4ymGL6etRoSg6cPHrV2a2+Kj7c7G3g5/xV+I4HVnMidCTbYg/ruY="
 
-private const val DEFAULT_REFRESH_TOKEN = "7f6060eb-03a3-473a-8077-12a2394ab804"
+const val DEFAULT_REFRESH_TOKEN = "7f6060eb-03a3-473a-8077-12a2394ab804"
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @GraphQlUnitTest([AuthenticationController::class])
@@ -67,7 +67,10 @@ class AuthControllerTest {
 
     @Test
     fun authorize() = runTest {
-        coEvery { authenticationService.authorize(any()) } returns TokenPayload(DEFAULT_TOKEN, DEFAULT_REFRESH_TOKEN)
+        coEvery { authenticationService.authorize(any()) } returns TokenPayload(
+            DEFAULT_ACCESS_TOKEN,
+            DEFAULT_REFRESH_TOKEN
+        )
         coEvery { recaptchaService.validateToken(any()) } returns true
 
         val input = mapOf(
@@ -79,7 +82,7 @@ class AuthControllerTest {
             .documentName("loginMutation")
             .variable("input", input)
             .execute()
-            .path("data.login.accessToken").entity(String::class.java).isEqualTo(DEFAULT_TOKEN)
+            .path("data.login.accessToken").entity(String::class.java).isEqualTo(DEFAULT_ACCESS_TOKEN)
             .path("data.login.refreshToken").entity(String::class.java).isEqualTo(DEFAULT_REFRESH_TOKEN)
 
         coVerify(exactly = 1) { authenticationService.authorize(any()) }

@@ -10,6 +10,7 @@ import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.ContextValue
 import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.stereotype.Controller
+import java.security.Principal
 import java.util.*
 
 @Controller
@@ -35,7 +36,10 @@ class AuthenticationController(
     }
 
     @MutationMapping
-    suspend fun logout(context: GraphQLContext): Boolean {
+    suspend fun logout(context: GraphQLContext, principal: Principal?): Boolean {
+        if (principal != null) {
+            log.info("user {} logged out", principal.name)
+        }
         val result = authenticationService.logout()
         if (result) {
             context.put("token", TokenPayload())

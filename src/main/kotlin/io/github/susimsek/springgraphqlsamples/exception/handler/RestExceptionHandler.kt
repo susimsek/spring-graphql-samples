@@ -35,9 +35,7 @@ class RestExceptionHandler(
     private val securityExceptionResolver: ReactiveSecurityExceptionResolver
 ) : ResponseEntityExceptionHandler() {
 
-    companion object {
-        private val log = LoggerFactory.getLogger(RestExceptionHandler::class.java)
-    }
+    private val log = LoggerFactory.getLogger(javaClass)
 
     // 400
     override fun handleWebExchangeBindException(

@@ -27,13 +27,10 @@ import org.springframework.graphql.test.tester.GraphQlTester
 import org.springframework.security.test.context.support.WithMockUser
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Locale
-
+import java.util.*
 
 private const val DEFAULT_ID = "2e50aab8-cc23-4658-9305-49044a2cb8d3"
 private const val DEFAULT_NAME = "john doe"
-private const val DEFAULT_USERNAME = "johndoe"
-private const val DEFAULT_PASSWORD = "passjohndoe"
 private const val DEFAULT_FIRST_NAME = "john"
 private const val DEFAULT_LAST_NAME = "doe"
 private const val DEFAULT_EMAIL = "johndoe@localhost"
@@ -76,7 +73,6 @@ class UserControllerTest {
                 builder.graphQLContext(mapOf("recaptcha" to RECAPTCHA_RESPONSE)).build()
             }.build()
     }
-
 
     @Test
     fun me() = runTest {
@@ -168,7 +164,6 @@ class UserControllerTest {
         coVerify(exactly = 1) { recaptchaService.validateToken(any()) }
     }
 
-
     @Test
     fun `activate account`() = runTest {
         coEvery { userService.activateAccount(any()) } returns true
@@ -247,7 +242,6 @@ class UserControllerTest {
 
         coVerify(exactly = 1) { userService.resetPassword(any(), any()) }
     }
-
 
     @Test
     fun `change password`() = runTest {

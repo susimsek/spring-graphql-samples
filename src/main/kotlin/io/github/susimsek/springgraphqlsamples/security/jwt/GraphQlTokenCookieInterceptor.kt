@@ -28,11 +28,15 @@ class GraphQlTokenCookieInterceptor(
             if (token != null) {
                 val accessTokenCookie = when (token.accessToken.isBlank()) {
                     true -> tokenProvider.deleteAccessTokenCookie()
-                    else -> tokenProvider.createAccessTokenCookie(token)
+                    else -> tokenProvider.createAccessTokenCookie(
+                        Token(token.accessToken, token.accessTokenExpiresIn)
+                    )
                 }
                 val refreshTokenCookie = when (token.refreshToken.isBlank()) {
                     true -> tokenProvider.deleteRefreshTokenCookie()
-                    else -> tokenProvider.createRefreshTokenCookie(token)
+                    else -> tokenProvider.createRefreshTokenCookie(
+                        Token(token.refreshToken, token.refreshTokenExpiresIn)
+                    )
                 }
                 response.responseHeaders.add(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())
                 response.responseHeaders.add(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())

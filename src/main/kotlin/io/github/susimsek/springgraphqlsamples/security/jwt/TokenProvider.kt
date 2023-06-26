@@ -1,6 +1,6 @@
 package io.github.susimsek.springgraphqlsamples.security.jwt
 
-import io.github.susimsek.springgraphqlsamples.graphql.type.TokenPayload
+import io.github.susimsek.springgraphqlsamples.util.CookieUtil
 import org.springframework.http.ResponseCookie
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.oauth2.jwt.JwtClaimsSet
@@ -9,7 +9,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters
 import java.time.Duration
 import java.time.Instant
 import java.time.OffsetDateTime
-import java.util.UUID
+import java.util.*
 
 const val AUTHORITIES_KEY = "auth"
 
@@ -55,49 +55,35 @@ class TokenProvider(
         )
     }
 
-    fun createAccessTokenCookie(token: TokenPayload): ResponseCookie {
-        return createCookie(
+    fun createAccessTokenCookie(token: Token): ResponseCookie {
+        return CookieUtil.createHttpOnlyCookie(
             tokenProperties.accessTokenCookieName,
-            token.accessToken,
-            token.accessTokenExpiresIn
+            token.token,
+            token.expiresIn,
+            tokenProperties.cookieDomain
         )
     }
 
-    fun createRefreshTokenCookie(token: TokenPayload): ResponseCookie {
-        return createCookie(
+    fun createRefreshTokenCookie(token: Token): ResponseCookie {
+        return CookieUtil.createHttpOnlyCookie(
             tokenProperties.refreshTokenCookieName,
-            token.refreshToken,
-            token.refreshTokenExpiresIn
+            token.token,
+            token.expiresIn,
+            tokenProperties.cookieDomain
         )
     }
 
     fun deleteAccessTokenCookie(): ResponseCookie {
-        return deleteCookie(tokenProperties.accessTokenCookieName)
+        return CookieUtil.deleteHttpOnlyCookie(
+            tokenProperties.accessTokenCookieName,
+            tokenProperties.cookieDomain
+        )
     }
 
     fun deleteRefreshTokenCookie(): ResponseCookie {
-        return deleteCookie(tokenProperties.refreshTokenCookieName)
-    }
-
-    private fun createCookie(
-        name: String,
-        value: String,
-        maxAge: Long
-    ): ResponseCookie {
-        return ResponseCookie.from(name, value)
-            .maxAge(maxAge)
-            .httpOnly(true)
-            .path("/")
-            .domain(tokenProperties.cookieDomain)
-            .build()
-    }
-
-    private fun deleteCookie(name: String): ResponseCookie {
-        return ResponseCookie.from(name, "")
-            .maxAge(0)
-            .httpOnly(true)
-            .path("/")
-            .domain(tokenProperties.cookieDomain)
-            .build()
+        return CookieUtil.deleteHttpOnlyCookie(
+            tokenProperties.refreshTokenCookieName,
+            tokenProperties.cookieDomain
+        )
     }
 }
