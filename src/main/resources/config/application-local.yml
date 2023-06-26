@@ -67,6 +67,7 @@ security:
       permit-all-patterns:
         - /actuator/**
         - /api/v1/auth/**
+        - /api/v1/nonsecure/**
         - /graphql
         - /api/v1/transcription
         - /api/v1/translation
