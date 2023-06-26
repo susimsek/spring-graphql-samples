@@ -1,4 +1,4 @@
-package io.github.susimsek.springgraphqlsamples.graphql
+package io.github.susimsek.springgraphqlsamples.rest
 
 import io.github.susimsek.springgraphqlsamples.config.GraphqlConfig
 import io.github.susimsek.springgraphqlsamples.config.WebFluxConfig

@@ -1,10 +1,18 @@
-package io.github.susimsek.springgraphqlsamples.graphql.controller
+package io.github.susimsek.springgraphqlsamples.rest.controller
 
 import com.ninjasquad.springmockk.MockkBean
+import io.github.susimsek.springgraphqlsamples.exception.INVALID_REFRESH_TOKEN_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.exception.InvalidCaptchaException
+import io.github.susimsek.springgraphqlsamples.exception.InvalidTokenException
 import io.github.susimsek.springgraphqlsamples.exception.RECAPTCHA_INVALID_MSG_CODE
-import io.github.susimsek.springgraphqlsamples.graphql.WebFluxUnitTest
-import io.github.susimsek.springgraphqlsamples.rest.controller.AuthenticationRestController
+import io.github.susimsek.springgraphqlsamples.graphql.RECAPTCHA_HEADER_NAME
+import io.github.susimsek.springgraphqlsamples.graphql.controller.DEFAULT_ACCESS_TOKEN
+import io.github.susimsek.springgraphqlsamples.graphql.controller.DEFAULT_PASSWORD
+import io.github.susimsek.springgraphqlsamples.graphql.controller.DEFAULT_REFRESH_TOKEN
+import io.github.susimsek.springgraphqlsamples.graphql.controller.DEFAULT_TOKEN_PAYLOAD
+import io.github.susimsek.springgraphqlsamples.graphql.controller.DEFAULT_USERNAME
+import io.github.susimsek.springgraphqlsamples.graphql.controller.RECAPTCHA_RESPONSE
+import io.github.susimsek.springgraphqlsamples.rest.WebFluxUnitTest
 import io.github.susimsek.springgraphqlsamples.rest.payload.LoginRequest
 import io.github.susimsek.springgraphqlsamples.rest.payload.RefreshTokenRequest
 import io.github.susimsek.springgraphqlsamples.security.jwt.TokenProvider
@@ -86,7 +94,7 @@ class AuthRestControllerTest {
             .post()
             .uri("$AUTH_API_URL/login")
             .body(BodyInserters.fromValue(req))
-            .header("recaptcha", RECAPTCHA_RESPONSE)
+            .header(RECAPTCHA_HEADER_NAME, RECAPTCHA_RESPONSE)
             .exchange()
             .expectStatus().isOk
             .expectCookie().httpOnly(ACCESS_TOKEN_COOKIE_NAME, true)
@@ -135,7 +143,7 @@ class AuthRestControllerTest {
             .post()
             .uri("$AUTH_API_URL/login")
             .body(BodyInserters.fromValue(req))
-            .header("recaptcha", RECAPTCHA_RESPONSE)
+            .header("recaptcha", "")
             .exchange()
             .expectStatus().isBadRequest
             .expectCookie().doesNotExist(ACCESS_TOKEN_COOKIE_NAME)
@@ -196,5 +204,41 @@ class AuthRestControllerTest {
         coVerify(exactly = 1) { authenticationService.refreshToken(any()) }
         verify(exactly = 1) { tokenProvider.createAccessTokenCookie(any()) }
         verify(exactly = 1) { tokenProvider.createRefreshTokenCookie(any()) }
+    }
+
+    @Test
+    fun `refresh token when refresh token is invalid`() = runTest {
+        coEvery { authenticationService.refreshToken(any()) } throws InvalidTokenException(
+            INVALID_REFRESH_TOKEN_MSG_CODE
+        )
+        val req = RefreshTokenRequest(refreshToken = DEFAULT_REFRESH_TOKEN)
+
+        webTestClient
+            .post()
+            .uri("$AUTH_API_URL/refresh-token")
+            .body(BodyInserters.fromValue(req))
+            .exchange()
+            .expectStatus().isUnauthorized
+            .expectCookie().doesNotExist(ACCESS_TOKEN_COOKIE_NAME)
+            .expectCookie().doesNotExist(REFRESH_TOKEN_COOKIE_NAME)
+            .expectBody()
+            .jsonPath("$.accessToken").doesNotExist()
+            .jsonPath("$.refreshToken").doesNotExist()
+
+        coVerify(exactly = 1) { authenticationService.refreshToken(any()) }
+    }
+
+    @Test
+    fun `refresh token with missing refresh token`() = runTest {
+        webTestClient
+            .post()
+            .uri("$AUTH_API_URL/refresh-token")
+            .exchange()
+            .expectStatus().isUnauthorized
+            .expectCookie().doesNotExist(ACCESS_TOKEN_COOKIE_NAME)
+            .expectCookie().doesNotExist(REFRESH_TOKEN_COOKIE_NAME)
+            .expectBody()
+            .jsonPath("$.accessToken").doesNotExist()
+            .jsonPath("$.refreshToken").doesNotExist()
     }
 }

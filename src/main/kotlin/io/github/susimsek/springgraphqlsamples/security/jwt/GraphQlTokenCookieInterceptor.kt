@@ -1,6 +1,8 @@
 package io.github.susimsek.springgraphqlsamples.security.jwt
 
 import io.github.susimsek.springgraphqlsamples.config.Token
+import io.github.susimsek.springgraphqlsamples.graphql.REFRESH_TOKEN_CONTEXT_NAME
+import io.github.susimsek.springgraphqlsamples.graphql.TOKEN_CONTEXT_NAME
 import io.github.susimsek.springgraphqlsamples.graphql.type.TokenPayload
 import org.springframework.graphql.server.WebGraphQlInterceptor
 import org.springframework.graphql.server.WebGraphQlRequest
@@ -21,12 +23,12 @@ class GraphQlTokenCookieInterceptor(
         refreshToken?.let { token ->
             request.configureExecutionInput { _, builder ->
                 builder.graphQLContext(
-                    mapOf("refreshToken" to token)
+                    mapOf(REFRESH_TOKEN_CONTEXT_NAME to token)
                 ).build()
             }
         }
         return chain.next(request).doOnNext { response ->
-            val tokenPayload: TokenPayload? = response.executionInput.graphQLContext["token"]
+            val tokenPayload: TokenPayload? = response.executionInput.graphQLContext[TOKEN_CONTEXT_NAME]
             tokenPayload?.let { token ->
                 val accessTokenCookie = when (token.accessToken.isBlank()) {
                     true -> tokenProvider.deleteAccessTokenCookie()

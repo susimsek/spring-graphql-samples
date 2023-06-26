@@ -1,9 +1,13 @@
 package io.github.susimsek.springgraphqlsamples.graphql.controller
 
 import com.ninjasquad.springmockk.MockkBean
+import io.github.susimsek.springgraphqlsamples.exception.INVALID_REFRESH_TOKEN_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.exception.InvalidCaptchaException
+import io.github.susimsek.springgraphqlsamples.exception.InvalidTokenException
 import io.github.susimsek.springgraphqlsamples.exception.RECAPTCHA_INVALID_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.graphql.GraphQlUnitTest
+import io.github.susimsek.springgraphqlsamples.graphql.RECAPTCHA_CONTEXT_NAME
+import io.github.susimsek.springgraphqlsamples.graphql.REFRESH_TOKEN_CONTEXT_NAME
 import io.github.susimsek.springgraphqlsamples.graphql.type.TokenPayload
 import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaService
 import io.github.susimsek.springgraphqlsamples.service.AuthenticationService
@@ -61,6 +65,8 @@ class AuthControllerTest {
 
     private lateinit var graphQlTester: GraphQlTester
 
+    private lateinit var graphQlServiceTesterBuilder: ExecutionGraphQlServiceTester.Builder<*>
+
     @MockkBean
     private lateinit var authenticationService: AuthenticationService
 
@@ -73,11 +79,12 @@ class AuthControllerTest {
             .configureExecutionInput { _, builder ->
                 builder.graphQLContext(
                     mapOf(
-                        "recaptcha" to RECAPTCHA_RESPONSE,
-                        "refreshToken" to DEFAULT_REFRESH_TOKEN
+                        RECAPTCHA_CONTEXT_NAME to RECAPTCHA_RESPONSE,
+                        REFRESH_TOKEN_CONTEXT_NAME to DEFAULT_REFRESH_TOKEN
                     )
                 ).build()
             }.build()
+        graphQlServiceTesterBuilder = ExecutionGraphQlServiceTester.builder(delegateService)
     }
 
     @Test
@@ -134,6 +141,14 @@ class AuthControllerTest {
             "password" to DEFAULT_PASSWORD
         )
 
+        val graphQlTester = graphQlServiceTesterBuilder.configureExecutionInput { _, builder ->
+            builder.graphQLContext(
+                mapOf(
+                    RECAPTCHA_CONTEXT_NAME to ""
+                )
+            ).build()
+        }.build()
+
         graphQlTester
             .documentName("loginMutation")
             .variable("input", input)
@@ -164,7 +179,6 @@ class AuthControllerTest {
     @Test
     fun refreshToken() = runTest {
         coEvery { authenticationService.refreshToken(any()) } returns DEFAULT_TOKEN_PAYLOAD
-        coEvery { recaptchaService.validateToken(any()) } returns true
 
         graphQlTester
             .documentName("refreshTokenMutation")
@@ -174,5 +188,45 @@ class AuthControllerTest {
             .path("data.refreshToken.refreshToken").entity(String::class.java).isEqualTo(DEFAULT_REFRESH_TOKEN)
 
         coVerify(exactly = 1) { authenticationService.refreshToken(any()) }
+    }
+
+    @Test
+    fun `refresh token with wrong refresh token`() = runTest {
+        coEvery { authenticationService.refreshToken(any()) } throws InvalidTokenException(
+            INVALID_REFRESH_TOKEN_MSG_CODE
+        )
+        val graphQlTester = graphQlServiceTesterBuilder.configureExecutionInput { _, builder ->
+            builder.graphQLContext(
+                mapOf(
+                    REFRESH_TOKEN_CONTEXT_NAME to ""
+                )
+            ).build()
+        }.build()
+
+        graphQlTester
+            .documentName("refreshTokenMutation")
+            .variable("refreshToken", DEFAULT_REFRESH_TOKEN)
+            .execute()
+            .errors()
+            .satisfy { errors ->
+                Assertions.assertThat(errors).hasSize(1)
+                Assertions.assertThat(errors[0].errorType).isEqualTo(ErrorType.UNAUTHORIZED)
+            }
+
+        coVerify(exactly = 1) { authenticationService.refreshToken(any()) }
+    }
+
+    @Test
+    fun `refresh token with missing refresh token`() = runTest {
+        val graphQlTester = graphQlServiceTesterBuilder.build()
+
+        graphQlTester
+            .documentName("refreshTokenMutation")
+            .execute()
+            .errors()
+            .satisfy { errors ->
+                Assertions.assertThat(errors).hasSize(1)
+                Assertions.assertThat(errors[0].errorType).isEqualTo(ErrorType.UNAUTHORIZED)
+            }
     }
 }

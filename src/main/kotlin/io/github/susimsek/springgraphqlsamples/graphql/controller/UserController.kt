@@ -30,7 +30,7 @@ class UserController(
     suspend fun createUser(
         @Argument
         input: AddUserInput,
-        @ContextValue recaptcha: String
+        @ContextValue(required = false) recaptcha: String?
     ): UserPayload {
         recaptchaService.validateToken(recaptcha)
         return userService.createUser(input)
@@ -50,7 +50,7 @@ class UserController(
     @MutationMapping
     suspend fun forgotPassword(
         @Argument email: String,
-        @ContextValue recaptcha: String
+        @ContextValue(required = false) recaptcha: String?
     ): Boolean {
         recaptchaService.validateToken(recaptcha)
         return userService.forgotPassword(email)

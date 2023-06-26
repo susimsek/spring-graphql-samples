@@ -1,5 +1,7 @@
 package io.github.susimsek.springgraphqlsamples.rest.controller
 
+import io.github.susimsek.springgraphqlsamples.exception.INVALID_REFRESH_TOKEN_MSG_CODE
+import io.github.susimsek.springgraphqlsamples.exception.InvalidTokenException
 import io.github.susimsek.springgraphqlsamples.graphql.input.LoginInput
 import io.github.susimsek.springgraphqlsamples.graphql.type.TokenPayload
 import io.github.susimsek.springgraphqlsamples.rest.payload.LoginRequest
@@ -75,14 +77,14 @@ class AuthenticationRestController(
 
     @PostMapping("/refresh-token")
     suspend fun refreshToken(
-        @RequestBody refreshTokenRequest: RefreshTokenRequest,
+        @RequestBody(required = false) refreshTokenRequest: RefreshTokenRequest?,
         @CookieValue(required = false) refreshToken: String?,
         exchange: ServerWebExchange
     ): ResponseEntity<TokenPayload> {
         val token = when (refreshToken?.isNotBlank()) {
             true -> refreshToken
-            else -> refreshTokenRequest.refreshToken
-        }
+            else -> refreshTokenRequest?.refreshToken
+        } ?: throw InvalidTokenException(INVALID_REFRESH_TOKEN_MSG_CODE)
         val payload = authenticationService.refreshToken(token)
         val accessTokenCookie = tokenProvider.createAccessTokenCookie(
             Token(payload.accessToken, payload.accessTokenExpiresIn)

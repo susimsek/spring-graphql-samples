@@ -1,6 +1,10 @@
 package io.github.susimsek.springgraphqlsamples.graphql.controller
 
 import graphql.GraphQLContext
+import io.github.susimsek.springgraphqlsamples.exception.INVALID_REFRESH_TOKEN_MSG_CODE
+import io.github.susimsek.springgraphqlsamples.exception.InvalidTokenException
+import io.github.susimsek.springgraphqlsamples.graphql.REFRESH_TOKEN_CONTEXT_NAME
+import io.github.susimsek.springgraphqlsamples.graphql.TOKEN_CONTEXT_NAME
 import io.github.susimsek.springgraphqlsamples.graphql.input.LoginInput
 import io.github.susimsek.springgraphqlsamples.graphql.type.TokenPayload
 import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaService
@@ -31,7 +35,7 @@ class AuthenticationController(
         recaptchaService.validateToken(recaptcha)
         log.info("locale: {}", locale.toLanguageTag())
         val token = authenticationService.authorize(input)
-        context.put("token", token)
+        context.put(TOKEN_CONTEXT_NAME, token)
         return token
     }
 
@@ -42,23 +46,23 @@ class AuthenticationController(
         }
         val result = authenticationService.logout()
         if (result) {
-            context.put("token", TokenPayload())
+            context.put(TOKEN_CONTEXT_NAME, TokenPayload())
         }
         return result
     }
 
     @MutationMapping
     suspend fun refreshToken(
-        @Argument refreshToken: String,
-        @ContextValue("refreshToken", required = false) refreshTokenCookie: String?,
+        @Argument refreshToken: String?,
+        @ContextValue(REFRESH_TOKEN_CONTEXT_NAME, required = false) refreshTokenCookie: String?,
         context: GraphQLContext
     ): TokenPayload {
         val token = when (refreshTokenCookie?.isNotBlank()) {
             true -> refreshTokenCookie
             else -> refreshToken
-        }
+        } ?: throw InvalidTokenException(INVALID_REFRESH_TOKEN_MSG_CODE)
         val payload = authenticationService.refreshToken(token)
-        context.put("token", payload)
+        context.put(TOKEN_CONTEXT_NAME, payload)
         return payload
     }
 }

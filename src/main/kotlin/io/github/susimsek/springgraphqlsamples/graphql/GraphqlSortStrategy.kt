@@ -25,7 +25,7 @@ class GraphqlSortStrategy : SortStrategy {
         }
     }
 
-    fun resolveOrder(@NotNull order: Map<String, Any?>): Sort.Order {
+    private fun resolveOrder(@NotNull order: Map<String, Any?>): Sort.Order {
         val direction = getDirection(order)
         val field = order["field"] as String
         return Sort.Order(direction, field)
