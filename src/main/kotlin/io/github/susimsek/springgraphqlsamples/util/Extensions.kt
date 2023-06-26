@@ -1,5 +1,7 @@
 package io.github.susimsek.springgraphqlsamples.util
 
+import io.github.susimsek.springgraphqlsamples.security.jwt.Token
+import org.springframework.http.ResponseCookie
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -11,6 +13,15 @@ fun String.capitalize(locale: Locale): String {
             it.toString()
         }
     }
+}
+
+fun Token.httpOnlyCookie(name: String, domain: String): ResponseCookie {
+    return CookieUtil.createHttpOnlyCookie(
+        name,
+        this.token,
+        this.expiresIn,
+        domain
+    )
 }
 
 @Suppress("TooGenericExceptionCaught")
