@@ -10,7 +10,6 @@ import io.github.susimsek.springgraphqlsamples.security.jwt.TokenProvider
 import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaService
 import io.github.susimsek.springgraphqlsamples.service.AuthenticationService
 import org.slf4j.LoggerFactory
-import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.CookieValue
@@ -36,7 +35,7 @@ class AuthenticationRestController(
     @PostMapping("/login")
     suspend fun login(
         @RequestBody credentials: LoginRequest,
-        @RequestHeader(required = false) recaptcha: String,
+        @RequestHeader(required = false) recaptcha: String?,
         exchange: ServerWebExchange
     ): ResponseEntity<TokenPayload> {
         recaptchaService.validateToken(recaptcha)
@@ -77,9 +76,10 @@ class AuthenticationRestController(
     @PostMapping("/refresh-token")
     suspend fun refreshToken(
         @RequestBody refreshTokenRequest: RefreshTokenRequest,
-        @CookieValue refreshToken: String
+        @CookieValue(required = false) refreshToken: String?,
+        exchange: ServerWebExchange
     ): ResponseEntity<TokenPayload> {
-        val token = when (refreshToken.isNotBlank()) {
+        val token = when (refreshToken?.isNotBlank()) {
             true -> refreshToken
             else -> refreshTokenRequest.refreshToken
         }
@@ -90,9 +90,10 @@ class AuthenticationRestController(
         val refreshTokenCookie = tokenProvider.createRefreshTokenCookie(
             Token(payload.refreshToken, payload.refreshTokenExpiresIn)
         )
+
+        exchange.response.addCookie(accessTokenCookie)
+        exchange.response.addCookie(refreshTokenCookie)
         return ResponseEntity.ok()
-            .header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())
-            .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
             .body(payload)
     }
 }

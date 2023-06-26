@@ -24,7 +24,7 @@ class AuthenticationController(
     @MutationMapping
     suspend fun login(
         @Argument input: LoginInput,
-        @ContextValue recaptcha: String,
+        @ContextValue(required = false) recaptcha: String?,
         locale: Locale,
         context: GraphQLContext
     ): TokenPayload {
@@ -50,10 +50,10 @@ class AuthenticationController(
     @MutationMapping
     suspend fun refreshToken(
         @Argument refreshToken: String,
-        @ContextValue("refreshToken") refreshTokenCookie: String,
+        @ContextValue("refreshToken", required = false) refreshTokenCookie: String?,
         context: GraphQLContext
     ): TokenPayload {
-        val token = when (refreshTokenCookie.isNotBlank()) {
+        val token = when (refreshTokenCookie?.isNotBlank()) {
             true -> refreshTokenCookie
             else -> refreshToken
         }

@@ -46,6 +46,15 @@ const val DEFAULT_ACCESS_TOKEN = "pCtOnkH/FC5mYNhGRiJo3rwUqgj51trO7doM6gSHn/5hLQ
 
 const val DEFAULT_REFRESH_TOKEN = "7f6060eb-03a3-473a-8077-12a2394ab804"
 
+const val DEFAULT_ACCESS_TOKEN_EXPIRES_IN: Long = 86400
+const val DEFAULT_REFRESH_TOKEN_EXPIRES_IN: Long = 259200
+val DEFAULT_TOKEN_PAYLOAD = TokenPayload(
+    accessToken = DEFAULT_ACCESS_TOKEN,
+    refreshToken = DEFAULT_REFRESH_TOKEN,
+    accessTokenExpiresIn = DEFAULT_ACCESS_TOKEN_EXPIRES_IN,
+    refreshTokenExpiresIn = DEFAULT_REFRESH_TOKEN_EXPIRES_IN
+)
+
 @OptIn(ExperimentalCoroutinesApi::class)
 @GraphQlUnitTest([AuthenticationController::class])
 class AuthControllerTest {
@@ -62,16 +71,18 @@ class AuthControllerTest {
     fun setUp(@Autowired delegateService: ExecutionGraphQlService) {
         graphQlTester = ExecutionGraphQlServiceTester.builder(delegateService)
             .configureExecutionInput { _, builder ->
-                builder.graphQLContext(mapOf("recaptcha" to RECAPTCHA_RESPONSE)).build()
+                builder.graphQLContext(
+                    mapOf(
+                        "recaptcha" to RECAPTCHA_RESPONSE,
+                        "refreshToken" to DEFAULT_REFRESH_TOKEN
+                    )
+                ).build()
             }.build()
     }
 
     @Test
     fun authorize() = runTest {
-        coEvery { authenticationService.authorize(any()) } returns TokenPayload(
-            DEFAULT_ACCESS_TOKEN,
-            DEFAULT_REFRESH_TOKEN
-        )
+        coEvery { authenticationService.authorize(any()) } returns DEFAULT_TOKEN_PAYLOAD
         coEvery { recaptchaService.validateToken(any()) } returns true
 
         val input = mapOf(
@@ -148,5 +159,20 @@ class AuthControllerTest {
             .path("data.logout").entity(Boolean::class.java).isEqualTo(true)
 
         coVerify(exactly = 1) { authenticationService.logout() }
+    }
+
+    @Test
+    fun refreshToken() = runTest {
+        coEvery { authenticationService.refreshToken(any()) } returns DEFAULT_TOKEN_PAYLOAD
+        coEvery { recaptchaService.validateToken(any()) } returns true
+
+        graphQlTester
+            .documentName("refreshTokenMutation")
+            .variable("refreshToken", DEFAULT_REFRESH_TOKEN)
+            .execute()
+            .path("data.refreshToken.accessToken").entity(String::class.java).isEqualTo(DEFAULT_ACCESS_TOKEN)
+            .path("data.refreshToken.refreshToken").entity(String::class.java).isEqualTo(DEFAULT_REFRESH_TOKEN)
+
+        coVerify(exactly = 1) { authenticationService.refreshToken(any()) }
     }
 }

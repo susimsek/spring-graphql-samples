@@ -4,9 +4,9 @@ import com.ninjasquad.springmockk.MockkBean
 import io.github.susimsek.springgraphqlsamples.exception.InvalidCaptchaException
 import io.github.susimsek.springgraphqlsamples.exception.RECAPTCHA_INVALID_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.graphql.WebFluxUnitTest
-import io.github.susimsek.springgraphqlsamples.graphql.type.TokenPayload
 import io.github.susimsek.springgraphqlsamples.rest.controller.AuthenticationRestController
 import io.github.susimsek.springgraphqlsamples.rest.payload.LoginRequest
+import io.github.susimsek.springgraphqlsamples.rest.payload.RefreshTokenRequest
 import io.github.susimsek.springgraphqlsamples.security.jwt.TokenProvider
 import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaService
 import io.github.susimsek.springgraphqlsamples.service.AuthenticationService
@@ -74,10 +74,7 @@ class AuthRestControllerTest {
 
     @Test
     fun authorize() = runTest {
-        coEvery { authenticationService.authorize(any()) } returns TokenPayload(
-            DEFAULT_ACCESS_TOKEN,
-            DEFAULT_REFRESH_TOKEN
-        )
+        coEvery { authenticationService.authorize(any()) } returns DEFAULT_TOKEN_PAYLOAD
         coEvery { recaptchaService.validateToken(any()) } returns true
 
         every { tokenProvider.createAccessTokenCookie(any()) } returns DEFAULT_ACCESS_TOKEN_COOKIE
@@ -172,5 +169,32 @@ class AuthRestControllerTest {
         coVerify(exactly = 1) { authenticationService.logout() }
         verify(exactly = 1) { tokenProvider.deleteAccessTokenCookie() }
         verify(exactly = 1) { tokenProvider.deleteRefreshTokenCookie() }
+    }
+
+    @Test
+    fun refreshToken() = runTest {
+        coEvery { authenticationService.refreshToken(any()) } returns DEFAULT_TOKEN_PAYLOAD
+
+        every { tokenProvider.createAccessTokenCookie(any()) } returns DEFAULT_ACCESS_TOKEN_COOKIE
+        every { tokenProvider.createRefreshTokenCookie(any()) } returns DEFAULT_REFRESH_TOKEN_COOKIE
+
+        val req = RefreshTokenRequest(refreshToken = DEFAULT_REFRESH_TOKEN)
+
+        webTestClient
+            .post()
+            .uri("$AUTH_API_URL/refresh-token")
+            .body(BodyInserters.fromValue(req))
+            .cookie(REFRESH_TOKEN_COOKIE_NAME, DEFAULT_REFRESH_TOKEN_COOKIE.toString())
+            .exchange()
+            .expectStatus().isOk
+            .expectCookie().httpOnly(ACCESS_TOKEN_COOKIE_NAME, true)
+            .expectCookie().httpOnly(REFRESH_TOKEN_COOKIE_NAME, true)
+            .expectBody()
+            .jsonPath("$.accessToken").isEqualTo(DEFAULT_ACCESS_TOKEN)
+            .jsonPath("$.refreshToken").isEqualTo(DEFAULT_REFRESH_TOKEN)
+
+        coVerify(exactly = 1) { authenticationService.refreshToken(any()) }
+        verify(exactly = 1) { tokenProvider.createAccessTokenCookie(any()) }
+        verify(exactly = 1) { tokenProvider.createRefreshTokenCookie(any()) }
     }
 }

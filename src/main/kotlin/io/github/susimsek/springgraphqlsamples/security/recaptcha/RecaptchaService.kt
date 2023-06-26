@@ -12,20 +12,19 @@ class RecaptchaService(
 ) {
 
     private val responsePattern = Pattern.compile("[A-Za-z0-9_-]+")
-    suspend fun validateToken(recaptchaToken: String): Boolean {
+    suspend fun validateToken(recaptchaToken: String?): Boolean {
         if (!recaptchaProperties.enabled) {
             return false
         }
-        if (!responseSanityCheck(recaptchaToken)) {
+        if (recaptchaToken == null || !responseSanityCheck(recaptchaToken)) {
             throw InvalidCaptchaException(RECAPTCHA_INVALID_MSG_CODE)
         }
-        return recaptchaClient.verifyResponse(recaptchaProperties.secretKey, recaptchaToken)
-            .map {
-                when (!it.success || it.score < recaptchaProperties.threshold) {
-                    true -> throw InvalidCaptchaException(RECAPTCHA_INVALID_MSG_CODE)
-                    false -> true
-                }
-            }.awaitSingle()
+        val response = recaptchaClient.verifyResponse(recaptchaProperties.secretKey, recaptchaToken)
+            .awaitSingle()
+        if (!response.success || response.score < recaptchaProperties.threshold) {
+            throw InvalidCaptchaException(RECAPTCHA_INVALID_MSG_CODE)
+        }
+        return true
     }
 
     private fun responseSanityCheck(response: String): Boolean {

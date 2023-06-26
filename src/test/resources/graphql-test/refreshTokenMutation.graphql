@@ -1,5 +1,5 @@
-mutation Login($input: LoginInput!) {
-    login(input: $input){
+mutation RefreshToken($refreshToken: String!) {
+    refreshToken(refreshToken: $refreshToken){
         accessToken
         refreshToken
         accessTokenExpiresIn

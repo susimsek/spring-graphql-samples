@@ -17,15 +17,17 @@ class GraphQlTokenCookieInterceptor(
         request: WebGraphQlRequest,
         chain: WebGraphQlInterceptor.Chain
     ): Mono<WebGraphQlResponse> {
-        val refreshToken = request.cookies.getFirst(tokenProperties.refreshTokenCookieName)?.value ?: ""
-        request.configureExecutionInput { _, builder ->
-            builder.graphQLContext(
-                mapOf("refreshToken" to refreshToken)
-            ).build()
+        val refreshToken = request.cookies.getFirst(tokenProperties.refreshTokenCookieName)?.value
+        refreshToken?.let { token ->
+            request.configureExecutionInput { _, builder ->
+                builder.graphQLContext(
+                    mapOf("refreshToken" to token)
+                ).build()
+            }
         }
         return chain.next(request).doOnNext { response ->
-            val token: TokenPayload? = response.executionInput.graphQLContext["token"]
-            if (token != null) {
+            val tokenPayload: TokenPayload? = response.executionInput.graphQLContext["token"]
+            tokenPayload?.let { token ->
                 val accessTokenCookie = when (token.accessToken.isBlank()) {
                     true -> tokenProvider.deleteAccessTokenCookie()
                     else -> tokenProvider.createAccessTokenCookie(
