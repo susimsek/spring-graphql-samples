@@ -17,7 +17,7 @@ class EmailRule : AbstractDirectiveConstraint("Email") {
             .applicableTypeNames(Scalars.GraphQLString.name, Scalars.GraphQLID.name, "Lists")
             .directiveSDL(
                 "directive @Email(message : String = \"%s\") " +
-                        "on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION",
+                    "on ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION",
                 messageTemplate
             )
             .build()
@@ -31,7 +31,9 @@ class EmailRule : AbstractDirectiveConstraint("Email") {
         val validatedValue = validationEnvironment.validatedValue
         return if (!EmailValidator().isValid(validatedValue.toString(), null)) {
             mkError(validationEnvironment)
-        } else emptyList()
+        } else {
+            emptyList()
+        }
     }
 
     override fun appliesToListElements(): Boolean {
