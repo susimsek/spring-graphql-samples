@@ -7,6 +7,7 @@ import io.github.susimsek.springgraphqlsamples.exception.METHOD_NOT_ALLOWED_MSG_
 import io.github.susimsek.springgraphqlsamples.exception.NOT_ACCEPTABLE_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundException
 import io.github.susimsek.springgraphqlsamples.exception.UNSUPPORTED_MEDIA_TYPE_MSG_CODE
+import io.github.susimsek.springgraphqlsamples.exception.ValidationException
 import io.github.susimsek.springgraphqlsamples.exception.model.ApiError
 import io.github.susimsek.springgraphqlsamples.exception.utils.WebExceptionUtils
 import org.slf4j.LoggerFactory
@@ -51,6 +52,18 @@ class RestExceptionHandler(
         )
         val apiError = ApiError.build(HttpStatus.BAD_REQUEST, errorMessage, exchange)
         apiError.createViolations(ex.bindingResult)
+        return WebExceptionUtils.buildResponseEntity(apiError)
+    }
+
+    // 400
+    @ExceptionHandler
+    fun handleValidationException(
+        ex: ValidationException,
+        exchange: ServerWebExchange,
+        locale: Locale
+    ): Mono<ResponseEntity<Any>> {
+        val errorMessage = messageSource.getMessage(ex.message!!, ex.args, locale)
+        val apiError = ApiError.build(HttpStatus.BAD_REQUEST, errorMessage, exchange)
         return WebExceptionUtils.buildResponseEntity(apiError)
     }
 

@@ -20,6 +20,7 @@ import org.springframework.graphql.execution.ErrorType
 import org.springframework.graphql.test.tester.ExecutionGraphQlServiceTester
 import org.springframework.graphql.test.tester.GraphQlTester
 import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.security.test.context.support.WithMockUser
 
 const val RECAPTCHA_RESPONSE = "03AFY_a8XSt-psckZobB96CoI6txaEmyt82-kBP" +
     "Vzsn6mbcDCKZro9TxmRF6kCRC5OznYTZfYUOl6CO9kqj2Y0dYN9jDk1JRHBBi9t7ZdVD5FKI" +
@@ -137,6 +138,7 @@ class AuthControllerTest {
     }
 
     @Test
+    @WithMockUser(authorities = ["ROLE_USER"])
     fun logout() = runTest {
         coEvery { authenticationService.logout() } returns true
 
