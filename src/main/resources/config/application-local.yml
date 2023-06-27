@@ -1,5 +1,6 @@
 server:
   port: ${PORT:9091}
+  forward-headers-strategy: framework
 spring:
   cloud:
     stream:
@@ -73,6 +74,10 @@ security:
         - /api/v1/translation
         - /subscriptions
         - /redirect
+        - /v3/api-docs/**
+        - /swagger-ui/**
+        - /webjars/**
+        - /swagger-ui.html
   content-security-policy: "script-src 'self'"
   cipher:
     base64-secret: c2VjdXJlQ0RDS2V5
@@ -109,3 +114,6 @@ app:
       time-to-live-seconds: 3600
       serializer:
         valueType: JSON
+
+springdoc:
+  version: '@springdoc.version@'

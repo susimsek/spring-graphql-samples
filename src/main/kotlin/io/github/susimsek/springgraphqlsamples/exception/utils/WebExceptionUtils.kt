@@ -2,7 +2,7 @@ package io.github.susimsek.springgraphqlsamples.exception.utils
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.github.susimsek.springgraphqlsamples.exception.model.ApiError
+import io.github.susimsek.springgraphqlsamples.exception.model.Problem
 import org.springframework.core.io.buffer.DataBufferUtils
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -14,7 +14,7 @@ object WebExceptionUtils {
     @Suppress("kotlin:S6508")
     fun setHttpResponse(
         exchange: ServerWebExchange,
-        entity: ApiError,
+        entity: Problem,
         mapper: ObjectMapper
     ): Mono<Void> {
         val response = exchange.response
@@ -29,11 +29,11 @@ object WebExceptionUtils {
         }
     }
 
-    fun buildResponseEntity(apiError: ApiError): Mono<ResponseEntity<Any>> {
+    fun buildResponseEntity(problem: Problem): Mono<ResponseEntity<Any>> {
         return Mono.just(
-            ResponseEntity.status(apiError.status)
+            ResponseEntity.status(problem.status)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(apiError)
+                .body(problem)
         )
     }
 }

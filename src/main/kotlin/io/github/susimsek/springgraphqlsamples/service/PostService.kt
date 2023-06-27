@@ -2,7 +2,6 @@ package io.github.susimsek.springgraphqlsamples.service
 
 import io.github.susimsek.springgraphqlsamples.exception.POST_NOT_FOUND_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.exception.ResourceNotFoundException
-import io.github.susimsek.springgraphqlsamples.graphql.DEFAULT_SIZE
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.PostStatus
 import io.github.susimsek.springgraphqlsamples.graphql.input.AddPostInput
 import io.github.susimsek.springgraphqlsamples.graphql.input.UpdatePostInput
@@ -18,11 +17,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import org.springframework.context.MessageSource
 import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.ScrollPosition
-import org.springframework.data.domain.Sort
-import org.springframework.data.domain.Window
 import org.springframework.data.mongodb.core.query.TextCriteria
-import org.springframework.graphql.data.query.ScrollSubrange
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import java.util.*
@@ -139,6 +134,7 @@ class PostService(
             .map(postMapper::toType)
     }
 
+    /*
     suspend fun getPostsWithCursorPagination(
         subrange: ScrollSubrange,
         sort: Sort
@@ -148,4 +144,6 @@ class PostService(
         return postRepository.findAllByPosition(limit, position, sort)
             .map(postMapper::toType)
     }
+
+     */
 }

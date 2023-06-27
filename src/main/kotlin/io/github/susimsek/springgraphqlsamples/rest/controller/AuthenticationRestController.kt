@@ -2,6 +2,7 @@ package io.github.susimsek.springgraphqlsamples.rest.controller
 
 import io.github.susimsek.springgraphqlsamples.exception.INVALID_REFRESH_TOKEN_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.exception.InvalidTokenException
+import io.github.susimsek.springgraphqlsamples.exception.model.Problem
 import io.github.susimsek.springgraphqlsamples.graphql.input.LoginInput
 import io.github.susimsek.springgraphqlsamples.graphql.type.TokenPayload
 import io.github.susimsek.springgraphqlsamples.rest.payload.LoginRequest
@@ -11,6 +12,13 @@ import io.github.susimsek.springgraphqlsamples.security.jwt.Token
 import io.github.susimsek.springgraphqlsamples.security.jwt.TokenProvider
 import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaService
 import io.github.susimsek.springgraphqlsamples.service.AuthenticationService
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -24,6 +32,7 @@ import org.springframework.web.server.ServerWebExchange
 import java.security.Principal
 import java.util.*
 
+@Tag(name = "authentication", description = "Authentication API")
 @RestController
 @RequestMapping("/api/v1/auth")
 class AuthenticationRestController(
@@ -34,9 +43,41 @@ class AuthenticationRestController(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
+    @Operation(summary = "Login")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = TokenPayload::class)
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "400",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = Problem::class)
+                    )
+                ]
+            ),
+            ApiResponse(
+                responseCode = "401",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = Problem::class)
+                    )
+                ]
+            )
+        ]
+    )
     @PostMapping("/login")
     suspend fun login(
-        @RequestBody credentials: LoginRequest,
+        @RequestBody @Valid credentials: LoginRequest,
         @RequestHeader(required = false) recaptcha: String?,
         exchange: ServerWebExchange
     ): ResponseEntity<TokenPayload> {

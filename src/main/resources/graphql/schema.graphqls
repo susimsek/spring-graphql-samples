@@ -28,7 +28,7 @@ type Query {
     post(id: ID! @NotBlank): PostPayload!
     externalPost(id: ID! @NotBlank): PostPayload!
     posts(page: Int @Min(value : 0), size: Int @Min(value : 1), orders: [PostOrder!]): PostSearchResult!
-    postsWithCursorPagination(first: Int  @Min(value : 1), last: Int @Min(value : 1), before: String, after: String): PostPayloadConnection!
+    # postsWithCursorPagination(first: Int  @Min(value : 1), last: Int @Min(value : 1), before: String, after: String): PostPayloadConnection!
     searchPosts(page: Int @Min(value : 0), size: Int @Min(value : 1), searchPhrase: String! @Size(min: 3)): [PostPayload!]!
     hello: Message!
 }

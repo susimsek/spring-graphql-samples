@@ -6,7 +6,7 @@ import graphql.GraphqlErrorBuilder
 import graphql.schema.DataFetchingEnvironment
 import io.github.susimsek.springgraphqlsamples.exception.FORBIDDEN_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.exception.UNAUTHORIZED_MSG_CODE
-import io.github.susimsek.springgraphqlsamples.exception.model.ApiError
+import io.github.susimsek.springgraphqlsamples.exception.model.Problem
 import io.github.susimsek.springgraphqlsamples.exception.utils.WebExceptionUtils
 import org.springframework.context.MessageSource
 import org.springframework.graphql.execution.ErrorType
@@ -65,13 +65,13 @@ class ReactiveSecurityExceptionResolver(
             .message(errorMessage).build()
     }
 
-    private fun unauthorized(exchange: ServerWebExchange): ApiError {
+    private fun unauthorized(exchange: ServerWebExchange): Problem {
         val errorMessage = messageSource.getMessage(
             UNAUTHORIZED_MSG_CODE,
             null,
             resolveLocale(exchange)
         )
-        return ApiError.build(HttpStatus.UNAUTHORIZED, errorMessage, exchange)
+        return Problem.build(HttpStatus.UNAUTHORIZED, errorMessage, exchange)
     }
 
     private fun accessDenied(
@@ -90,7 +90,7 @@ class ReactiveSecurityExceptionResolver(
     private fun accessDenied(
         exchange: ServerWebExchange,
         securityContext: SecurityContext
-    ): ApiError {
+    ): Problem {
         return if (trustResolver.isAnonymous(securityContext.authentication)) {
             unauthorized(exchange)
         } else {
@@ -98,13 +98,13 @@ class ReactiveSecurityExceptionResolver(
         }
     }
 
-    private fun accessDenied(exchange: ServerWebExchange): ApiError {
+    private fun accessDenied(exchange: ServerWebExchange): Problem {
         val errorMessage = messageSource.getMessage(
             FORBIDDEN_MSG_CODE,
             null,
             resolveLocale(exchange)
         )
-        return ApiError.build(HttpStatus.FORBIDDEN, errorMessage, exchange)
+        return Problem.build(HttpStatus.FORBIDDEN, errorMessage, exchange)
     }
 
     private fun resolveLocale(exchange: ServerWebExchange): Locale {

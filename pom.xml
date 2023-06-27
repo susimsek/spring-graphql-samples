@@ -50,6 +50,7 @@
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
         <dependency-check-maven.version>8.3.1</dependency-check-maven.version>
         <detekt.version>1.23.0</detekt.version>
+        <springdoc.version>2.1.0</springdoc.version>
         <detekt.configFile>${project.basedir}/detekt-config.yml</detekt.configFile>
         <detekt.xmlReportFile>${project.build.directory}/detekt-reports/detekt.xml</detekt.xmlReportFile>
         <sonar.kotlin.detekt.reportPaths>${detekt.xmlReportFile}</sonar.kotlin.detekt.reportPaths>
@@ -68,6 +69,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -202,6 +207,13 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi</artifactId>
+                <version>${springdoc.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

@@ -18,13 +18,11 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
-import org.springframework.data.domain.Window
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.BatchMapping
 import org.springframework.graphql.data.method.annotation.MutationMapping
 import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.graphql.data.method.annotation.SubscriptionMapping
-import org.springframework.graphql.data.query.ScrollSubrange
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 import java.util.*
@@ -90,6 +88,7 @@ class PostController(
         return postService.getPosts(pageRequest)
     }
 
+    /*
     @QueryMapping
     suspend fun postsWithCursorPagination(
         subrange: ScrollSubrange,
@@ -98,6 +97,8 @@ class PostController(
         log.info("called posts with cursor pagination locale: {}", locale)
         return postService.getPostsWithCursorPagination(subrange, Sort.unsorted())
     }
+
+     */
 
     @QueryMapping
     suspend fun searchPosts(

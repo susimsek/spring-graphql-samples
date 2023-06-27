@@ -2,6 +2,7 @@ package io.github.susimsek.springgraphqlsamples.rest.controller
 
 import io.github.susimsek.springgraphqlsamples.graphql.type.Message
 import io.github.susimsek.springgraphqlsamples.rest.payload.HelloRequest
+import io.swagger.v3.oas.annotations.tags.Tag
 import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -13,6 +14,7 @@ import java.net.URL
 import java.time.LocalDate
 import java.util.*
 
+@Tag(name = "hello", description = "Sample API")
 @RestController
 @RequestMapping("/api/v1/nonsecure")
 class HelloRestController {
