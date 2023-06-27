@@ -65,19 +65,17 @@ security:
       ignore-patterns:
         - /graphiql
         - /favicon.ico
+        - /v3/api-docs/**
+        - /swagger-ui/**
+        - /webjars/**
+        - /swagger-ui.html
       permit-all-patterns:
         - /actuator/**
         - /api/v1/auth/**
         - /api/v1/nonsecure/**
         - /graphql
-        - /api/v1/transcription
-        - /api/v1/translation
         - /subscriptions
         - /redirect
-        - /v3/api-docs/**
-        - /swagger-ui/**
-        - /webjars/**
-        - /swagger-ui.html
   content-security-policy: "script-src 'self'"
   cipher:
     base64-secret: c2VjdXJlQ0RDS2V5
@@ -117,3 +115,5 @@ app:
 
 springdoc:
   version: '@springdoc.version@'
+  api-docs:
+    enabled: true

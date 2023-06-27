@@ -20,7 +20,7 @@ data:
   SECURITY_CONTENT_SECURITY_POLICY: script-src 'self'
   SECURITY_CIPHER_BASE64_SECRET: ${CIPHER_SECRET}
   SECURITY_AUTHENTICATION_SECURITY_MATCHER_IGNORE_PATTERNS: /favicon.ico
-  SECURITY_AUTHENTICATION_SECURITY_MATCHER_PERMIT_ALL_PATTERNS: /actuator/**, /graphql, /subscriptions
+  SECURITY_AUTHENTICATION_SECURITY_MATCHER_PERMIT_ALL_PATTERNS: /actuator/**, /graphql, /subscriptions, /api/v1/auth/**, /api/v1/nonsecure/**, /redirect
   RECAPTCHA_ENABLED: {{ .Values.recaptcha.enabled }}
   RECAPTCHA_VERIFY_URL: https://www.google.com/recaptcha/api/siteverify
   RECAPTCHA_SECRET_KEY: ${RECAPTCHA_SECRET}
