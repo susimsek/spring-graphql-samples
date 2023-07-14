@@ -9,7 +9,6 @@ import io.swagger.v3.oas.models.Operation
 import io.swagger.v3.oas.models.media.StringSchema
 import io.swagger.v3.oas.models.parameters.Parameter
 import org.springdoc.core.customizers.OperationCustomizer
-import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -33,7 +32,6 @@ import org.springframework.context.annotation.Configuration
     scheme = "bearer"
 )
 @Configuration(proxyBeanMethods = false)
-@EnableConfigurationProperties(AppProperties::class)
 class OpenApiConfig {
 
     @Bean
