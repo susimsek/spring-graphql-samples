@@ -1,10 +1,10 @@
 package io.github.susimsek.springgraphqlsamples.graphql
 
 import io.github.susimsek.springgraphqlsamples.config.GraphqlConfig
+import io.github.susimsek.springgraphqlsamples.config.TestSecurityConfig
 import io.github.susimsek.springgraphqlsamples.config.WebFluxConfig
 import io.github.susimsek.springgraphqlsamples.exception.handler.GraphqlExceptionHandler
 import io.github.susimsek.springgraphqlsamples.exception.handler.ReactiveSecurityExceptionResolver
-import io.github.susimsek.springgraphqlsamples.graphql.config.TestSecurityConfig
 import org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration
 import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration
 import org.springframework.boot.autoconfigure.security.reactive.ReactiveUserDetailsServiceAutoConfiguration
