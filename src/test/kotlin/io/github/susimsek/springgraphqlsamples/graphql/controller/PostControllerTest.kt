@@ -95,7 +95,7 @@ class PostControllerTest {
             .path("data.posts.pageInfo.totalCount").entity(Int::class.java).isEqualTo(posts.size)
             .path("data.posts.content.[*]").entityList(Any::class.java).hasSize(1)
             .path("data.posts.content.[*]").entityList(Any::class.java).hasSize(1)
-            .path("data.posts.content.[0].id").entity(String::class.java).isEqualTo(DEFAULT_ID)
+            .path("data.posts.content[0].id").entity(String::class.java).isEqualTo(DEFAULT_ID)
             .path("data.posts.content.[0].title").entity(String::class.java).isEqualTo(
                 DEFAULT_TITLE.replaceFirstChar {
                     if (it.isLowerCase()) {

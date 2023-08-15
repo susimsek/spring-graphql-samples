@@ -140,7 +140,7 @@ class SecurityConfig {
                 headers
                     .frameOptions(ServerHttpSecurity.HeaderSpec.FrameOptionsSpec::disable)
                     .contentSecurityPolicy { contentSecurityPolicy ->
-                        contentSecurityPolicy.policyDirectives("script-src 'self'")
+                        contentSecurityPolicy.policyDirectives(securityProperties.contentSecurityPolicy)
                     }
             }
             .authorizeExchange { auth ->
