@@ -9,7 +9,6 @@ import io.github.susimsek.springgraphqlsamples.graphql.input.ResetPasswordInput
 import io.github.susimsek.springgraphqlsamples.graphql.input.UserFilter
 import io.github.susimsek.springgraphqlsamples.graphql.type.PagedEntityModel
 import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
-import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaService
 import io.github.susimsek.springgraphqlsamples.service.UserService
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -23,8 +22,7 @@ import org.springframework.stereotype.Controller
 
 @Controller
 class UserController(
-    private val userService: UserService,
-    private val recaptchaService: RecaptchaService
+    private val userService: UserService
 ) {
     @MutationMapping
     suspend fun createUser(
@@ -32,7 +30,6 @@ class UserController(
         input: AddUserInput,
         @ContextValue(required = false) recaptcha: String?
     ): UserPayload {
-        recaptchaService.validateToken(recaptcha)
         return userService.createUser(input)
     }
 
@@ -49,10 +46,8 @@ class UserController(
 
     @MutationMapping
     suspend fun forgotPassword(
-        @Argument email: String,
-        @ContextValue(required = false) recaptcha: String?
+        @Argument email: String
     ): Boolean {
-        recaptchaService.validateToken(recaptcha)
         return userService.forgotPassword(email)
     }
 

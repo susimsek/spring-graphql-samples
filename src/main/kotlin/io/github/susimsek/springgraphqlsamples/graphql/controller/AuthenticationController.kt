@@ -7,7 +7,6 @@ import io.github.susimsek.springgraphqlsamples.graphql.REFRESH_TOKEN_CONTEXT_NAM
 import io.github.susimsek.springgraphqlsamples.graphql.TOKEN_CONTEXT_NAME
 import io.github.susimsek.springgraphqlsamples.graphql.input.LoginInput
 import io.github.susimsek.springgraphqlsamples.graphql.type.TokenPayload
-import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaService
 import io.github.susimsek.springgraphqlsamples.service.AuthenticationService
 import org.slf4j.LoggerFactory
 import org.springframework.graphql.data.method.annotation.Argument
@@ -19,8 +18,7 @@ import java.util.*
 
 @Controller
 class AuthenticationController(
-    private val authenticationService: AuthenticationService,
-    private val recaptchaService: RecaptchaService
+    private val authenticationService: AuthenticationService
 ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -32,7 +30,6 @@ class AuthenticationController(
         locale: Locale,
         context: GraphQLContext
     ): TokenPayload {
-        recaptchaService.validateToken(recaptcha)
         log.info("locale: {}", locale.toLanguageTag())
         val token = authenticationService.authorize(input)
         context.put(TOKEN_CONTEXT_NAME, token)
