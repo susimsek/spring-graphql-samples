@@ -25,6 +25,7 @@ class AsyncConfig(private val taskExecutionProperties: TaskExecutionProperties) 
             queueCapacity = taskExecutionProperties.pool.queueCapacity
             threadNamePrefix = taskExecutionProperties.threadNamePrefix
         }
+        executor.initialize()
         return executor
     }
 

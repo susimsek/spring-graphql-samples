@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
 
+
 @Configuration(proxyBeanMethods = false)
 class WebFluxConfig {
     @Bean
@@ -16,6 +17,7 @@ class WebFluxConfig {
         return Jackson2ObjectMapperBuilderCustomizer { builder: Jackson2ObjectMapperBuilder ->
             builder.featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             builder.featuresToDisable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
+            builder.featuresToDisable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             builder.modules(kotlinModule(), JavaTimeModule())
         }
     }
