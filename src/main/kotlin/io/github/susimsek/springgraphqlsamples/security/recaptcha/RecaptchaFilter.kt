@@ -2,7 +2,6 @@ package io.github.susimsek.springgraphqlsamples.security.recaptcha
 
 import io.github.susimsek.springgraphqlsamples.exception.InvalidCaptchaException
 import io.github.susimsek.springgraphqlsamples.exception.RECAPTCHA_INVALID_MSG_CODE
-import io.github.susimsek.springgraphqlsamples.graphql.RECAPTCHA_HEADER_NAME
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import org.springframework.web.server.CoWebFilter
 import org.springframework.web.server.CoWebFilterChain
@@ -18,8 +17,10 @@ class RecaptchaFilter(
     private val recaptchaService: RecaptchaService,
 ): CoWebFilter() {
 
+    private val recaptchaResolver = DefaultRecaptchaResolver();
+
     override suspend fun filter(exchange: ServerWebExchange, chain: CoWebFilterChain) {
-        val recaptcha = exchange.request.headers.getFirst(RECAPTCHA_HEADER_NAME)
+        val recaptcha = recaptchaResolver.resolve(exchange)
         val success = recaptchaService.validateToken(recaptcha)
         if (!success) {
             return exchange.response.writeWith(Mono.error(InvalidCaptchaException(RECAPTCHA_INVALID_MSG_CODE)))
