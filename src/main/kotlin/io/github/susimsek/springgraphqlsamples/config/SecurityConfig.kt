@@ -163,7 +163,7 @@ class SecurityConfig {
                     .authenticationEntryPoint(securityExceptionResolver)
                     .accessDeniedHandler(securityExceptionResolver)
             }
-            .addFilterBefore(XSSFilter(), SecurityWebFiltersOrder.AUTHENTICATION)
+            .addFilterAt(XSSFilter(), SecurityWebFiltersOrder.HTTP_HEADERS_WRITER)
             .addFilterBefore(RecaptchaFilter(recaptchaService), SecurityWebFiltersOrder.AUTHENTICATION)
         // @formatter:on
         return http.build()
