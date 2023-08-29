@@ -16,7 +16,7 @@ class DefaultRecaptchaResolver : RecaptchaResolver {
     }
 
     private fun resolveFromRecaptchaHeader(exchange: ServerWebExchange): String? {
-        val recaptcha: String = exchange.request.headers.getFirst(RECAPTCHA_HEADER_NAME)
+        val recaptcha: String? = exchange.request.headers.getFirst(RECAPTCHA_HEADER_NAME)
         return if (!StringUtils.hasText(recaptcha)) {
             null
         } else {
