@@ -1,5 +1,6 @@
 package io.github.susimsek.springgraphqlsamples.rest.controller
 
+import graphql.scalars.country.code.CountryCode
 import io.github.susimsek.springgraphqlsamples.graphql.type.Message
 import io.github.susimsek.springgraphqlsamples.rest.payload.HelloRequest
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -27,7 +28,9 @@ class HelloRestController {
                 url = URL("https://www.w3.org/Addressing/URL/url-spec.txt"),
                 content = mutableMapOf("sivas" to "58", "istanbul" to "43"),
                 sentDate = LocalDate.now(),
-                price = BigDecimal(30.82)
+                price = BigDecimal(30.82),
+                Currency.getInstance("USD"),
+                countryCode = CountryCode.TR
             )
         ).awaitSingle()
     }

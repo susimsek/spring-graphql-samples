@@ -5,5 +5,7 @@ query Hello{
         content
         sentDate
         price
+        currency
+        countryCode
     }
 }

@@ -17,6 +17,8 @@ scalar JSON
 scalar BigDecimal
 scalar UUID
 scalar Url
+scalar Currency
+scalar CountryCode
 
 type Query {
     users(page: Int @Min(value : 0), size: Int @Min(value : 1) @Max(value : 100), filter: UserFilter, orders: [UserOrder!]): UserSearchResult!
@@ -162,6 +164,8 @@ type Message {
     content: JSON!
     sentDate: Date!
     price: BigDecimal!
+    currency: Currency!
+    countryCode: CountryCode!
 }
 
 type PageInfo {

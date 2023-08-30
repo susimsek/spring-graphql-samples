@@ -62,6 +62,16 @@ class GraphqlConfig {
     }
 
     @Bean
+    fun currencyScalarType(): GraphQLScalarType {
+        return ExtendedScalars.Currency
+    }
+
+    @Bean
+    fun countryCodeScalarType(): GraphQLScalarType {
+        return ExtendedScalars.CountryCode
+    }
+
+    @Bean
     fun validationSchemaDirective(): SchemaDirectiveWiring {
         val validationRules = ValidationRules.newValidationRules()
             .onValidationErrorStrategy(OnValidationErrorStrategy.RETURN_NULL)

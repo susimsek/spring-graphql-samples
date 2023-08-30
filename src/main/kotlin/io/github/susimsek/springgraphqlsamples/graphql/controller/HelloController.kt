@@ -1,5 +1,6 @@
 package io.github.susimsek.springgraphqlsamples.graphql.controller
 
+import graphql.scalars.country.code.CountryCode
 import io.github.susimsek.springgraphqlsamples.graphql.type.Message
 import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.graphql.data.method.annotation.QueryMapping
@@ -25,7 +26,9 @@ class HelloController {
                 url = URL("https://www.w3.org/Addressing/URL/url-spec.txt"),
                 content = mutableMapOf("sivas" to "58", "istanbul" to "43"),
                 sentDate = LocalDate.now(),
-                price = BigDecimal(30.82)
+                price = BigDecimal(30.82),
+                currency = Currency.getInstance("USD"),
+                countryCode = CountryCode.TR
             )
         ).awaitSingle()
     }
