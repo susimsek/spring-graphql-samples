@@ -2,14 +2,11 @@ package io.github.susimsek.springgraphqlsamples.graphql.controller
 
 import com.ninjasquad.springmockk.MockkBean
 import io.github.susimsek.springgraphqlsamples.exception.INVALID_REFRESH_TOKEN_MSG_CODE
-import io.github.susimsek.springgraphqlsamples.exception.InvalidCaptchaException
 import io.github.susimsek.springgraphqlsamples.exception.InvalidTokenException
-import io.github.susimsek.springgraphqlsamples.exception.RECAPTCHA_INVALID_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.graphql.GraphQlUnitTest
 import io.github.susimsek.springgraphqlsamples.graphql.RECAPTCHA_CONTEXT_NAME
 import io.github.susimsek.springgraphqlsamples.graphql.REFRESH_TOKEN_CONTEXT_NAME
 import io.github.susimsek.springgraphqlsamples.graphql.type.TokenPayload
-import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaService
 import io.github.susimsek.springgraphqlsamples.service.AuthenticationService
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -70,9 +67,6 @@ class AuthControllerTest {
     @MockkBean
     private lateinit var authenticationService: AuthenticationService
 
-    @MockkBean
-    private lateinit var recaptchaService: RecaptchaService
-
     @BeforeEach
     fun setUp(@Autowired delegateService: ExecutionGraphQlService) {
         graphQlTester = ExecutionGraphQlServiceTester.builder(delegateService)
@@ -90,7 +84,6 @@ class AuthControllerTest {
     @Test
     fun authorize() = runTest {
         coEvery { authenticationService.authorize(any()) } returns DEFAULT_TOKEN_PAYLOAD
-        coEvery { recaptchaService.validateToken(any()) } returns true
 
         val input = mapOf(
             "login" to DEFAULT_USERNAME,
@@ -105,13 +98,11 @@ class AuthControllerTest {
             .path("data.login.refreshToken").entity(String::class.java).isEqualTo(DEFAULT_REFRESH_TOKEN)
 
         coVerify(exactly = 1) { authenticationService.authorize(any()) }
-        coVerify(exactly = 1) { recaptchaService.validateToken(any()) }
     }
 
     @Test
     fun `authorize fails`() = runTest {
         coEvery { authenticationService.authorize(any()) } throws BadCredentialsException("invalid credentials")
-        coEvery { recaptchaService.validateToken(any()) } returns true
 
         val input = mapOf(
             "login" to DEFAULT_USERNAME,
@@ -129,38 +120,6 @@ class AuthControllerTest {
             }
 
         coVerify(exactly = 1) { authenticationService.authorize(any()) }
-        coVerify(exactly = 1) { recaptchaService.validateToken(any()) }
-    }
-
-    @Test
-    fun `authorize when recaptcha token is invalid`() = runTest {
-        coEvery { recaptchaService.validateToken(any()) } throws InvalidCaptchaException(RECAPTCHA_INVALID_MSG_CODE)
-
-        val input = mapOf(
-            "login" to DEFAULT_USERNAME,
-            "password" to DEFAULT_PASSWORD
-        )
-
-        val graphQlTester = graphQlServiceTesterBuilder.configureExecutionInput { _, builder ->
-            builder.graphQLContext(
-                mapOf(
-                    RECAPTCHA_CONTEXT_NAME to ""
-                )
-            ).build()
-        }.build()
-
-        graphQlTester
-            .documentName("loginMutation")
-            .variable("input", input)
-            .execute()
-            .errors()
-            .satisfy { errors ->
-                Assertions.assertThat(errors).hasSize(1)
-                Assertions.assertThat(errors[0].errorType).isEqualTo(ErrorType.BAD_REQUEST)
-            }
-
-        coVerify(exactly = 0) { authenticationService.authorize(any()) }
-        coVerify(exactly = 1) { recaptchaService.validateToken(any()) }
     }
 
     @Test

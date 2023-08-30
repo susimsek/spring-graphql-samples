@@ -1,27 +1,22 @@
 package io.github.susimsek.springgraphqlsamples.graphql.controller
 
 import com.ninjasquad.springmockk.MockkBean
-import io.github.susimsek.springgraphqlsamples.exception.InvalidCaptchaException
-import io.github.susimsek.springgraphqlsamples.exception.RECAPTCHA_INVALID_MSG_CODE
 import io.github.susimsek.springgraphqlsamples.graphql.GraphQlUnitTest
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.OrderType
 import io.github.susimsek.springgraphqlsamples.graphql.enumerated.UserOrderField
 import io.github.susimsek.springgraphqlsamples.graphql.type.PagedEntityModel
 import io.github.susimsek.springgraphqlsamples.graphql.type.UserPayload
-import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaService
 import io.github.susimsek.springgraphqlsamples.service.UserService
 import io.mockk.coEvery
 import io.mockk.coVerify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.graphql.ExecutionGraphQlService
-import org.springframework.graphql.execution.ErrorType
 import org.springframework.graphql.test.tester.ExecutionGraphQlServiceTester
 import org.springframework.graphql.test.tester.GraphQlTester
 import org.springframework.security.test.context.support.WithMockUser
@@ -58,9 +53,6 @@ class UserControllerTest {
 
     @MockkBean
     private lateinit var userService: UserService
-
-    @MockkBean
-    private lateinit var recaptchaService: RecaptchaService
 
     private lateinit var user: UserPayload
 
@@ -141,7 +133,6 @@ class UserControllerTest {
     @Test
     fun `create user`() = runTest {
         coEvery { userService.createUser(any()) } returns user
-        coEvery { recaptchaService.validateToken(any()) } returns true
 
         val input = mapOf(
             "username" to DEFAULT_USERNAME,
@@ -161,7 +152,6 @@ class UserControllerTest {
             .path("data.createUser.email").entity(String::class.java).isEqualTo(DEFAULT_EMAIL)
 
         coVerify(exactly = 1) { userService.createUser(any()) }
-        coVerify(exactly = 1) { recaptchaService.validateToken(any()) }
     }
 
     @Test
@@ -180,7 +170,6 @@ class UserControllerTest {
     @Test
     fun `forgot password`() = runTest {
         coEvery { userService.forgotPassword(any()) } returns true
-        coEvery { recaptchaService.validateToken(any()) } returns true
 
         graphQlTester
             .documentName("forgotPasswordMutation")
@@ -189,13 +178,11 @@ class UserControllerTest {
             .path("data.forgotPassword").entity(Boolean::class.java).isEqualTo(true)
 
         coVerify(exactly = 1) { userService.forgotPassword(any()) }
-        coVerify(exactly = 1) { recaptchaService.validateToken(any()) }
     }
 
     @Test
     fun `forgot password with wrong email`() = runTest {
         coEvery { userService.forgotPassword(any()) } returns true
-        coEvery { recaptchaService.validateToken(any()) } returns true
 
         graphQlTester
             .documentName("forgotPasswordMutation")
@@ -204,7 +191,6 @@ class UserControllerTest {
             .path("data.forgotPassword").entity(Boolean::class.java).isEqualTo(true)
 
         coVerify(exactly = 1) { userService.forgotPassword(any()) }
-        coVerify(exactly = 1) { recaptchaService.validateToken(any()) }
     }
 
     @Test
@@ -272,32 +258,5 @@ class UserControllerTest {
             .path("data.activateAccount").entity(Boolean::class.java).isEqualTo(false)
 
         coVerify(exactly = 1) { userService.activateAccount(any()) }
-    }
-
-    @Test
-    fun `create user when recaptcha token is invalid`() = runTest {
-        coEvery { recaptchaService.validateToken(any()) } throws InvalidCaptchaException(RECAPTCHA_INVALID_MSG_CODE)
-
-        val input = mapOf(
-            "username" to DEFAULT_USERNAME,
-            "password" to DEFAULT_PASSWORD,
-            "firstName" to DEFAULT_FIRST_NAME,
-            "lastName" to DEFAULT_LAST_NAME,
-            "email" to DEFAULT_EMAIL,
-            "lang" to DEFAULT_LANG
-        )
-
-        graphQlTester
-            .documentName("createUserMutation")
-            .variable("input", input)
-            .execute()
-            .errors()
-            .satisfy { errors ->
-                Assertions.assertThat(errors).hasSize(1)
-                Assertions.assertThat(errors[0].errorType).isEqualTo(ErrorType.BAD_REQUEST)
-            }
-
-        coVerify(exactly = 0) { userService.createUser(any()) }
-        coVerify(exactly = 1) { recaptchaService.validateToken(any()) }
     }
 }
