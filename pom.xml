@@ -49,7 +49,7 @@
         <properties-maven-plugin.version>1.1.0</properties-maven-plugin.version>
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
         <dependency-check-maven.version>8.4.0</dependency-check-maven.version>
-        <detekt.version>1.23.0</detekt.version>
+        <detekt.version>1.23.1</detekt.version>
         <springdoc.version>2.2.0</springdoc.version>
         <detekt.configFile>${project.basedir}/detekt-config.yml</detekt.configFile>
         <detekt.xmlReportFile>${project.build.directory}/detekt-reports/detekt.xml</detekt.xmlReportFile>
