@@ -13,6 +13,7 @@ import io.github.susimsek.springgraphqlsamples.security.jwt.JwtDecoder
 import io.github.susimsek.springgraphqlsamples.security.jwt.TokenAuthenticationConverter
 import io.github.susimsek.springgraphqlsamples.security.jwt.TokenProvider
 import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaFilter
+import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaProperties
 import io.github.susimsek.springgraphqlsamples.security.recaptcha.RecaptchaService
 import io.github.susimsek.springgraphqlsamples.security.xss.XSSFilter
 import org.springframework.boot.context.properties.EnableConfigurationProperties
@@ -117,7 +118,8 @@ class SecurityConfig {
         jwtAuthenticationConverter: Converter<Jwt, Mono<AbstractAuthenticationToken>>,
         bearerTokenConverter: ServerAuthenticationConverter,
         securityExceptionResolver: ReactiveSecurityExceptionResolver,
-        recaptchaService: RecaptchaService
+        recaptchaService: RecaptchaService,
+        recaptchaProperties: RecaptchaProperties
     ): SecurityWebFilterChain {
         // @formatter:off
         http
@@ -164,7 +166,7 @@ class SecurityConfig {
                     .accessDeniedHandler(securityExceptionResolver)
             }
             .addFilterAt(XSSFilter(), SecurityWebFiltersOrder.HTTP_HEADERS_WRITER)
-            .addFilterAt(RecaptchaFilter(recaptchaService), SecurityWebFiltersOrder.AUTHENTICATION)
+            .addFilterAt(RecaptchaFilter(recaptchaService, recaptchaProperties), SecurityWebFiltersOrder.AUTHENTICATION)
         // @formatter:on
         return http.build()
     }

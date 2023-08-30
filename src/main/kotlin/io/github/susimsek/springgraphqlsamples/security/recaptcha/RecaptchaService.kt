@@ -8,9 +8,6 @@ class RecaptchaService(
     private val recaptchaProperties: RecaptchaProperties
 ) {
     suspend fun validateToken(recaptchaToken: String?): Boolean {
-        if (!recaptchaProperties.enabled) {
-            return true
-        }
         if (recaptchaToken == null || !StringUtils.hasLength(recaptchaToken)) {
            return false
         }
