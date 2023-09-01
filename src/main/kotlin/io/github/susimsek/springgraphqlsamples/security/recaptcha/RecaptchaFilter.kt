@@ -8,13 +8,12 @@ import org.springframework.web.server.CoWebFilterChain
 import org.springframework.web.server.ServerWebExchange
 import reactor.core.publisher.Mono
 
-
 class RecaptchaFilter(
     private val recaptchaService: RecaptchaService,
     private val recaptchaProperties: RecaptchaProperties
-): CoWebFilter() {
+) : CoWebFilter() {
 
-    private val recaptchaResolver = DefaultRecaptchaResolver();
+    private val recaptchaResolver = DefaultRecaptchaResolver()
 
     override suspend fun filter(exchange: ServerWebExchange, chain: CoWebFilterChain) {
         if (recaptchaProperties.enabled) {

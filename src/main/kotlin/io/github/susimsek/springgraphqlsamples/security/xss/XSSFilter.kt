@@ -1,12 +1,10 @@
 package io.github.susimsek.springgraphqlsamples.security.xss
 
-import org.springframework.boot.autoconfigure.security.SecurityProperties
-import org.springframework.core.annotation.Order
 import org.springframework.web.server.CoWebFilter
 import org.springframework.web.server.CoWebFilterChain
 import org.springframework.web.server.ServerWebExchange
 
-class XSSFilter: CoWebFilter() {
+class XSSFilter : CoWebFilter() {
 
     override suspend fun filter(exchange: ServerWebExchange, chain: CoWebFilterChain) {
         val captureExchange = CaptureExchange(exchange)

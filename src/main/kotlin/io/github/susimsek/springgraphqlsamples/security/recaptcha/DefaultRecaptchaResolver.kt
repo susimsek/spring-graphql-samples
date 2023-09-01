@@ -12,7 +12,7 @@ class DefaultRecaptchaResolver : RecaptchaResolver {
     private val recaptchaPattern = Pattern.compile("[A-Za-z0-9_-]+")
 
     override fun resolve(exchange: ServerWebExchange): String? {
-       return resolveFromRecaptchaHeader(exchange);
+        return resolveFromRecaptchaHeader(exchange)
     }
 
     private fun resolveFromRecaptchaHeader(exchange: ServerWebExchange): String? {
@@ -24,7 +24,7 @@ class DefaultRecaptchaResolver : RecaptchaResolver {
             if (!matcher.matches()) {
                 throw InvalidCaptchaException(RECAPTCHA_INVALID_MSG_CODE)
             }
-            return recaptcha;
+            return recaptcha
         }
     }
 }
