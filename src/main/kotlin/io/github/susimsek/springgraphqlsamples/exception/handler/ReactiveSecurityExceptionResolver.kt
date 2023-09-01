@@ -87,18 +87,20 @@ class ReactiveSecurityExceptionResolver(
     }
 
     private fun internalServerError(exchange: ServerWebExchange): Problem {
-        val errorMessage = messageSource.getMessage(INTERNAL_SERVER_ERROR_MSG_CODE, null,  resolveLocale(exchange))
+        val errorMessage = messageSource.getMessage(INTERNAL_SERVER_ERROR_MSG_CODE, null, resolveLocale(exchange))
         return Problem.build(HttpStatus.INTERNAL_SERVER_ERROR, errorMessage, exchange)
     }
 
-    private fun invalidCaptchaException(exchange: ServerWebExchange,
-                                        exception: InvalidCaptchaException): Mono<ServerResponse> {
+    private fun invalidCaptchaException(
+        exchange: ServerWebExchange,
+        exception: InvalidCaptchaException
+    ): Mono<ServerResponse> {
         val errorMessage = messageSource.getMessage(
             exception.message,
             null,
             resolveLocale(exchange)
         )
-        val problem =  Problem.build(HttpStatus.BAD_REQUEST, errorMessage, exchange)
+        val problem = Problem.build(HttpStatus.BAD_REQUEST, errorMessage, exchange)
         return ServerResponse
             .status(HttpStatus.BAD_REQUEST)
             .bodyValue(problem)

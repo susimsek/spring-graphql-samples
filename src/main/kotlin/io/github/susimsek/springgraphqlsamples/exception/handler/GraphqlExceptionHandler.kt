@@ -35,14 +35,14 @@ class GraphqlExceptionHandler(
     suspend fun handleFieldAccessException(
         ex: FieldAccessException,
         env: DataFetchingEnvironment,
-    ): GraphQLError = coroutineScope  {
+    ): GraphQLError = coroutineScope {
         val responseError = ex.response.errors.first()
         val extensions = responseError.extensions
         val classification = extensions["classification"]
         val errorType = ErrorType.values()
             .firstOrNull { it.name == classification } ?: ErrorType.INTERNAL_ERROR
         GraphqlErrorBuilder.newError(env)
-                .message(responseError.message).errorType(errorType).build()
+            .message(responseError.message).errorType(errorType).build()
     }
 
     @GraphQlExceptionHandler(
@@ -103,8 +103,8 @@ class GraphqlExceptionHandler(
     ): GraphQLError = coroutineScope {
         log.error("Internal server error {}", ex.message)
         val errorMessage = messageSource.getMessage(INTERNAL_SERVER_ERROR_MSG_CODE, null, env.locale)
-            GraphqlErrorBuilder.newError(env)
-                .message(errorMessage).errorType(ErrorType.INTERNAL_ERROR).build()
+        GraphqlErrorBuilder.newError(env)
+            .message(errorMessage).errorType(ErrorType.INTERNAL_ERROR).build()
     }
 
     @GraphQlExceptionHandler
@@ -113,17 +113,17 @@ class GraphqlExceptionHandler(
         env: DataFetchingEnvironment,
     ): List<GraphQLError> = coroutineScope {
         ex.constraintViolations.map {
-                val validatedPath = it.propertyPath.map { node -> node.name }
-                GraphqlErrorBuilder.newError(env)
-                    .message("${it.propertyPath}: ${it.message}")
-                    .errorType(ErrorType.BAD_REQUEST)
-                    .extensions(
-                        mapOf(
-                            "validatedPath" to validatedPath
-                        )
+            val validatedPath = it.propertyPath.map { node -> node.name }
+            GraphqlErrorBuilder.newError(env)
+                .message("${it.propertyPath}: ${it.message}")
+                .errorType(ErrorType.BAD_REQUEST)
+                .extensions(
+                    mapOf(
+                        "validatedPath" to validatedPath
                     )
-                    .build()
-            }
+                )
+                .build()
+        }
     }
 
     private fun badRequest(env: DataFetchingEnvironment, errorMessage: String): GraphQLError {
