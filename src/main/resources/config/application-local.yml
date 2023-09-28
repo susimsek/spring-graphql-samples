@@ -24,10 +24,10 @@ spring:
     mongodb:
       uri: mongodb+srv://test_user123456:4hRsOKoJxkHswunQ@cluster0.nbzfi.mongodb.net/demo
     redis:
-      host: redis-16911.c98.us-east-1-4.ec2.cloud.redislabs.com
-      port: 16911
+      host:  redis://redis-10330.c15.us-east-1-4.ec2.cloud.redislabs.com
+      port: 10330
       database: 0
-      password: RRqkBJPQniz71buLA09aJ2oQCoHmGTI7
+      password: 5mbm3tZYp3GEdSciPQdHJ5eFN7y4Frqs
   devtools:
     restart:
       enabled: true
