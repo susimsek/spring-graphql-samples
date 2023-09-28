@@ -24,7 +24,7 @@ spring:
     mongodb:
       uri: mongodb+srv://test_user123456:4hRsOKoJxkHswunQ@cluster0.nbzfi.mongodb.net/demo
     redis:
-      host:  redis://redis-10330.c15.us-east-1-4.ec2.cloud.redislabs.com
+      host: redis-10330.c15.us-east-1-4.ec2.cloud.redislabs.com
       port: 10330
       database: 0
       password: 5mbm3tZYp3GEdSciPQdHJ5eFN7y4Frqs
