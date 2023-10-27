@@ -4,6 +4,7 @@ import graphql.scalars.country.code.CountryCode
 import io.github.susimsek.springgraphqlsamples.graphql.type.Message
 import io.github.susimsek.springgraphqlsamples.rest.payload.HelloRequest
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
 import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -21,7 +22,7 @@ import java.util.*
 class HelloRestController {
 
     @PostMapping("/hello")
-    suspend fun hello(@RequestBody hello: HelloRequest): Message {
+    suspend fun hello(@RequestBody @Valid hello: HelloRequest): Message {
         return Mono.just(
             Message(
                 id = UUID.randomUUID(),
