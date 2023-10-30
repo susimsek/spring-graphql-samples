@@ -2,12 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.5</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
     
     <groupId>io.github.susimsek</groupId>
     <artifactId>spring-graphql-samples</artifactId>
@@ -21,6 +15,7 @@
         <java.version>17</java.version>
         <kotlin.version>1.8.22</kotlin.version>
         <maven.version>3.2</maven.version>
+        <spring-boot.version>3.1.5</spring-boot.version>
         <spring-cloud.version>2022.0.4</spring-cloud.version>
         <java-native-image.version>8.16.1</java-native-image.version>
         <docker.image.name>docker.io/suayb/spring-graphql-samples</docker.image.name>
@@ -209,6 +204,13 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
